@@ -21,18 +21,22 @@ namespace ClutterFeed
             string userDir = Environment.CurrentDirectory;
             if (!File.Exists(userDir + "/keys.conf"))
             {
-                Console.WriteLine("Error: keys.conf does not exist.");
-                Environment.Exit(0);
+                throw new FileNotFoundException("keys.conf does not exist.");
             }
             List<string> readAPIKeys = File.ReadAllLines(userDir + "/keys.conf").ToList();
 
-            //for (int index = 0; index < readAPIKeys.Count; index++) /* Removes empty lines */
-            //{
-            //    if (readAPIKeys[index] == "")
-            //    {
-            //        readAPIKeys.RemoveAt(index);
-            //    }
-            //}
+            int tempIndex = 0;
+            while(tempIndex < readAPIKeys.Count) /* Removes empty lines */
+            {
+                if(readAPIKeys[tempIndex] == "")
+                {
+                    readAPIKeys.RemoveAt(tempIndex);
+                }
+                else
+                {
+                    tempIndex++;
+                }
+            }
 
             if (readAPIKeys.Count != 4)
             {
@@ -122,6 +126,30 @@ namespace ClutterFeed
         public OAuthAccessToken GetApp()
         {
             return appKey;
+        }
+        public static string GetCommand()
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("      > ");
+            Console.ForegroundColor = ConsoleColor.White;
+            return Console.ReadLine();
+        }
+
+        public static bool IsMissingArgs(string[] splitString)
+        {
+            try
+            {
+                if (splitString[1].Length != 2) ;
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Error: input was not complete.");
+                Console.WriteLine("      You probaby didn't use enough args");
+                Console.ForegroundColor = ConsoleColor.White;
+                return true;
+            }
+            return false;
         }
     }
 }
