@@ -135,11 +135,11 @@ namespace ClutterFeed
             return Console.ReadLine();
         }
 
-        public static bool IsMissingArgs(string[] splitString)
+        public static bool IsMissingArgs(string command)
         {
             try
             {
-                if (splitString[1].Length != 2) ;
+                bool checker = command.Split(' ')[1].Length != 2;
             }
             catch (IndexOutOfRangeException)
             {

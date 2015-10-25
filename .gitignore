@@ -70,6 +70,9 @@ artifacts/
 # Config files
 *.conf
 
+# Custom audio files
+*.wav
+
 # Chutzpah Test files
 _Chutzpah*
 

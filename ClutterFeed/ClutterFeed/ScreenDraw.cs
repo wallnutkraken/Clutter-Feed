@@ -9,8 +9,8 @@ namespace ClutterFeed
 {
     class ScreenDraw
     {
-        public static bool IsFollowing { get; set; } /* DON'T LOOK! */
-        public static bool IsBlocked { get; set; }
+        public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
+        public static bool IsBlocked { get; set; } = false;
 
         public static void ShowTimeline()
         {
