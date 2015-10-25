@@ -228,7 +228,7 @@ namespace ClutterFeed
                 }
             } while (writeChar != '\r');
 
-            command = command.Replace('\r', '\0');
+            command = command.Replace("\r", "");
             return command;
         }
 
