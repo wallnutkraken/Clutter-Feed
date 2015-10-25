@@ -230,45 +230,41 @@ namespace ClutterFeed
             Console.Write("/h, /help");
             CommandEplanation("Shows this dialog.", 3);
 
-            Console.SetCursorPosition(linestart, 4);
-            Console.Write("/n, /new, no command");
-            CommandEplanation("Posts a new tweet", 4);
-
-            Console.SetCursorPosition(linestart, 5);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/rt");
-            CommandEplanation("Retweets/undos a retweet on a selected tweet.", 5);
+            CommandEplanation("Retweets/undos a retweet on a selected tweet.", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 6);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/fav, /f");
-            CommandEplanation("Favourites a selected tweet", 6);
+            CommandEplanation("Favourites a selected tweet", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 7);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/unfav, /uf");
-            CommandEplanation("Unfavourites a selected tweet", 7);
+            CommandEplanation("Unfavourites a selected tweet", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 8);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/api");
-            CommandEplanation("Shows the remaining API hits", 8);
+            CommandEplanation("Shows the remaining API hits", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 9);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/r");
-            CommandEplanation("Replies to the selected tweet", 9);
+            CommandEplanation("Replies to the selected tweet", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 10);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/rn");
-            CommandEplanation("Replies without using @", 10);
+            CommandEplanation("Replies without using @", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 11);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/id");
-            CommandEplanation("Shows the ID of the tweet", 11);
+            CommandEplanation("Shows the ID of the tweet", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 12);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/profile");
-            CommandEplanation("Shows the profile of the selected user", 12);
+            CommandEplanation("Shows the profile of the selected user", Console.CursorTop);
 
-            Console.SetCursorPosition(linestart, 13);
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/me");
-            CommandEplanation("Shows your mentions", 13);
+            CommandEplanation("Shows your mentions", Console.CursorTop);
 
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
