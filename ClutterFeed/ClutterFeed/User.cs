@@ -26,9 +26,9 @@ namespace ClutterFeed
             List<string> readAPIKeys = File.ReadAllLines(userDir + "/keys.conf").ToList();
 
             int tempIndex = 0;
-            while(tempIndex < readAPIKeys.Count) /* Removes empty lines */
+            while (tempIndex < readAPIKeys.Count) /* Removes empty lines */
             {
-                if(readAPIKeys[tempIndex] == "")
+                if (readAPIKeys[tempIndex] == "")
                 {
                     readAPIKeys.RemoveAt(tempIndex);
                 }
@@ -129,10 +129,11 @@ namespace ClutterFeed
         }
         public static string GetCommand()
         {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("      > ");
-            Console.ForegroundColor = ConsoleColor.White;
-            return Console.ReadLine();
+            return CounterConsole();
+            //Console.ForegroundColor = ConsoleColor.Cyan;
+            //Console.Write("      > ");
+            //Console.ForegroundColor = ConsoleColor.White;
+            //return Console.ReadLine();
         }
 
         public static bool IsMissingArgs(string command)
@@ -151,5 +152,69 @@ namespace ClutterFeed
             }
             return false;
         }
+        public static string CounterConsole()
+        {
+            string command = "";
+            char writeChar = '\0';
+            int charCount = 0;
+
+
+            do
+            {
+                Console.SetCursorPosition(0, Console.CursorTop);
+
+                if (charCount > 140)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                }
+                Console.Write("[{0:000}] ", charCount);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.Write("> ");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.Write(command);
+                ConsoleKeyInfo characterInfo = Console.ReadKey(true);
+                writeChar = characterInfo.KeyChar;
+
+                if (writeChar == '\b')
+                {
+                    if (charCount != 0)
+                    {
+                        if (Console.CursorLeft == 0)
+                        {
+                            Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop - 1);
+                            Console.Write(' ');
+                            Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop);
+                        }
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                        Console.Write(" ");
+                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+                        command = command.Remove(command.Length - 1, 1);
+                        charCount--;
+                    }
+                    else
+                    {
+                        Console.Write('\a');
+                    }
+                }
+                else
+                {
+                    if (characterInfo.Key == ConsoleKey.DownArrow
+                        || characterInfo.Key == ConsoleKey.UpArrow
+                        || characterInfo.Key == ConsoleKey.RightArrow
+                        || characterInfo.Key == ConsoleKey.LeftArrow)
+                    {
+
+                    }
+                    else
+                    {
+                        command = command + writeChar;
+                        charCount++;
+                    }
+                }
+            } while (writeChar != '\r');
+
+            return command;
+        }
+
     }
 }
