@@ -97,7 +97,7 @@ namespace ClutterFeed
 
                     if (command.Split(' ')[0].ToLower().CompareTo("/help") == 0 || command.Split(' ')[0].ToLower().CompareTo("/h") == 0)
                     {
-                        commandMetadata = twitterDo.Help(command);
+                        commandMetadata = twitterDo.Help();
                     }
 
 
@@ -114,7 +114,7 @@ namespace ClutterFeed
                 }
                 if (commandMetadata.AskForCommand)
                 {
-                    command = User.GetCommand();
+                    command = User.CounterConsole();
                 }
                 else
                 {

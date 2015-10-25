@@ -563,7 +563,7 @@ namespace ClutterFeed
             return returnInfo;
         }
 
-        public ActionValue Help(string command)
+        public ActionValue Help()
         {
             ActionValue returnInfo = new ActionValue();
             ScreenDraw drawHelp = new ScreenDraw();

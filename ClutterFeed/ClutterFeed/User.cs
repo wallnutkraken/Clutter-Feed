@@ -145,11 +145,10 @@ namespace ClutterFeed
         }
         public static string GetCommand()
         {
-            return CounterConsole();
-            //Console.ForegroundColor = ConsoleColor.Cyan;
-            //Console.Write("      > ");
-            //Console.ForegroundColor = ConsoleColor.White;
-            //return Console.ReadLine();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.Write("      > ");
+            Console.ForegroundColor = ConsoleColor.White;
+            return Console.ReadLine();
         }
 
         public static bool IsMissingArgs(string command)
@@ -229,6 +228,7 @@ namespace ClutterFeed
                 }
             } while (writeChar != '\r');
 
+            command = command.Replace('\r', '\0');
             return command;
         }
 
