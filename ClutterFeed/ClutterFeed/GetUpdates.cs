@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TweetSharp;
-using System.Drawing;
+using System.Media;
 
 
 namespace ClutterFeed
@@ -63,11 +63,11 @@ namespace ClutterFeed
                 continueMethod = false;
             }
             int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
-            if(newTweetStartIndex == -1)
+            if (newTweetStartIndex == -1)
             {
                 fullUpdate = true;
             }
-            if(newTweetStartIndex == 0 && fullUpdate == false)
+            if (newTweetStartIndex == 0 && fullUpdate == false)
             {
                 continueMethod = false;
             }
@@ -87,7 +87,7 @@ namespace ClutterFeed
                 else
                 {
                     localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
-                    for(int index = 0; index < unformattedTweets.Count; index++)
+                    for (int index = 0; index < unformattedTweets.Count; index++)
                     {
                         InteractiveTweet formattedTweet = new InteractiveTweet();
                         formattedTweet = ConvertTweet(unformattedTweets[index]);
@@ -98,7 +98,7 @@ namespace ClutterFeed
             }
         }
 
-        
+
 
 
         /// <summary>
@@ -196,10 +196,18 @@ namespace ClutterFeed
             formedTweet.IsFavorited = tweet.IsFavorited;
             formedTweet.IsRetweeted = tweet.IsRetweeted;
 
-            if(formedTweet.Contents.Contains("@" + userScreenName))
+            if (formedTweet.Contents.Contains("@" + userScreenName))
             {
-                Console.Write("\a");
-                /* I eventually want to replace this notification with something else, but for now, it works */
+                try
+                {
+                    SoundPlayer notification = new SoundPlayer();
+
+                    notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
+                    notification.Play();
+                }
+                catch (Exception)
+                {
+                }
             }
 
             return formedTweet;
