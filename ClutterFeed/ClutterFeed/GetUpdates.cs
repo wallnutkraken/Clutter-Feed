@@ -40,7 +40,6 @@ namespace ClutterFeed
         public void GetTweets(TwitterService twitter, bool fullUpdate)
         {
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
-            updateOpts.Count = 15;
             bool continueMethod = true;
             var numUpdates = twitter.ListTweetsOnHomeTimeline(updateOpts);
             List<TwitterStatus> unformattedTweets = new List<TwitterStatus>();
