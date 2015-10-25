@@ -451,7 +451,7 @@ namespace ClutterFeed
                         {
                             ScreenDraw drawMentions = new ScreenDraw();
                             drawMentions.DrawMentions(mentions);
-                            Console.SetCursorPosition(3, Console.WindowHeight - 1);
+                            Console.SetCursorPosition(3, Console.CursorTop);
                             mentionCommand = User.GetCommand();
                         } while (mentionCommand.ToLower().CompareTo("/b") != 0);
                         askForCommand = false;
