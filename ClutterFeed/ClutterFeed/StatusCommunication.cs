@@ -23,24 +23,11 @@ namespace ClutterFeed
         public static List<InteractiveTweet> updateTweets;
         public void ShowUpdates(TwitterService twitterAccess, GetUpdates showUpdates, bool fullUpdate)
         {
-            if (fullUpdate)
-            {
-                updateTweets = showUpdates.GetTweets(twitterAccess);
-                if (updateTweets == null)
-                {
-                    throw new NullReferenceException("No tweets gotten");
-                }
-            }
-            else
-            {
-                updateTweets = showUpdates.UpdateTweets(twitterAccess);
-                if(updateTweets == null)
-                {
-                    throw new NullReferenceException("No tweets gotten");
-                }
-            }
+
+            showUpdates.GetTweets(twitterAccess, fullUpdate);
+
             Console.Clear();
-            ScreenDraw.ShowTimeline(updateTweets);
+            ScreenDraw.ShowTimeline();
         }
     }
 }

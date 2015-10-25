@@ -24,4 +24,11 @@ Not in any specific order
 
 #### Direct message support
 
- 
+#### Friends list
+ So you can see what your friends tweet on your timeline IN PRETTY COLORS OOOOO
+
+## **Change the way updates work**
+ Make list with full update, new updates added to list, only 15 newest displayed instead of the whole list
+
+#### Move the \a for new notifications to the GetUpdates methods for getting updates instead of when displayed
+ Also make it the MSN buzzer sound

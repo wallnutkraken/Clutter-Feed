@@ -12,8 +12,9 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } /* DON'T LOOK! */
         public static bool IsBlocked { get; set; }
 
-        public static void ShowTimeline(List<InteractiveTweet> updates)
+        public static void ShowTimeline()
         {
+            List<InteractiveTweet> updates = GetUpdates.localTweetList;
             int index;
             if (updates.Count > 14)
             {

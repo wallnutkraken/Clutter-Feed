@@ -157,7 +157,7 @@ namespace ClutterFeed
 
                                 long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                                 retweetOpts.Id = tweetID;
-                                TwitterStatus tweet = new TwitterStatus();
+                                InteractiveTweet tweet = new InteractiveTweet();
                                 bool finishBlock = true;
 
                                 try
@@ -219,7 +219,7 @@ namespace ClutterFeed
 
                                 long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                                 favOpts.Id = tweetID;
-                                TwitterStatus tweet = TweetIdentification.FindTweet(tweetID);
+                                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
 
                                 if (tweet.IsFavorited)
                                 {
@@ -265,7 +265,7 @@ namespace ClutterFeed
 
                                 long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                                 unfavOpts.Id = tweetID;
-                                TwitterStatus tweet = TweetIdentification.FindTweet(tweetID);
+                                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
 
                                 if (tweet.IsFavorited)
                                 {

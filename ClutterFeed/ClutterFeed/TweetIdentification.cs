@@ -18,14 +18,14 @@ namespace ClutterFeed
             {
                 if (existingTweets[0] == null) ;
             }
-            catch(Exception)
+            catch (Exception)
             {
                 return false;
             }
 
-            for(int index = 0; index < existingTweets.Count; index++)
+            for (int index = 0; index < existingTweets.Count; index++)
             {
-                if(existingTweets[index].TweetIdentification == identity)
+                if (existingTweets[index].TweetIdentification == identity)
                 {
                     foundMatch = true;
                 }
@@ -52,9 +52,9 @@ namespace ClutterFeed
         {
             SendTweetOptions found = new SendTweetOptions();
             List<InteractiveTweet> tweetList = GetUpdates.localTweetList;
-            for(int index = 0; index < tweetList.Count; index++)
+            for (int index = 0; index < tweetList.Count; index++)
             {
-                if(tweetList[index].TweetIdentification.CompareTo(identifier) == 0)
+                if (tweetList[index].TweetIdentification.CompareTo(identifier) == 0)
                 {
                     found.InReplyToStatusId = tweetList[index].ID;
                     string atName = tweetList[index].AuthorName;
@@ -68,17 +68,44 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="tweetID"></param>
         /// <returns></returns>
-        public static TwitterStatus FindTweet(long tweetID)
+        public static InteractiveTweet FindTweet(long tweetID)
         {
-            List<TwitterStatus> tweetList = GetUpdates.unformattedLocalTweetList;
-            for(int index = 0; index < tweetList.Count; index++)
+            List<InteractiveTweet> tweetList = GetUpdates.localTweetList;
+            for (int index = 0; index < tweetList.Count; index++)
             {
-                if(tweetList[index].Id == tweetID)
+                if (tweetList[index].ID == tweetID)
                 {
                     return tweetList[index];
                 }
             }
             throw new KeyNotFoundException("A tweet with such an ID does not exist.");
         }
+
+        public static int NewTweetStart(List<TwitterStatus> tweets)
+        {
+            int firstOldTweet = int.MinValue;
+            List<InteractiveTweet> cachedTweets = GetUpdates.localTweetList;
+            try
+            {
+                for (int index = 0; index < tweets.Count; index++)
+                {
+                    if (tweets[index].Id == cachedTweets[0].ID)
+                    {
+                        firstOldTweet = index;
+                    }
+                }
+            }
+            catch (NullReferenceException)
+            {
+                return 0;
+            }
+
+            if (firstOldTweet != int.MinValue)
+            {
+                return firstOldTweet;
+            }
+            return 0;
+        }
+
     }
 }

@@ -5,14 +5,13 @@ using System.Text;
 using System.Threading.Tasks;
 using TweetSharp;
 
+
 namespace ClutterFeed
 {
     class GetUpdates
     {
         public static string userScreenName;
         public static List<InteractiveTweet> localTweetList;
-        public static List<TwitterStatus> unformattedLocalTweetList;
-        public static long LastTweetID;
 
         /// <summary>
         /// Checks if a specifc update exists in a list
@@ -35,26 +34,24 @@ namespace ClutterFeed
         }
 
         /// <summary>
-        /// Gets a formatted list of the 20 latest tweets
+        /// Updates the list of tweets one has
         /// </summary>
-        public List<InteractiveTweet> GetTweets(TwitterService twitter)
+        public void GetTweets(TwitterService twitter, bool fullUpdate)
         {
-            List<InteractiveTweet> updates = new List<InteractiveTweet>();
-            localTweetList = updates;
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
             updateOpts.Count = 15;
+            bool continueMethod = true;
             var numUpdates = twitter.ListTweetsOnHomeTimeline(updateOpts);
-            List<TwitterStatus> unformattedTweets;
-            unformattedLocalTweetList = numUpdates.ToList();
+            List<TwitterStatus> unformattedTweets = new List<TwitterStatus>();
             try
             {
-                unformattedTweets = unformattedLocalTweetList;
+                unformattedTweets = numUpdates.ToList();
             }
             catch (ArgumentNullException)
             {
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
-                string errorString = "ERROR: API Limited (I think)";
+                string errorString = "ERROR: Empty list of tweets. Possibly API limited.";
                 Console.SetCursorPosition((Console.WindowWidth / 2) - (errorString.Length / 2), Console.WindowHeight / 2);
                 Console.Write(errorString);
                 Console.ReadKey(true);
@@ -62,19 +59,38 @@ namespace ClutterFeed
                 Console.WriteLine("Please wait a bit before using the API again.");
                 Console.WriteLine("However, you can use /api to see the status of the API limit.");
                 Console.ForegroundColor = ConsoleColor.White;
-                return null;
+                continueMethod = false;
             }
-
-            for (int index = 0; index < unformattedTweets.Count; index++)
+            int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
+            if(newTweetStartIndex == 0 && fullUpdate == false)
             {
-                InteractiveTweet formattedTweet = new InteractiveTweet();
-                formattedTweet = ConvertTweet(unformattedTweets[index]);
-                updates.Add(formattedTweet);
+                continueMethod = false;
             }
 
-            localTweetList = updates;
-            LastTweetID = localTweetList[localTweetList.Count - 1].ID;
-            return updates;
+            if (continueMethod)
+            {
+                if (fullUpdate == false)
+                {
+                    for (int index = newTweetStartIndex - 1; index >= 0; index--)
+                    {
+                        InteractiveTweet formattedTweet = new InteractiveTweet();
+                        formattedTweet = ConvertTweet(unformattedTweets[index]);
+                        localTweetList.Insert(0, formattedTweet);
+                        System.Threading.Thread.Sleep(25);
+                    }
+                }
+                else
+                {
+                    localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
+                    for(int index = 0; index < unformattedTweets.Count; index++)
+                    {
+                        InteractiveTweet formattedTweet = new InteractiveTweet();
+                        formattedTweet = ConvertTweet(unformattedTweets[index]);
+                        localTweetList.Add(formattedTweet);
+                        System.Threading.Thread.Sleep(25);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -83,83 +99,84 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="twitter">An initiated and authenticated twitter API object</param>
         /// <returns></returns>
-        public List<InteractiveTweet> UpdateTweets(TwitterService twitter)
-        {
-            List<InteractiveTweet> oldList = StatusCommunication.updateTweets;
-            List<InteractiveTweet> intermediateList = new List<InteractiveTweet>();
-            List<InteractiveTweet> newList = new List<InteractiveTweet>();
-            ListTweetsOnHomeTimelineOptions gettingOpts = new ListTweetsOnHomeTimelineOptions();
-            gettingOpts.Count = 15;
-            //twitter.IncludeRetweets = true;
-            var newUpdates = twitter.ListTweetsOnHomeTimeline(gettingOpts);
+        //public List<InteractiveTweet> UpdateTweets(TwitterService twitter)
+        //{
+        //    List<InteractiveTweet> oldList = StatusCommunication.updateTweets;
+        //    List<InteractiveTweet> intermediateList = new List<InteractiveTweet>();
+        //    List<InteractiveTweet> newList = new List<InteractiveTweet>();
+        //    ListTweetsOnHomeTimelineOptions gettingOpts = new ListTweetsOnHomeTimelineOptions();
+        //    gettingOpts.Count = 15;
+        //    //twitter.IncludeRetweets = true;
+        //    var newUpdates = twitter.ListTweetsOnHomeTimeline(gettingOpts);
 
 
-            List<TwitterStatus> unformattedTweets;
+        //    List<TwitterStatus> unformattedTweets;
 
-            try
-            {
-                unformattedLocalTweetList = newUpdates.ToList();
-                unformattedTweets = unformattedLocalTweetList;
-            }
-            catch (ArgumentNullException) /* I don't know *exactly* why this exception is caused, */
-            {                             /* but it's most likely the API being limited. */
-                Console.Clear();
-                Console.ForegroundColor = ConsoleColor.Red;
-                string errorString = "ERROR: API Limited (I think)";
-                Console.SetCursorPosition((Console.WindowWidth / 2) - (errorString.Length / 2), Console.WindowHeight / 2);
-                Console.Write(errorString);
-                Console.ReadKey(true);
-                Console.Clear();
-                Console.WriteLine("Please wait a bit before using the API again.");
-                Console.WriteLine("However, you can use /api to see the status of the API limit.");
-                Console.ForegroundColor = ConsoleColor.White;
-                return null;
-            }
-            for (int index = 0; index < unformattedTweets.Count; index++)
-            {
-                InteractiveTweet formattedTweet = new InteractiveTweet();
-                formattedTweet = ConvertTweet(unformattedTweets[index]);
-                intermediateList.Add(formattedTweet);
-                System.Threading.Thread.Sleep(25);
-            }
+        //    try
+        //    {
+        //        unformattedLocalTweetList = newUpdates.ToList();
+        //        unformattedTweets = unformattedLocalTweetList;
+        //    }
+        //    catch (ArgumentNullException) /* I don't know *exactly* why this exception is caused, */
+        //    {                             /* but it's most likely the API being limited. */
+        //        Console.Clear();
+        //        Console.ForegroundColor = ConsoleColor.Red;
+        //        string errorString = "ERROR: API Limited (I think)";
+        //        Console.SetCursorPosition((Console.WindowWidth / 2) - (errorString.Length / 2), Console.WindowHeight / 2);
+        //        Console.Write(errorString);
+        //        Console.ReadKey(true);
+        //        Console.Clear();
+        //        Console.WriteLine("Please wait a bit before using the API again.");
+        //        Console.WriteLine("However, you can use /api to see the status of the API limit.");
+        //        Console.ForegroundColor = ConsoleColor.White;
+        //        return null;
+        //    }
+        //    for (int index = 0; index < unformattedTweets.Count; index++)
+        //    {
+        //        InteractiveTweet formattedTweet = new InteractiveTweet();
+        //        formattedTweet = ConvertTweet(unformattedTweets[index]);
+        //        intermediateList.Add(formattedTweet);
+        //        System.Threading.Thread.Sleep(25);
+        //    }
 
-            int tweetCount = 0; /* How many new tweets we get */
-            for (int index = 0; index < intermediateList.Count; index++) /* Counts how many new tweets we have */
-            {                                                           /* Since I don't trust the API */
-                if (UpdateExists(oldList, intermediateList[index]))
-                {
-                    tweetCount++;
-                }
-            }
+        //    int tweetCount = 0; /* How many new tweets we get */
+        //    for (int index = 0; index < intermediateList.Count; index++) /* Counts how many new tweets we have */
+        //    {                                                           /* Since I don't trust the API */
+        //        if (UpdateExists(oldList, intermediateList[index]))
+        //        {
+        //            tweetCount++;
+        //        }
+        //    }
 
-            if (tweetCount == 0) /* Returns just the new list if all the tweets are new */
-            {
-                return intermediateList;
-            }
+        //    if (tweetCount == 0) /* Returns just the new list if all the tweets are new */
+        //    {
+        //        return intermediateList;
+        //    }
 
-            for (int index = 0; index < intermediateList.Count; index++) /* Michael Jackson */
-            {
-                newList.Add(intermediateList[index]);
-            }
-            int superIndex = oldList.Count - (1 + tweetCount); /* Two indexes for one loop? Nani?! */
-            for (int newListIndex = tweetCount; newListIndex > 0; newListIndex--) /* This loop adds the old enough, but not too old */
-            {                                                                     /* Entries from the old list into the new one */
-                try
-                {
-                    newList.Add(oldList[superIndex]);
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    return intermediateList;
-                }
-                superIndex++;
-            }
+        //    for (int index = 0; index < intermediateList.Count; index++) /* Michael Jackson */
+        //    {
+        //        newList.Add(intermediateList[index]);
+        //    }
+        //    int superIndex = oldList.Count - (1 + tweetCount); /* Two indexes for one loop? Nani?! */
+        //    for (int newListIndex = tweetCount; newListIndex > 0; newListIndex--) /* This loop adds the old enough, but not too old */
+        //    {                                                                     /* Entries from the old list into the new one */
+        //        try
+        //        {
+        //            newList.Add(oldList[superIndex]);
+        //        }
+        //        catch (ArgumentOutOfRangeException)
+        //        {
+        //            return intermediateList;
+        //        }
+        //        superIndex++;
+        //    }
 
-            localTweetList = newList;
-            LastTweetID = localTweetList[localTweetList.Count - 1].ID;
+        //    localTweetList = newList;
+        //    LastTweetID = localTweetList[localTweetList.Count - 1].ID;
 
-            return newList;
-        }
+        //    return newList;
+        //}
+
 
         /// <summary>
         /// Gets the list of Mention Objects from twitter
@@ -207,9 +224,9 @@ namespace ClutterFeed
             ListBlockedUsersOptions blockedListOpts = new ListBlockedUsersOptions();
             var blockedList = twitter.ListBlockedUsers(blockedListOpts);
 
-            for(int index = 0; index < blockedList.Count; index++)
+            for (int index = 0; index < blockedList.Count; index++)
             {
-                if(blockedList[index].ScreenName.ToLower().CompareTo(targetScreenName) == 0)
+                if (blockedList[index].ScreenName.ToLower().CompareTo(targetScreenName) == 0)
                 {
                     return true;
                 }
