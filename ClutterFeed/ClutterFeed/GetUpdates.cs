@@ -62,6 +62,10 @@ namespace ClutterFeed
                 continueMethod = false;
             }
             int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
+            if(newTweetStartIndex == -1)
+            {
+                fullUpdate = true;
+            }
             if(newTweetStartIndex == 0 && fullUpdate == false)
             {
                 continueMethod = false;

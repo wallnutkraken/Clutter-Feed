@@ -104,7 +104,7 @@ namespace ClutterFeed
             {
                 return firstOldTweet;
             }
-            return 0;
+            return -1;
         }
 
     }
