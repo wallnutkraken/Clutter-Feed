@@ -121,7 +121,6 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    command = command.Remove(0, 6);
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     RetweetOptions retweetOpts = new RetweetOptions();
 
@@ -184,15 +183,6 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    if (command.Split(' ')[0].CompareTo("/f") == 0)
-                    {
-                        command = command.Remove(0, 5);
-                    }
-                    else
-                    {
-                        command = command.Remove(0, 7);
-                    }
-
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     FavoriteTweetOptions favOpts = new FavoriteTweetOptions();
 
