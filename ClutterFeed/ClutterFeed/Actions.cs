@@ -40,6 +40,14 @@ namespace ClutterFeed
         {
             ActionValue returnInfo = new ActionValue();
 
+            if(command.Length > 140)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Tweet is too long.");
+                Console.ForegroundColor = ConsoleColor.White;
+                return new ActionValue();
+            }
+
             newTweet.PostTweet(twitterAccess, command);
             Thread.Sleep(200);
 
