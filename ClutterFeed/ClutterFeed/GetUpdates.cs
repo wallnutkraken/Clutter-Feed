@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TweetSharp;
+using System.Drawing;
 
 
 namespace ClutterFeed
@@ -194,6 +195,12 @@ namespace ClutterFeed
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
             formedTweet.IsFavorited = tweet.IsFavorited;
             formedTweet.IsRetweeted = tweet.IsRetweeted;
+
+            if(formedTweet.Contents.Contains("@" + userScreenName))
+            {
+                Console.Write("\a");
+                /* I eventually want to replace this notification with something else, but for now, it works */
+            }
 
             return formedTweet;
         }

@@ -81,7 +81,6 @@ namespace ClutterFeed
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
                 {
-                    Console.Write("\a");
                     SetScreenColor.SetColor(ConsoleColor.DarkBlue, 255, 179, 64); /* Makes DarkBlue orange-ish */
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
                 }
