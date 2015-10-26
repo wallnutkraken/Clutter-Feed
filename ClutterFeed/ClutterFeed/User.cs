@@ -170,6 +170,7 @@ namespace ClutterFeed
         public static string CounterConsole()
         {
             string command = "";
+            string message = "";
             char writeChar = '\0';
             int charCount = 0;
 
@@ -182,7 +183,18 @@ namespace ClutterFeed
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
-                Console.Write("[{0:000}] ", charCount);
+
+                try
+                {
+                    message = command.Split(' ')[2];
+                    Console.Write("[{0:000}] ", message.Length);
+                }
+                catch (IndexOutOfRangeException)
+                {
+                    Console.Write("[{0:000}] ", charCount);
+                }
+
+                
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write("> ");
                 Console.ForegroundColor = ConsoleColor.White;
