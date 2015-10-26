@@ -36,7 +36,6 @@ namespace ClutterFeed
             options.Status = command;
             twitterAccess.BeginSendTweet(options);
         }
-        public static List<InteractiveTweet> updateTweets;
         public void ShowUpdates(TwitterService twitterAccess, GetUpdates showUpdates, bool fullUpdate)
         {
 
