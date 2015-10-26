@@ -187,12 +187,19 @@ namespace ClutterFeed
                     Console.ForegroundColor = ConsoleColor.Red;
                 }
 
-                try
+                if (command.StartsWith("/"))
                 {
-                    message = command.Split(splitter, splitCount)[2];
-                    Console.Write("[{0:000}] ", message.Length);
+                    try
+                    {
+                        message = command.Split(splitter, splitCount)[2];
+                        Console.Write("[{0:000}] ", message.Length);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        Console.Write("[{0:000}] ", charCount);
+                    }
                 }
-                catch (IndexOutOfRangeException)
+                else
                 {
                     Console.Write("[{0:000}] ", charCount);
                 }
