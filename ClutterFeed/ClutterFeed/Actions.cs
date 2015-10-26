@@ -89,9 +89,9 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    command = command.Split(' ')[2];
+                    string message = command.Split(' ')[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-                    replyOpts.Status = replyOpts.Status + " " + command;
+                    replyOpts.Status = replyOpts.Status + " " + message;
                     twitterAccess.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
@@ -116,9 +116,9 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    command = command.Split(' ')[2];
+                    string message = command.Split(' ')[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-                    replyOpts.Status = command;
+                    replyOpts.Status = message;
                     twitterAccess.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
