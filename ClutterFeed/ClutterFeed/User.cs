@@ -169,10 +169,13 @@ namespace ClutterFeed
         }
         public static string CounterConsole()
         {
+            int splitCount = 3;
             string command = "";
             string message = "";
             char writeChar = '\0';
             int charCount = 0;
+            char[] splitter = new char[1];
+            splitter[0] = ' '; /* FUCK C# honestly */
 
 
             do
@@ -186,7 +189,7 @@ namespace ClutterFeed
 
                 try
                 {
-                    message = command.Split(' ')[2];
+                    message = command.Split(splitter, splitCount)[2];
                     Console.Write("[{0:000}] ", message.Length);
                 }
                 catch (IndexOutOfRangeException)
@@ -235,10 +238,15 @@ namespace ClutterFeed
                     else
                     {
                         command = command + writeChar;
+                        try
+                        {
+                            message = command.Split(splitter, splitCount)[2];
+                        }
+                        catch (IndexOutOfRangeException) { }
                         charCount++;
                     }
                 }
-            } while (writeChar != '\r');
+            } while (writeChar != '\r' && message.Length <= 140);
 
             command = command.Replace("\r", "");
             return command;
