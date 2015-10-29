@@ -42,7 +42,8 @@ namespace ClutterFeed
             showUpdates.GetTweets(twitterAccess, fullUpdate);
 
             Console.Clear();
-            ScreenDraw.ShowTimeline();
+            ScreenDraw timeline = new ScreenDraw();
+            timeline.ShowTimeline();
         }
     }
 }

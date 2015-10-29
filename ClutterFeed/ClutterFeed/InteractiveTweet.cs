@@ -25,6 +25,7 @@ namespace ClutterFeed
         public bool IsFavorited { get; set; }
         public bool IsRetweeted { get; set; }
         public string LinkToTweet { get; set; }
+        public bool IsMention { get; set; } = false;
     }
     
 }

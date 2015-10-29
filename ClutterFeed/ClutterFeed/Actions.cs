@@ -599,9 +599,9 @@ namespace ClutterFeed
             do
             {
                 ScreenDraw drawMentions = new ScreenDraw();
-                drawMentions.DrawMentions(mentions);
+                drawMentions.DrawMentions();
                 Console.SetCursorPosition(3, Console.CursorTop);
-                mentionCommand = User.GetCommand();
+                mentionCommand = User.CounterConsole();
             } while (mentionCommand.ToLower().CompareTo("/b") != 0);
             returnInfo.AskForCommand = false;
             return returnInfo;
@@ -636,7 +636,7 @@ namespace ClutterFeed
 
             Console.ForegroundColor = ConsoleColor.White;
 
-            return new ActionValue();
+            return new ActionValue(); /* Returns default values */
         }
 
     }

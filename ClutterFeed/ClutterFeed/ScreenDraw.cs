@@ -28,9 +28,27 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        public static void ShowTimeline()
+        /// <summary>
+        /// Removes mentions from the list
+        /// </summary>
+        private List<InteractiveTweet> RemoveMentions(List<InteractiveTweet> allTweets)
         {
-            List<InteractiveTweet> updates = GetUpdates.localTweetList;
+            List<InteractiveTweet> returnList = new List<InteractiveTweet>();
+
+            for (int index = 0; index < allTweets.Count; index++)
+            {
+                if(allTweets[index].IsMention == false)
+                {
+                    returnList.Add(allTweets[index]);
+                }
+            }
+
+            return returnList;
+        }
+
+        public void ShowTimeline()
+        {
+            List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
             int index;
             if (updates.Count > 14)
             {
@@ -288,8 +306,18 @@ namespace ClutterFeed
             Console.CursorVisible = true;
         }
 
-        public void DrawMentions(List<InteractiveTweet> mentions)
+        public void DrawMentions()
         {
+            List<InteractiveTweet> allTweets = GetUpdates.localTweetList;
+            List<InteractiveTweet> mentions = new List<InteractiveTweet>();
+            for (int index = 0; index < allTweets.Count; index++) /* Creates a mention-only tweet */
+            {
+                if(allTweets[index].IsMention)
+                {
+                    mentions.Add(allTweets[index]);
+                }
+            }
+
             Console.Clear();
 
             int numberToDisplay = 14;
@@ -313,7 +341,7 @@ namespace ClutterFeed
 
                 for (int shorterTweetIndex = 0; shorterTweetIndex < shortenedUpdate.Count; shorterTweetIndex++)
                 {
-                    if(shorterTweetIndex > 0)
+                    if (shorterTweetIndex > 0)
                     {
                         Console.Write("      ");
                     }

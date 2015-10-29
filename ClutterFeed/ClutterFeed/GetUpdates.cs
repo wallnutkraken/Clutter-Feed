@@ -130,7 +130,7 @@ namespace ClutterFeed
             List<InteractiveTweet> taggedMentions = new List<InteractiveTweet>();
             for (int index = 0; index < mentions.Count; index++)
             {
-                taggedMentions.Add(ConvertTweet(mentions[index]));
+                localTweetList.Add(ConvertTweet(mentions[index], true));
                 System.Threading.Thread.Sleep(25);
             }
 
@@ -215,6 +215,40 @@ namespace ClutterFeed
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
             formedTweet.IsFavorited = tweet.IsFavorited;
             formedTweet.IsRetweeted = tweet.IsRetweeted;
+            formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
+
+
+            if (formedTweet.Contents.Contains("@" + userScreenName))
+            {
+                try
+                {
+                    SoundPlayer notification = new SoundPlayer();
+
+                    notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
+                    notification.Play();
+                }
+                catch (Exception)
+                {
+                }
+            }
+
+            return formedTweet;
+        }
+
+        /// <summary>
+        /// Override for mentions only
+        /// </summary>
+        public InteractiveTweet ConvertTweet(TwitterStatus tweet, bool isMention)
+        {
+            InteractiveTweet formedTweet = new InteractiveTweet();
+            formedTweet.AuthorName = "@" + tweet.Author.ScreenName;
+            formedTweet.Contents = tweet.Text;
+            formedTweet.ID = tweet.Id;
+            TweetIdentification generateID = new TweetIdentification();
+            formedTweet.TweetIdentification = generateID.GenerateIdentification();
+            formedTweet.IsFavorited = tweet.IsFavorited;
+            formedTweet.IsRetweeted = tweet.IsRetweeted;
+            formedTweet.IsMention = true;
             formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
 
 
