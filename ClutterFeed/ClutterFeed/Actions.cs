@@ -602,6 +602,21 @@ namespace ClutterFeed
                 drawMentions.DrawMentions();
                 Console.SetCursorPosition(3, Console.CursorTop);
                 mentionCommand = User.CounterConsole();
+                /* Here the commands begin */
+
+                if(mentionCommand.ToLower().StartsWith("/rt"))
+                {
+                    Retweet(mentionCommand);
+                }
+                else if (mentionCommand.ToLower().StartsWith("/r"))
+                {
+                    GenericReply(mentionCommand);
+                }
+                else if (mentionCommand.ToLower().StartsWith("/f"))
+                {
+                    FavoriteTweet(mentionCommand);
+                }
+
             } while (mentionCommand.ToLower().CompareTo("/b") != 0);
             returnInfo.AskForCommand = false;
             return returnInfo;
