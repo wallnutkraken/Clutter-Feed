@@ -1,5 +1,14 @@
 # **Release change log**
 
+### Version 1.2:
+- You can now reply, favorite and retweet in the mention screen
+- Tweets are now cached until a full update is made
+- Added a /link command to give you the link to a tweet
+- Added a character counter to the command line
+- The reply (/r) option now replies to everyone in the mentioned tweet as well as the author
+- Disabled unretweeting tweets for now
+- Lots of bugfixes
+
 ### Version 1.1:
 - Fixed bug that tweeted the entire command when trying to reply
 - Changed the way ClutterFeed stores Twitter updates

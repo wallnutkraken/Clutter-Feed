@@ -17,9 +17,6 @@ Not in any specific order
 
 #### Multi user support
 
-#### Reply to all functionality
- Because I think it only currently replies to the tweet author
-
 #### Help dialog in stuff like /profile and /me
 
 #### Direct message support
@@ -27,6 +24,5 @@ Not in any specific order
 #### Friends list
  So you can see what your friends tweet on your timeline IN PRETTY COLORS OOOOO
 
-#### Change the notifications for mentions to be from InReplyToStatusId rather than comparing screen names
-
-#### /link to give me a link to the tweet
+#### Add a ReplyClean command
+ To only reply to the author
