@@ -66,6 +66,11 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.GetID(command);
                     }
 
+                    if(command.Split(' ')[0].CompareTo("/link") == 0)
+                    {
+                        commandMetadata = twitterDo.TweetLink(command);
+                    }
+
                     if (command.Split(' ')[0].CompareTo("/rn") == 0)
                     {
                         commandMetadata = twitterDo.NoAddedMentionReply(command);

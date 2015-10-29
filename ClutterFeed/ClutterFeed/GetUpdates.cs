@@ -209,6 +209,8 @@ namespace ClutterFeed
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
             formedTweet.IsFavorited = tweet.IsFavorited;
             formedTweet.IsRetweeted = tweet.IsRetweeted;
+            formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
+
 
             if (formedTweet.Contents.Contains("@" + userScreenName))
             {

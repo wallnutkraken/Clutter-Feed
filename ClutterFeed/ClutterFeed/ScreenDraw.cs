@@ -266,6 +266,10 @@ namespace ClutterFeed
             Console.Write("/me");
             CommandEplanation("Shows your mentions", Console.CursorTop);
 
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
+            Console.Write("/link");
+            CommandEplanation("Gives you a link to the tweet", Console.CursorTop);
+
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
 

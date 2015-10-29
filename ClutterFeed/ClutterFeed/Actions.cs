@@ -200,6 +200,27 @@ namespace ClutterFeed
 
         }
 
+        public ActionValue TweetLink(string command)
+        {
+            ActionValue returnInfo = new ActionValue();
+
+            if (command.Split(' ')[1].Length != 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /link [id]");
+                Console.WriteLine("      Example: /link 3f");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("      " + tweet.LinkToTweet);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            return returnInfo;
+        }
 
         /// <summary>
         /// Favorites or unfavorites a tweet
