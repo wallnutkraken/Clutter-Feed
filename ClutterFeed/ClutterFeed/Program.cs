@@ -50,65 +50,75 @@ namespace ClutterFeed
                     {
                         commandMetadata = twitterDo.Update(command, true);
                     }
-                    if ((command.ToLower().CompareTo("/update") == 0) || (command.ToLower().CompareTo("/u") == 0))
+
+                    else if ((command.ToLower().CompareTo("/update") == 0) || (command.ToLower().CompareTo("/u") == 0))
                     {
                         commandMetadata = twitterDo.Update(command);
                     }
 
-
-                    if (command.Split(' ')[0].CompareTo("/r") == 0)
+                    else if (command.Split(' ')[0].CompareTo("/r") == 0)
                     {
                         commandMetadata = twitterDo.GenericReply(command);
                     }
 
-                    if (command.Split(' ')[0].CompareTo("/id") == 0)
+                    else if (command.Split(' ')[0].CompareTo("/id") == 0)
                     {
                         commandMetadata = twitterDo.GetID(command);
                     }
 
-                    if(command.Split(' ')[0].CompareTo("/link") == 0)
+                    else if(command.Split(' ')[0].CompareTo("/link") == 0)
                     {
                         commandMetadata = twitterDo.TweetLink(command);
                     }
 
-                    if (command.Split(' ')[0].CompareTo("/rn") == 0)
+                    else if (command.Split(' ')[0].CompareTo("/rn") == 0)
                     {
                         commandMetadata = twitterDo.NoAddedMentionReply(command);
                     }
-                    if (command.Split(' ')[0].CompareTo("/rt") == 0)
+
+                    else if (command.Split(' ')[0].CompareTo("/rt") == 0)
                     {
                         commandMetadata = twitterDo.Retweet(command);
                     }
 
-                    if ((command.Split(' ')[0].CompareTo("/fav") == 0) || (command.Split(' ')[0].CompareTo("/f") == 0))
+                    else if ((command.Split(' ')[0].CompareTo("/fav") == 0) || (command.Split(' ')[0].CompareTo("/f") == 0))
                     {
                         commandMetadata = twitterDo.FavoriteTweet(command);
                     }
 
-                    if ((command.Split(' ')[0].ToLower().CompareTo("/del") == 0) || (command.Split(' ')[0].ToLower().CompareTo("/d") == 0))
+                    else if ((command.Split(' ')[0].ToLower().CompareTo("/del") == 0) || (command.Split(' ')[0].ToLower().CompareTo("/d") == 0))
                     {
                         commandMetadata = twitterDo.RemoveTweet(command);
                     }
 
-                    if (command.Split(' ')[0].ToLower().CompareTo("/profile") == 0)
+                    else if (command.Split(' ')[0].ToLower().CompareTo("/profile") == 0)
                     {
                         commandMetadata = twitterDo.ShowProfile(command);
                     }
 
-                    if (command.Split(' ')[0].ToLower().CompareTo("/me") == 0)
+                    else if (command.Split(' ')[0].ToLower().CompareTo("/me") == 0)
                     {
                         commandMetadata = twitterDo.Mentions(command);
                     }
 
-                    if (command.Split(' ')[0].ToLower().CompareTo("/help") == 0 || command.Split(' ')[0].ToLower().CompareTo("/h") == 0)
+                    else if (command.Split(' ')[0].ToLower().CompareTo("/help") == 0 || command.Split(' ')[0].ToLower().CompareTo("/h") == 0)
                     {
                         commandMetadata = twitterDo.Help();
                     }
 
-
-                    if (command.ToLower().Contains("/api"))
+                    else if (command.ToLower().Contains("/api"))
                     {
                         commandMetadata = twitterDo.ApiInfo();
+                    }
+
+                    else
+                    {
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
+                        for (int index = 0; index < Console.WindowWidth; index++)
+                        {
+                            Console.Write(' ');
+                        }
+                        Console.SetCursorPosition(0, Console.CursorTop - 1);
                     }
                 }
                 /* End of commands */
