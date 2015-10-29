@@ -177,10 +177,10 @@ namespace ClutterFeed
             char[] splitter = new char[1];
             splitter[0] = ' '; /* FUCK C# honestly */
 
-
+            int cursorPosX = Console.CursorTop;
             do
             {
-                Console.SetCursorPosition(0, Console.CursorTop);
+                Console.SetCursorPosition(0, cursorPosX);
 
                 if (charCount > 140)
                 {
