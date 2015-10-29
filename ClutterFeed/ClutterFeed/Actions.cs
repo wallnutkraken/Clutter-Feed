@@ -91,7 +91,20 @@ namespace ClutterFeed
                 {
                     string message = command.Split(' ')[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-                    replyOpts.Status = replyOpts.Status + " " + message;
+
+                    replyOpts.Status = replyOpts.Status + " ";
+
+                    InteractiveTweet tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
+                    string[] words = tweetReplyingTo.Contents.Split(' ');
+                    for(int index = 0; index < words.Length; index++)
+                    {
+                        if(words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
+                        {
+                            replyOpts.Status = replyOpts.Status + words[index] + " ";
+                        }
+                    }
+
+                    replyOpts.Status = replyOpts.Status + message;
                     twitterAccess.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
