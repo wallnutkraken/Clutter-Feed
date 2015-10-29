@@ -1,4 +1,6 @@
 ﻿// Thanks to Alex Shvedov for providing this file.
+// The original file is in the public domain
+// See <https://bitbucket.org/benskolnick/color-console/src>
 
 /*   This file is part of ClutterFeed.
  *

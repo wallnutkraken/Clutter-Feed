@@ -599,7 +599,7 @@ namespace ClutterFeed
             do
             {
                 ScreenDraw drawMentions = new ScreenDraw();
-                drawMentions.DrawMentions();
+                drawMentions.ShowMentions();
                 Console.SetCursorPosition(3, Console.CursorTop);
                 mentionCommand = User.CounterConsole();
                 /* Here the commands begin */

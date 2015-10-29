@@ -46,6 +46,43 @@ namespace ClutterFeed
             return returnList;
         }
 
+        private void ShowInteractions(InteractiveTweet update)
+        {
+            if (update.IsFavorited && update.IsRetweeted) /* Adds a neat little symbol for rts/favs */
+            {
+                Cursor cursorPosition = new Cursor();
+                cursorPosition = cursorPosition.GetCursorPosition();
+                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("[");
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("▀");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("]");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else if (update.IsFavorited)
+            {
+                Cursor cursorPosition = new Cursor();
+                cursorPosition = cursorPosition.GetCursorPosition();
+                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
+
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.Write("[▀]");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else if (update.IsRetweeted)
+            {
+                Cursor cursorPosition = new Cursor();
+                cursorPosition = cursorPosition.GetCursorPosition();
+                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
+
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+                Console.Write("[▀]");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+        }
         public void ShowTimeline()
         {
             List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
@@ -74,40 +111,7 @@ namespace ClutterFeed
                 Console.ForegroundColor = ConsoleColor.White;
                 bool identificationWritten = true;
 
-                if (updates[index].IsFavorited && updates[index].IsRetweeted) /* Adds a neat little symbol for rts/favs */
-                {
-                    Cursor cursorPosition = new Cursor();
-                    cursorPosition = cursorPosition.GetCursorPosition();
-                    Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("[");
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write("▀");
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("]");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else if (updates[index].IsFavorited)
-                {
-                    Cursor cursorPosition = new Cursor();
-                    cursorPosition = cursorPosition.GetCursorPosition();
-                    Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                    Console.ForegroundColor = ConsoleColor.Yellow;
-                    Console.Write("[▀]");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else if (updates[index].IsRetweeted)
-                {
-                    Cursor cursorPosition = new Cursor();
-                    cursorPosition = cursorPosition.GetCursorPosition();
-                    Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                    Console.ForegroundColor = ConsoleColor.DarkGreen;
-                    Console.Write("[▀]");
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
+                ShowInteractions(updates[index]);
 
                 if (updates[index].AuthorName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
@@ -306,7 +310,7 @@ namespace ClutterFeed
             Console.CursorVisible = true;
         }
 
-        public void DrawMentions()
+        public void ShowMentions()
         {
             List<InteractiveTweet> allTweets = GetUpdates.localTweetList;
             List<InteractiveTweet> mentions = new List<InteractiveTweet>();
@@ -338,6 +342,8 @@ namespace ClutterFeed
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
                 Console.Write(mentions[index].TweetIdentification + "    ");
                 Console.ForegroundColor = ConsoleColor.White;
+
+                ShowInteractions(mentions[index]);
 
                 for (int shorterTweetIndex = 0; shorterTweetIndex < shortenedUpdate.Count; shorterTweetIndex++)
                 {
