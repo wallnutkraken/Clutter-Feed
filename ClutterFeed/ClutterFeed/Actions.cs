@@ -89,14 +89,16 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    string message = command.Split(' ')[2];
+                    char[] splitter = new char[1];
+                    splitter[0] = ' '; /* FUCK C# honestly */
+                    string message = command.Split(splitter, 3)[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
 
                     replyOpts.Status = replyOpts.Status + " ";
 
                     InteractiveTweet tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
                     string[] words = tweetReplyingTo.Contents.Split(' ');
-                    for(int index = 0; index < words.Length; index++)
+                    for(int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
                     {
                         if(words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
                         {
