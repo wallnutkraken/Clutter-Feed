@@ -414,13 +414,13 @@ namespace ClutterFeed
                 return FollowUser(command);
             }
         }
-
+        
         /// <summary>
         /// Accesses the profile of a user
         /// </summary>
         /// <param name="command">The entire command string</param>
         /// <returns></returns>
-        public ActionValue AccessProfile(string command)
+        public ActionValue ShowProfile(string command)
         {
             ActionValue returnInfo = new ActionValue();
 
@@ -477,13 +477,20 @@ namespace ClutterFeed
                 {
                     ScreenDraw.IsFollowing = true;
                 }
+                else
+                {
+                    ScreenDraw.IsFollowing = false;
+                }
                 if (GetUpdates.IsBlocked(twitterAccess, screenName))
                 {
                     ScreenDraw.IsBlocked = true;
                 }
+                else
+                {
+                    ScreenDraw.IsBlocked = false;
+                }
 
                 showProfile.ShowUserProfile(profile);
-
                 Cursor returnPosition = new Cursor();
                 returnPosition.X = Console.CursorLeft;
                 returnPosition.Y = Console.CursorTop;

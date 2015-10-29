@@ -87,7 +87,7 @@ namespace ClutterFeed
 
                     if (command.Split(' ')[0].ToLower().CompareTo("/profile") == 0)
                     {
-                        commandMetadata = twitterDo.AccessProfile(command);
+                        commandMetadata = twitterDo.ShowProfile(command);
                     }
 
                     if (command.Split(' ')[0].ToLower().CompareTo("/me") == 0)
