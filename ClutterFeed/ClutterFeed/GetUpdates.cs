@@ -120,15 +120,21 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="twitter"></param>
         /// <returns></returns>
-        public static List<TwitterStatus> GetMentions(TwitterService twitter)
+        public List<InteractiveTweet> GetMentions(TwitterService twitter)
         {
             ListTweetsMentioningMeOptions mentionOpts = new ListTweetsMentioningMeOptions();
             mentionOpts.IncludeEntities = true;
             mentionOpts.Count = 15;
 
             List<TwitterStatus> mentions = twitter.ListTweetsMentioningMe(mentionOpts).ToList();
+            List<InteractiveTweet> taggedMentions = new List<InteractiveTweet>();
+            for (int index = 0; index < mentions.Count; index++)
+            {
+                taggedMentions.Add(ConvertTweet(mentions[index]));
+                System.Threading.Thread.Sleep(25);
+            }
 
-            return mentions;
+            return taggedMentions;
         }
 
         /// <summary>

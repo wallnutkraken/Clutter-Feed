@@ -593,7 +593,8 @@ namespace ClutterFeed
             ActionValue returnInfo = new ActionValue();
             
             string mentionCommand = "";
-            List<TwitterStatus> mentions = GetUpdates.GetMentions(twitterAccess);
+            GetUpdates mentionGet = new GetUpdates();
+            List<InteractiveTweet> mentions = mentionGet.GetMentions(twitterAccess);
 
             do
             {

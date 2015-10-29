@@ -288,7 +288,7 @@ namespace ClutterFeed
             Console.CursorVisible = true;
         }
 
-        public void DrawMentions(List<TweetSharp.TwitterStatus> mentions)
+        public void DrawMentions(List<InteractiveTweet> mentions)
         {
             Console.Clear();
 
@@ -297,24 +297,32 @@ namespace ClutterFeed
             {
                 numberToDisplay = mentions.Count - 1;
             }
-            int splitter = Console.WindowWidth - 6;
+            int splitter = Console.WindowWidth - 12;
 
-            
 
-            for (int index = numberToDisplay; index >=0; index--)
+
+            for (int index = numberToDisplay; index >= 0; index--)
             {
-                string tweetText = "@" + mentions[index].Author.ScreenName + ": " + mentions[index].Text;
-                tweetText = tweetText.Replace("\n", "\n   ");
+                string tweetText = mentions[index].AuthorName + ": " + mentions[index].Contents;
+                tweetText = tweetText.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = tweetText.SplitInParts(splitter).ToList();
 
-                for(int shorterTweetIndex = 0; shorterTweetIndex < shortenedUpdate.Count; shorterTweetIndex++)
+                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                Console.Write(mentions[index].TweetIdentification + "    ");
+                Console.ForegroundColor = ConsoleColor.White;
+
+                for (int shorterTweetIndex = 0; shorterTweetIndex < shortenedUpdate.Count; shorterTweetIndex++)
                 {
-                    Console.WriteLine("   " + shortenedUpdate[shorterTweetIndex]);
+                    if(shorterTweetIndex > 0)
+                    {
+                        Console.Write("      ");
+                    }
+                    Console.WriteLine(shortenedUpdate[shorterTweetIndex]);
                 }
                 Console.WriteLine();
             }
         }
-        
+
         public static void ShowError(string message)
         {
             Console.ForegroundColor = ConsoleColor.Red;
