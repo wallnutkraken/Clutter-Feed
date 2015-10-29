@@ -256,6 +256,8 @@ namespace ClutterFeed
             } while (writeChar != '\r' && message.Length <= 140);
 
             command = command.Replace("\r", "");
+            Console.WriteLine();
+
             return command;
         }
 
