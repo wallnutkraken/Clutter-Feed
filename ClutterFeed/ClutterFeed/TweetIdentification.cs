@@ -32,7 +32,7 @@ namespace ClutterFeed
             bool foundMatch = false;
             try
             {
-                if (existingTweets[0] == null) ;
+                bool tryTest = existingTweets[0] == null;
             }
             catch (Exception)
             {
