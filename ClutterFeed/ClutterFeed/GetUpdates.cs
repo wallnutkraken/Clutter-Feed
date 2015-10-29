@@ -268,5 +268,36 @@ namespace ClutterFeed
 
             return formedTweet;
         }
+
+        /// <summary>
+        /// Inverts the favorite status of a tweet (by ID)
+        /// </summary>
+        /// <param name="tweetID">the long tweet ID</param>
+        public void InvertFavoriteStatus(long tweetID)
+        {
+            for (int index = 0; index < localTweetList.Count; index++)
+            {
+                if (localTweetList[index].ID == tweetID)
+                {
+                    localTweetList[index].IsFavorited = !localTweetList[index].IsFavorited;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Inverts the retweet status of a tweet (by ID)
+        /// </summary>
+        /// <param name="tweetID">the long tweet ID</param>
+        public void InvertRetweetStatus(long tweetID)
+        {
+            for (int index = 0; index < localTweetList.Count; index++)
+            {
+                if (localTweetList[index].ID == tweetID)
+                {
+                    localTweetList[index].IsRetweeted = !localTweetList[index].IsRetweeted;
+                }
+            }
+        }
+
     }
 }

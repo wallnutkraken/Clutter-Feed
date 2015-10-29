@@ -144,6 +144,29 @@ namespace ClutterFeed
             return returnInfo;
         }
 
+
+        public ActionValue TweetLink(string command)
+        {
+            ActionValue returnInfo = new ActionValue();
+
+            if (command.Split(' ')[1].Length != 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /link [id]");
+                Console.WriteLine("      Example: /link 3f");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            else
+            {
+                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("      " + tweet.LinkToTweet);
+                Console.ForegroundColor = ConsoleColor.White;
+            }
+            return returnInfo;
+        }
+
         public ActionValue Retweet(string command)
         {
             ActionValue returnInfo = new ActionValue();
@@ -183,13 +206,22 @@ namespace ClutterFeed
                         if (tweet.IsRetweeted)
                         {
                             Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("      This tweet was already retweeted.");
-                            Console.WriteLine("      Unretweeting.");
+                            Console.WriteLine("      Unretweeting currently is not supported.");
+                            Console.WriteLine("      Might be something with the API.");
                             Console.ForegroundColor = ConsoleColor.White;
-                            Console.ReadKey(true);
+                            return new ActionValue();
                         }
 
                         twitterAccess.Retweet(retweetOpts);
+
+                        GetUpdates retweetInvert = new GetUpdates();
+                        retweetInvert.InvertRetweetStatus(tweetID);
+
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("      Retweeted.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.ReadKey(true);
+
                         returnInfo.OverrideCommand = true;
                         returnInfo.OverrideCommandString = "/fu";
                         returnInfo.AskForCommand = false;
@@ -200,27 +232,7 @@ namespace ClutterFeed
 
         }
 
-        public ActionValue TweetLink(string command)
-        {
-            ActionValue returnInfo = new ActionValue();
-
-            if (command.Split(' ')[1].Length != 2)
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /link [id]");
-                Console.WriteLine("      Example: /link 3f");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            else
-            {
-                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("      " + tweet.LinkToTweet);
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-            return returnInfo;
-        }
+        
 
         /// <summary>
         /// Favorites or unfavorites a tweet
@@ -244,6 +256,7 @@ namespace ClutterFeed
                 {
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     FavoriteTweetOptions favOpts = new FavoriteTweetOptions();
+                    GetUpdates favoriteInvert = new GetUpdates();
 
                     long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                     favOpts.Id = tweetID;
@@ -251,20 +264,29 @@ namespace ClutterFeed
 
                     if (tweet.IsFavorited)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("      Favourite failed.");
-                        Console.WriteLine("      Unfavoriting.");
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("      Unfavoriting.");
                         Console.ForegroundColor = ConsoleColor.White;
                         UnfavoriteTweetOptions unfavOpts = new UnfavoriteTweetOptions();
                         unfavOpts.Id = favOpts.Id;
                         twitterAccess.BeginUnfavoriteTweet(unfavOpts);
+
+                        favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
                     }
                     else
                     {
                         twitterAccess.BeginFavoriteTweet(favOpts);
+                        Console.ForegroundColor = ConsoleColor.Cyan;
+                        Console.Write("      Favoriting.");
+                        Console.ForegroundColor = ConsoleColor.White;
+
+                        favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
+
                     }
+                    Console.ReadKey(true);
                     returnInfo.OverrideCommand = true;
                     returnInfo.OverrideCommandString = "/fu";
+                    returnInfo.AskForCommand = false;
                 }
             }
             return returnInfo;
