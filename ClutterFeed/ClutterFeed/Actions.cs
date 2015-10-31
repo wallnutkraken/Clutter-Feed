@@ -20,6 +20,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TweetSharp;
 using System.Threading;
+using System.Diagnostics;
 
 namespace ClutterFeed
 {
@@ -163,6 +164,7 @@ namespace ClutterFeed
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("      " + tweet.LinkToTweet);
                 Console.ForegroundColor = ConsoleColor.White;
+                Process.Start(tweet.LinkToTweet);
             }
             return returnInfo;
         }
