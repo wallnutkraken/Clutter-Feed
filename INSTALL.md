@@ -15,3 +15,6 @@ userSecret=
 ```
 
 The app token and secret **_must_** be filled in manually, however initially the user keys should be left blank so you get to authorize with twitter.
+
+# Cannot find notification.wav?
+You have to put it in the same directory as the executable
