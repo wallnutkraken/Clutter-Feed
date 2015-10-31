@@ -26,3 +26,5 @@ Not in any specific order
 
 #### Add a ReplyClean command
  To only reply to the author
+
+#### /tweet command that shows all info about a tweet (similar to clicking on a tweet link)

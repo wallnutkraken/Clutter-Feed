@@ -1,4 +1,5 @@
 # **Known bugs**
 
-None that I'm aware of.
-Writing that gives me shivers.
+#### /r also includes you 
+
+#### The -1 limit may be due to twitter needing reauthentication
