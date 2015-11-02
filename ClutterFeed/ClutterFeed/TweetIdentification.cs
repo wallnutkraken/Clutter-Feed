@@ -73,7 +73,7 @@ namespace ClutterFeed
                 if (tweetList[index].TweetIdentification.CompareTo(identifier) == 0)
                 {
                     found.InReplyToStatusId = tweetList[index].ID;
-                    string atName = tweetList[index].AuthorName;
+                    string atName = tweetList[index].AuthorScreenName;
                     found.Status = atName; /* @name */
                 }
             }

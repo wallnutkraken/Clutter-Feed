@@ -382,7 +382,7 @@ namespace ClutterFeed
                 {
                     long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
                     InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                    screenName = tweet.AuthorName;
+                    screenName = tweet.AuthorScreenName;
                 }
 
                 if (GetUpdates.IsBlocked(twitterAccess, screenName))
@@ -460,7 +460,7 @@ namespace ClutterFeed
                 {
                     long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
                     InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                    screenName = tweet.AuthorName;
+                    screenName = tweet.AuthorScreenName;
                 }
 
                 if (GetUpdates.IsFollowing(twitterAccess, screenName))
@@ -615,6 +615,48 @@ namespace ClutterFeed
 
             returnInfo.AskForCommand = false;
             return returnInfo;
+        }
+
+        public ActionValue ShowTweet(string command)
+        {
+            ActionValue returnInfo = new ActionValue();
+
+            try /* Checks if the command was valid */
+            {
+                bool exceptionTest = command.Split(' ')[1].StartsWith("@");
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /tweet [id]");
+                Console.WriteLine("      Example: /tweet 3f");
+                Console.ForegroundColor = ConsoleColor.White;
+                return new ActionValue(); /* Exits method with default opts */
+            }
+            if (command.Split(' ')[1].Length != 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /tweet [id]");
+                Console.WriteLine("      Example: /tweet 3f");
+                Console.ForegroundColor = ConsoleColor.White;
+                return new ActionValue(); /* Exits method with default opts */
+            }
+            else
+            {
+                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                ScreenDraw tweetDrawer = new ScreenDraw();
+                string tweetCommand = "";
+                do
+                {
+                    tweetDrawer.DrawTweet(tweet);
+
+                    tweetCommand = User.CounterConsole();
+                } while (tweetCommand.ToLower().CompareTo("/b") != 0);
+                returnInfo.AskForCommand = false;
+            }
+
+                return returnInfo;
         }
 
         public ActionValue Update(string command)

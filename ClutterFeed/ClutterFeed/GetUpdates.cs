@@ -215,7 +215,8 @@ namespace ClutterFeed
         public InteractiveTweet ConvertTweet(TwitterStatus tweet)
         {
             InteractiveTweet formedTweet = new InteractiveTweet();
-            formedTweet.AuthorName = "@" + tweet.Author.ScreenName;
+            formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
+            formedTweet.AuthorDisplayName = tweet.User.Name;
             formedTweet.Contents = tweet.Text;
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
@@ -223,6 +224,9 @@ namespace ClutterFeed
             formedTweet.IsFavorited = tweet.IsFavorited;
             formedTweet.IsRetweeted = tweet.IsRetweeted;
             formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
+            formedTweet.FavoriteCount = tweet.FavoriteCount;
+            formedTweet.RetweetCount = tweet.RetweetCount;
+            formedTweet.TimePosted = tweet.CreatedDate;
 
 
             if (formedTweet.Contents.Contains("@" + userScreenName))
@@ -248,7 +252,9 @@ namespace ClutterFeed
         public InteractiveTweet ConvertTweet(TwitterStatus tweet, bool isMention)
         {
             InteractiveTweet formedTweet = new InteractiveTweet();
-            formedTweet.AuthorName = "@" + tweet.Author.ScreenName;
+            /* Big block of filling the InteractiveTweet properties */
+            formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
+            formedTweet.AuthorDisplayName = tweet.User.Name;
             formedTweet.Contents = tweet.Text;
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
@@ -257,6 +263,9 @@ namespace ClutterFeed
             formedTweet.IsRetweeted = tweet.IsRetweeted;
             formedTweet.IsMention = true;
             formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
+            formedTweet.FavoriteCount = tweet.FavoriteCount;
+            formedTweet.RetweetCount = tweet.RetweetCount;
+            formedTweet.TimePosted = tweet.CreatedDate;
 
 
             if (formedTweet.Contents.Contains("@" + userScreenName))

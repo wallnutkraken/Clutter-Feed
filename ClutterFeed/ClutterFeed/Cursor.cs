@@ -26,13 +26,85 @@ namespace ClutterFeed
         public int X { get; set; }
         public int Y { get; set; }
 
-        public Cursor GetCursorPosition()
+        public Cursor GetPosition()
         {
             Cursor currentPos = new Cursor();
             currentPos.X = Console.CursorLeft;
             currentPos.Y = Console.CursorTop;
 
             return currentPos;
+        }
+        public void SetPosition(Cursor cursorPosition)
+        {
+            Console.SetCursorPosition(cursorPosition.X, cursorPosition.Y);
+        }
+
+        /// <summary>
+        ///  Moves the cursor down by one character
+        /// </summary>
+        public void MoveDown()
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + 1);
+        }
+
+        /// <summary>
+        /// Moves the cursor down by a number of characters
+        /// </summary>
+        /// <param name="times">Number of times to move down</param>
+        public void MoveDown(int times)
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop + times);
+        }
+
+        /// <summary>
+        ///  Moves the cursor up by one character
+        /// </summary>
+        public void MoveUp()
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - 1);
+        }
+
+        /// <summary>
+        /// Moves the cursor up by a number of characters
+        /// </summary>
+        /// <param name="times">Number of times to move up</param>
+        public void MoveUp(int times)
+        {
+            Console.SetCursorPosition(Console.CursorLeft, Console.CursorTop - times);
+        }
+
+        /// <summary>
+        /// Moves the cursor left by one character
+        /// </summary>
+        public void MoveLeft()
+        {
+            Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
+        }
+
+        /// <summary>
+        /// Moves the cursor left by a number of characters
+        /// </summary>
+        /// <param name="times">Number of times to move left</param>
+        public void MoveLeft(int times)
+        {
+            Console.SetCursorPosition(Console.CursorLeft - times, Console.CursorTop);
+        }
+
+        /// <summary>
+        /// Moves the cursor right by one character
+        /// </summary>
+        public void MoveRight()
+        {
+            Console.SetCursorPosition(Console.CursorLeft + 1, Console.CursorTop);
+        }
+
+        /// <summary>
+        /// Moves the cursor right by a number of characters
+        /// </summary>
+        /// <param name="times">Number of times to move left</param>
+        public void MoveRight(int times)
+        {
+            Console.SetCursorPosition(Console.CursorLeft + times, Console.CursorTop);
         }
     }
     class ScreenSize

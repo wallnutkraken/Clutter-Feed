@@ -37,7 +37,7 @@ namespace ClutterFeed
 
             for (int index = 0; index < allTweets.Count; index++)
             {
-                if(allTweets[index].IsMention == false)
+                if (allTweets[index].IsMention == false)
                 {
                     returnList.Add(allTweets[index]);
                 }
@@ -51,7 +51,7 @@ namespace ClutterFeed
             if (update.IsFavorited && update.IsRetweeted) /* Adds a neat little symbol for rts/favs */
             {
                 Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetCursorPosition();
+                cursorPosition = cursorPosition.GetPosition();
                 Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -65,7 +65,7 @@ namespace ClutterFeed
             else if (update.IsFavorited)
             {
                 Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetCursorPosition();
+                cursorPosition = cursorPosition.GetPosition();
                 Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
 
                 Console.ForegroundColor = ConsoleColor.Yellow;
@@ -75,7 +75,7 @@ namespace ClutterFeed
             else if (update.IsRetweeted)
             {
                 Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetCursorPosition();
+                cursorPosition = cursorPosition.GetPosition();
                 Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
 
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
@@ -97,7 +97,7 @@ namespace ClutterFeed
             }
             for (; index >= 0; index--)
             {
-                string longUpdate = updates[index].AuthorName + ": " + updates[index].Contents;
+                string longUpdate = updates[index].AuthorScreenName + ": " + updates[index].Contents;
 
 
                 int splitter = Console.WindowWidth - 13;
@@ -113,7 +113,7 @@ namespace ClutterFeed
 
                 ShowInteractions(updates[index]);
 
-                if (updates[index].AuthorName.CompareTo("@" + GetUpdates.userScreenName) == 0)
+                if (updates[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
                     Console.ForegroundColor = ConsoleColor.DarkGray;
                 }
@@ -245,7 +245,7 @@ namespace ClutterFeed
 
             string followers = "Followers:";
             Console.SetCursorPosition((screenInfo.Left - followers.Length) - 4, infoBeltNameLine);
-            
+
             int followersLeft = Console.CursorLeft;
             Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not cyan btw [SetScreenColor.cs] */
             Console.Write(followers);
@@ -262,6 +262,77 @@ namespace ClutterFeed
             Console.SetCursorPosition((Console.WindowWidth - 6) - message.Length, top);
             Console.Write(message);
         }
+
+        /// <summary>
+        /// Draws the tweet on the screen
+        /// </summary>
+        /// <param name="tweet">tweet to draw</param>
+        public void DrawTweet(InteractiveTweet tweet)
+        {
+            Console.Clear();
+
+            string longUpdate = tweet.Contents;
+            int splitter = Console.WindowWidth - 10;
+
+            longUpdate = longUpdate.Replace("\n", " ");
+            List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+
+            int startingLine = /* Math time! */
+                (Console.WindowHeight / 2) -  /* Middle of screen */
+                (shortenedUpdate.Count / 2) -/* Lines of the tweet */
+                1; /* Two lines for screen and display name divided by two, you get one */
+
+            Cursor position = new Cursor();
+            position.X = (Console.WindowWidth / 2) - (tweet.AuthorScreenName.Length / 2);
+            position.Y = startingLine;
+            position.SetPosition(position); /* Moves the cursor to the set X & Y co-ordinates */
+
+            Console.Write(tweet.AuthorScreenName);
+            string atName = "( " + tweet.AuthorDisplayName + " )";
+            position.X = (Console.WindowWidth / 2) - (atName.Length / 2);
+            position.Y = startingLine + 1;
+            position.SetPosition(position);
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;
+            Console.WriteLine(atName); /* WriteLine here because I want an extra empty line because pretty */
+            Console.ForegroundColor = ConsoleColor.White;
+
+            for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
+            {
+                position.X = (Console.WindowWidth / 2) - (shortenedUpdate[index].Length / 2);
+                position.Y = position.GetPosition().Y + 1;
+                position.SetPosition(position);
+                Console.Write(shortenedUpdate[index]);
+            }
+
+            int infoBeltLength = "Favorites: ".Length + /* Counts how long the info belt should be */
+                (tweet.FavoriteCount + " ").Length +
+                "Retweets: ".Length +
+                (tweet.RetweetCount + " ").Length;
+
+            position = position.GetPosition();
+            position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
+            position.Y = position.GetPosition().Y + 1;
+            position.SetPosition(position);
+
+            if (tweet.IsFavorited)
+            {
+                Console.ForegroundColor = ConsoleColor.Yellow;
+            }
+            Console.Write("Favorites: " + tweet.FavoriteCount + " ");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            if(tweet.IsRetweeted)
+            {
+                Console.ForegroundColor = ConsoleColor.DarkGreen;
+            }
+            Console.Write("Retweets: " + tweet.RetweetCount + " ");
+            Console.ForegroundColor = ConsoleColor.White;
+
+            position = position.GetPosition();
+            position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
+            position.MoveDown(3);
+        }
+
         public void ShowHelp()
         {
             Console.Clear();
@@ -290,7 +361,7 @@ namespace ClutterFeed
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/r");
             CommandEplanation("Replies to everyone in the selected tweet", Console.CursorTop);
-            
+
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/rc");
             CommandEplanation("Replies only to the author of the tweet", Console.CursorTop);
@@ -339,7 +410,7 @@ namespace ClutterFeed
             List<InteractiveTweet> mentions = new List<InteractiveTweet>();
             for (int index = 0; index < allTweets.Count; index++) /* Creates a mention-only tweet */
             {
-                if(allTweets[index].IsMention)
+                if (allTweets[index].IsMention)
                 {
                     mentions.Add(allTweets[index]);
                 }
@@ -358,7 +429,7 @@ namespace ClutterFeed
 
             for (int index = numberToDisplay; index >= 0; index--)
             {
-                string tweetText = mentions[index].AuthorName + ": " + mentions[index].Contents;
+                string tweetText = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
                 tweetText = tweetText.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = tweetText.SplitInParts(splitter).ToList();
 

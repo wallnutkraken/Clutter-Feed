@@ -109,6 +109,11 @@ namespace ClutterFeed
                         }
                     }
 
+                    else if (command.Split(' ')[0].ToLower().CompareTo("/tweet") == 0)
+                    {
+                        commandMetadata = twitterDo.ShowTweet(command);
+                    }
+
                     else if (command.Split(' ')[0].ToLower().CompareTo("/me") == 0)
                     {
                         commandMetadata = twitterDo.Mentions(command);
