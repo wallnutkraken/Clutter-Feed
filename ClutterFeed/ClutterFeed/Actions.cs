@@ -99,11 +99,16 @@ namespace ClutterFeed
 
                     InteractiveTweet tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
                     string[] words = tweetReplyingTo.Contents.Split(' ');
-                    for(int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
+                    string userScreenName = GetUpdates.userScreenName.ToLower();
+
+                    for (int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
                     {
                         if(words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
                         {
-                            replyOpts.Status = replyOpts.Status + words[index] + " ";
+                            if (words[index].ToLower().CompareTo("@" + userScreenName) != 0)
+                            {
+                                replyOpts.Status = replyOpts.Status + words[index] + " ";
+                            }
                         }
                     }
 
