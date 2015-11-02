@@ -213,7 +213,7 @@ namespace ClutterFeed
             {
                 Console.SetCursorPosition((screenInfo.Left / 2) - (profile.Url.Length / 2), Console.CursorTop);
                 /* The line above doesn't change the "top" position because the last iteration of the above loop did just that */
-                Console.ForegroundColor = ConsoleColor.DarkMagenta; /* Again, not magenta */
+                Console.ForegroundColor = ConsoleColor.Cyan; /* Again, not magenta */
                 Console.Write(profile.Url);
                 Console.ForegroundColor = ConsoleColor.White;
             }
@@ -224,7 +224,7 @@ namespace ClutterFeed
 
             Console.SetCursorPosition(4, infoBeltNameLine); /* Okay, this might be a bit confusing */
             string tweets = "Tweets:\n    "; /* After the word tweets, there is a newline, so in the end, it'll look like */
-            Console.ForegroundColor = ConsoleColor.Cyan;   /* Tweets: */
+            Console.ForegroundColor = ConsoleColor.DarkMagenta;   /* Tweets: */
             Console.Write(tweets);                         /* 32521 */
             Console.ForegroundColor = ConsoleColor.White; /* ...At least, I hope */
             Console.Write(profile.StatusesCount);
@@ -234,7 +234,7 @@ namespace ClutterFeed
             string following = "Following:";
             Console.SetCursorPosition(((screenInfo.Left - 4) / 2) - (following.Length / 2), infoBeltNameLine);
             int followingLeft = Console.CursorLeft;
-            Console.ForegroundColor = ConsoleColor.Cyan; /* Color coding, or is it coating? Can't remember */
+            Console.ForegroundColor = ConsoleColor.DarkMagenta; /* Color coding, or is it coating? Can't remember */
             Console.Write(following);
             Console.ForegroundColor = ConsoleColor.White;
 
@@ -247,7 +247,7 @@ namespace ClutterFeed
             Console.SetCursorPosition((screenInfo.Left - followers.Length) - 4, infoBeltNameLine);
             
             int followersLeft = Console.CursorLeft;
-            Console.ForegroundColor = ConsoleColor.Cyan; /* This is not cyan btw [SetScreenColor.cs] */
+            Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not cyan btw [SetScreenColor.cs] */
             Console.Write(followers);
             Console.ForegroundColor = ConsoleColor.White;
 
