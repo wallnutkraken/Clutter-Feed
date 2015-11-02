@@ -204,7 +204,7 @@ namespace ClutterFeed
                     Console.Write("[{0:000}] ", charCount);
                 }
 
-                
+
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.Write("> ");
                 Console.ForegroundColor = ConsoleColor.White;

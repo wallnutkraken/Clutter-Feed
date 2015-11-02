@@ -56,7 +56,7 @@ namespace ClutterFeed
         {
             ActionValue returnInfo = new ActionValue();
 
-            if(command.Length > 140)
+            if (command.Length > 140)
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("      Tweet is too long.");
@@ -103,7 +103,7 @@ namespace ClutterFeed
 
                     for (int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
                     {
-                        if(words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
+                        if (words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
                         {
                             if (words[index].ToLower().CompareTo("@" + userScreenName) != 0)
                             {
@@ -274,7 +274,7 @@ namespace ClutterFeed
 
         }
 
-        
+
 
         /// <summary>
         /// Favorites or unfavorites a tweet
@@ -514,7 +514,7 @@ namespace ClutterFeed
                 return FollowUser(command);
             }
         }
-        
+
         /// <summary>
         /// Accesses the profile of a user
         /// </summary>
@@ -662,7 +662,7 @@ namespace ClutterFeed
                 returnInfo.AskForCommand = false;
             }
 
-                return returnInfo;
+            return returnInfo;
         }
 
         public ActionValue Update(string command)
@@ -703,7 +703,7 @@ namespace ClutterFeed
         public ActionValue Mentions(string command)
         {
             ActionValue returnInfo = new ActionValue();
-            
+
             string mentionCommand = "";
             GetUpdates mentionGet = new GetUpdates();
             List<InteractiveTweet> mentions = mentionGet.GetMentions(twitterAccess);
@@ -716,7 +716,7 @@ namespace ClutterFeed
                 mentionCommand = User.CounterConsole();
                 /* Here the commands begin */
 
-                if(mentionCommand.ToLower().StartsWith("/rt"))
+                if (mentionCommand.ToLower().StartsWith("/rt"))
                 {
                     Retweet(mentionCommand);
                 }

@@ -37,5 +37,5 @@ namespace ClutterFeed
         public int RetweetCount { get; set; }
         public DateTime TimePosted { get; set; }
     }
-    
+
 }

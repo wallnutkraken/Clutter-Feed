@@ -66,7 +66,7 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.GetID(command);
                     }
 
-                    else if(command.Split(' ')[0].CompareTo("/link") == 0)
+                    else if (command.Split(' ')[0].CompareTo("/link") == 0)
                     {
                         commandMetadata = twitterDo.TweetLink(command);
                     }
@@ -141,7 +141,7 @@ namespace ClutterFeed
                 }
                 /* End of commands */
 
-                if(command.ToLower().StartsWith("/") == false) /* EXCEPT for this one */
+                if (command.ToLower().StartsWith("/") == false) /* EXCEPT for this one */
                 {
                     commandMetadata = twitterDo.NewTweet(command);
                 }

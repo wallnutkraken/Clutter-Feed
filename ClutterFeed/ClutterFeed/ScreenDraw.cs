@@ -321,7 +321,7 @@ namespace ClutterFeed
             Console.Write("Favorites: " + tweet.FavoriteCount + " ");
             Console.ForegroundColor = ConsoleColor.White;
 
-            if(tweet.IsRetweeted)
+            if (tweet.IsRetweeted)
             {
                 Console.ForegroundColor = ConsoleColor.DarkGreen;
             }
