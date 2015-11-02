@@ -123,7 +123,9 @@ namespace ClutterFeed
             return returnInfo;
         }
 
-
+        /// <summary>
+        /// Replies only to the tweet author, not mentioning everyone else the author mentioned
+        /// </summary>
         public ActionValue ReplyClean(string command)
         {
             bool askForCommand = true;
