@@ -159,7 +159,14 @@ namespace ClutterFeed
             friendOpts.SourceScreenName = userScreenName;
             friendOpts.TargetScreenName = targetScreenName;
             TwitterFriendship friend = twitter.GetFriendshipInfo(friendOpts);
-            return friend.Relationship.Source.Following;
+            try
+            {
+                return friend.Relationship.Source.Following;
+            }
+            catch (NullReferenceException)
+            {
+                return false; /* If twitter doesn't give me anything, they're probably not friends */
+            } /* Fingers crossed */
         }
 
         public static bool IsBlocked(TwitterService twitter, string targetScreenName)
