@@ -58,7 +58,7 @@ namespace ClutterFeed
 
                     else if (command.Split(' ')[0].CompareTo("/r") == 0)
                     {
-                        commandMetadata = twitterDo.GenericReply(command);
+                        commandMetadata = twitterDo.ReplyGeneric(command);
                     }
 
                     else if (command.Split(' ')[0].CompareTo("/id") == 0)
@@ -73,7 +73,12 @@ namespace ClutterFeed
 
                     else if (command.Split(' ')[0].CompareTo("/rn") == 0)
                     {
-                        commandMetadata = twitterDo.NoAddedMentionReply(command);
+                        commandMetadata = twitterDo.ReplyQuiet(command);
+                    }
+
+                    else if (command.Split(' ')[0].CompareTo("/rc") == 0)
+                    {
+                        commandMetadata = twitterDo.ReplyClean(command);
                     }
 
                     else if (command.Split(' ')[0].CompareTo("/rt") == 0)

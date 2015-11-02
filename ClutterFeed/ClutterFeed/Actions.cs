@@ -76,7 +76,7 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="command">the full command used</param>
         /// <returns>should the program ask for more input from the user?</returns>
-        public ActionValue GenericReply(string command)
+        public ActionValue ReplyGeneric(string command)
         {
             bool askForCommand = true;
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
@@ -123,7 +123,40 @@ namespace ClutterFeed
             return returnInfo;
         }
 
-        public ActionValue NoAddedMentionReply(string command)
+
+        public ActionValue ReplyClean(string command)
+        {
+            bool askForCommand = true;
+            if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
+            {
+                if (command.Split(' ')[1].Length != 2)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("      Wrong syntax. Use /r [id] [reply]");
+                    Console.WriteLine("      Example: /r 3f Hey Adam, I'm doing fine!");
+                    Console.ForegroundColor = ConsoleColor.White;
+                }
+                else
+                {
+                    char[] splitter = new char[1];
+                    splitter[0] = ' '; /* FUCK C# honestly */
+                    string message = command.Split(splitter, 3)[2];
+                    SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
+
+                    replyOpts.Status = replyOpts.Status + " ";
+                    replyOpts.Status = replyOpts.Status + message;
+                    twitterAccess.BeginSendTweet(replyOpts);
+                    askForCommand = false;
+                    Thread.Sleep(200);
+                }
+            }
+            ActionValue returnInfo = new ActionValue();
+            returnInfo.AskForCommand = askForCommand;
+            return returnInfo;
+        }
+
+
+        public ActionValue ReplyQuiet(string command)
         {
             bool askForCommand = true;
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
@@ -639,7 +672,7 @@ namespace ClutterFeed
                 }
                 else if (mentionCommand.ToLower().StartsWith("/r"))
                 {
-                    GenericReply(mentionCommand);
+                    ReplyGeneric(mentionCommand);
                 }
                 else if (mentionCommand.ToLower().StartsWith("/f"))
                 {

@@ -270,11 +270,15 @@ namespace ClutterFeed
 
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/r");
-            CommandEplanation("Replies to the selected tweet", Console.CursorTop);
+            CommandEplanation("Replies to everyone in the selected tweet", Console.CursorTop);
+            
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
+            Console.Write("/rc");
+            CommandEplanation("Replies only to the author of the tweet", Console.CursorTop);
 
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/rn");
-            CommandEplanation("Replies without using @", Console.CursorTop);
+            CommandEplanation("Replies without using @ at all", Console.CursorTop);
 
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/id");
@@ -290,7 +294,7 @@ namespace ClutterFeed
 
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/link");
-            CommandEplanation("Gives you a link to the tweet", Console.CursorTop);
+            CommandEplanation("Links you to a tweet", Console.CursorTop);
 
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
