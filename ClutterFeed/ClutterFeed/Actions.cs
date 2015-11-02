@@ -652,6 +652,12 @@ namespace ClutterFeed
                     tweetDrawer.DrawTweet(tweet);
 
                     tweetCommand = User.CounterConsole();
+
+                    if (tweetCommand.ToLower().Split(' ')[0].CompareTo("/open") == 0)
+                    {
+                        Process.Start(tweet.LinkToTweet);
+                    }
+
                 } while (tweetCommand.ToLower().CompareTo("/b") != 0);
                 returnInfo.AskForCommand = false;
             }

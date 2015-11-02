@@ -390,6 +390,10 @@ namespace ClutterFeed
             Console.Write("/tweet");
             CommandEplanation("Shows you details of a tweet", Console.CursorTop);
 
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
+            Console.Write("/open");
+            CommandEplanation("Opens the tweet in browser (only from /tweet)", Console.CursorTop);
+
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
 
