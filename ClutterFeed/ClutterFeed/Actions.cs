@@ -172,7 +172,9 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    string message = command.Split(' ')[2];
+                    char[] splitter = new char[1];
+                    splitter[0] = ' '; /* FUCK C# honestly */
+                    string message = command.Split(splitter, 3)[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     replyOpts.Status = message;
                     twitterAccess.BeginSendTweet(replyOpts);
