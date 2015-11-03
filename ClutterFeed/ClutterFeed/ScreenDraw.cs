@@ -105,8 +105,17 @@ namespace ClutterFeed
                 longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
+                string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
 
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                }
+                else
+                {
+                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                }
+
                 Console.Write(updates[index].TweetIdentification + "    ");
                 Console.ForegroundColor = ConsoleColor.White;
                 bool identificationWritten = true;
@@ -393,6 +402,10 @@ namespace ClutterFeed
             Console.SetCursorPosition(linestart, Console.CursorTop + 1);
             Console.Write("/open");
             CommandEplanation("Opens the tweet in browser (only from /tweet)", Console.CursorTop);
+
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
+            Console.Write("/friend");
+            CommandEplanation("Adds/removes a friend", Console.CursorTop);
 
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);

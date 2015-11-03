@@ -64,6 +64,7 @@
   <ItemGroup>
     <Compile Include="Actions.cs" />
     <Compile Include="Cursor.cs" />
+    <Compile Include="Friend.cs" />
     <Compile Include="GetUpdates.cs" />
     <Compile Include="InteractiveTweet.cs" />
     <Compile Include="Program.cs" />

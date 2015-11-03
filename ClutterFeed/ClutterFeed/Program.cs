@@ -32,6 +32,7 @@ namespace ClutterFeed
             Console.OutputEncoding = System.Text.Encoding.Unicode; /* Enables unicode */
             SetScreenColor.SetColor(ConsoleColor.Cyan, 0, 126, 199); /* Changes cyan to dark blue-ish */
             SetScreenColor.SetColor(ConsoleColor.DarkMagenta, 66, 140, 187); /* Makes the DarkMagenta color blue-ish */
+            SetScreenColor.SetColor(ConsoleColor.DarkBlue, 249, 129, 245); /* Makes the DarkBlue color pink */
 
             Console.ForegroundColor = ConsoleColor.White;
             Actions twitterDo = new Actions();
@@ -64,6 +65,11 @@ namespace ClutterFeed
                     else if (command.Split(' ')[0].CompareTo("/id") == 0)
                     {
                         commandMetadata = twitterDo.GetID(command);
+                    }
+
+                    else if (command.Split(' ')[0].CompareTo("/friend") == 0)
+                    {
+                        commandMetadata = twitterDo.AddFriend(command);
                     }
 
                     else if (command.Split(' ')[0].CompareTo("/link") == 0)

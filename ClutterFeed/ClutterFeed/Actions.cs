@@ -49,6 +49,9 @@ namespace ClutterFeed
             key = getUser.GetUser();
             twitterAccess = showUpdates.InitializeTwitter();
 
+            Friend startFriend = new Friend();
+            startFriend.ReadFriends();
+
             twitterAccess.IncludeRetweets = true;
         }
 
@@ -68,6 +71,51 @@ namespace ClutterFeed
             Thread.Sleep(200);
 
             returnInfo.AskForCommand = false;
+            return returnInfo;
+        }
+
+        public ActionValue AddFriend(string command)
+        {
+            ActionValue returnInfo = new ActionValue();
+
+            string screenName = "";
+            try
+            {
+                bool exceptionTest = command.Split(' ')[1].StartsWith("@");
+            }
+            catch (IndexOutOfRangeException)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /friend [id]");
+                Console.WriteLine("      Example: /friend 3f");
+                Console.WriteLine("      If you meant to search by username,");
+                Console.WriteLine("      use /friend @username");
+                Console.ForegroundColor = ConsoleColor.White;
+                return returnInfo;
+            }
+            if (command.Split(' ')[1].StartsWith("@"))
+            {
+                screenName = command.Split(' ')[1].Remove(0, 1);
+            }
+            else if (command.Split(' ')[1].Length != 2)
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("      Wrong syntax. Use /friend [id]");
+                Console.WriteLine("      Example: /friend 3f");
+                Console.WriteLine("      If you meant to search by username,");
+                Console.WriteLine("      use /friend @username");
+                Console.ForegroundColor = ConsoleColor.White;
+                return returnInfo;
+            }
+            else
+            {
+                screenName = TweetIdentification.GetTweetID(command.Split(' ')[1]).Status;
+            }
+            /* This is where the magic happens */
+            
+            Friend luckyFriend = new Friend();
+            luckyFriend.FriendToggle(screenName);
+
             return returnInfo;
         }
 
