@@ -105,7 +105,7 @@ namespace ClutterFeed
                 longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
-                SetScreenColor.SetColor(ConsoleColor.DarkMagenta, 66, 140, 187); /* Makes the DarkMagenta color blue-ish */
+
                 Console.ForegroundColor = ConsoleColor.DarkMagenta;
                 Console.Write(updates[index].TweetIdentification + "    ");
                 Console.ForegroundColor = ConsoleColor.White;

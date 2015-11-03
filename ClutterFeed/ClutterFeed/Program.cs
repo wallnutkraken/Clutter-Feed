@@ -31,7 +31,7 @@ namespace ClutterFeed
         {
             Console.OutputEncoding = System.Text.Encoding.Unicode; /* Enables unicode */
             SetScreenColor.SetColor(ConsoleColor.Cyan, 0, 126, 199); /* Changes cyan to dark blue-ish */
-
+            SetScreenColor.SetColor(ConsoleColor.DarkMagenta, 66, 140, 187); /* Makes the DarkMagenta color blue-ish */
 
             Console.ForegroundColor = ConsoleColor.White;
             Actions twitterDo = new Actions();
