@@ -115,6 +115,7 @@ namespace ClutterFeed
             
             Friend luckyFriend = new Friend();
             luckyFriend.FriendToggle(screenName);
+            returnInfo.AskForCommand = false;
 
             return returnInfo;
         }

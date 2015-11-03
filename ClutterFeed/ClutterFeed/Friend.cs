@@ -17,6 +17,10 @@ namespace ClutterFeed
             {
                 FriendsList = File.ReadAllLines(FileName).ToList();
             }
+            else
+            {
+                FriendsList = new List<string>();
+            }
         }
 
         /// <summary>
@@ -25,7 +29,8 @@ namespace ClutterFeed
         /// <param name="screenName"></param>
         public void FriendToggle(string screenName)
         {
-            if (FriendsList != null && FriendsList.Contains(screenName.ToLower()))
+            string cleanName = screenName.ToLower().Remove(0, 1);
+            if (FriendsList != null && FriendsList.Contains(cleanName))
             {
                 RemoveFriend(screenName);
             }
@@ -37,14 +42,24 @@ namespace ClutterFeed
 
         private void RemoveFriend(string screenName)
         {
+            screenName = screenName.Remove(0, 1); /* Removes the @ */
             FriendsList.Remove(screenName.ToLower());
+            if (FriendsList.Count == 0)
+            {
+                File.Delete(FileName); /* Deletes the file if the friends list becomes empty */
+            }
+            else
+            {
+                File.WriteAllLines(FileName, FriendsList);
+            }
         }
         private void AddFriend(string screenName)
         {
             screenName = screenName.Remove(0, 1);
-            StreamWriter addFriend = new StreamWriter(FileName);
-            addFriend.WriteLine(screenName.ToLower());
-            addFriend.Close();
+            FriendsList.Add(screenName.ToLower());
+            File.WriteAllLines(FileName, FriendsList);
+
+            ReadFriends(); /* Reads the file again */
         }
     }
 }
