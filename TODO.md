@@ -17,14 +17,7 @@ Not in any specific order
 
 #### Multi user support
 
-#### Help dialog in stuff like /profile and /me
-
 #### Direct message support
 
 #### Friends list
- So you can see what your friends tweet on your timeline IN PRETTY COLORS OOOOO
-
-#### Add a ReplyClean command
- To only reply to the author
-
-#### /tweet command that shows all info about a tweet (similar to clicking on a tweet link)
+ So you can see what your friends tweet on your timeline IN PRETTY COLORS OOOO
