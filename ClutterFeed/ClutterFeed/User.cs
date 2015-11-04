@@ -239,7 +239,7 @@ namespace ClutterFeed
                 {
                     if (characterInfo.Key == ConsoleKey.DownArrow)
                     {
-                        if (bufferPosition == 0)
+                        if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
                         {
                             Console.Beep();
                         }
@@ -292,7 +292,6 @@ namespace ClutterFeed
                         {
                             try
                             {
-                                command = CommandHistory.GetCommand(bufferPosition);
                                 bufferPosition++;
                                 command = CommandHistory.GetCommand(bufferPosition);
                                 charCount = command.Length;
