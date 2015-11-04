@@ -1,5 +1,4 @@
 # **Known bugs**
 
-#### /r also includes you 
-
-#### The -1 limit may be due to twitter needing reauthentication
+#### Sometimes, twitter will cut off access until restart
+ Also makes the remaining API hits and API hit limit -1. Cause unknown.
