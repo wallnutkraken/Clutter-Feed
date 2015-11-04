@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Actions.cs" />
+    <Compile Include="CommandHistory.cs" />
     <Compile Include="Cursor.cs" />
     <Compile Include="Friend.cs" />
     <Compile Include="GetUpdates.cs" />

@@ -167,6 +167,8 @@ namespace ClutterFeed
             }
             return false;
         }
+
+        private static int bufferPosition = 0;
         public static string CounterConsole()
         {
             int splitCount = 3;
@@ -230,17 +232,84 @@ namespace ClutterFeed
                     }
                     else
                     {
-                        Console.Write('\a');
+                        Console.Beep();
                     }
                 }
                 else
                 {
-                    if (characterInfo.Key == ConsoleKey.DownArrow
-                        || characterInfo.Key == ConsoleKey.UpArrow
-                        || characterInfo.Key == ConsoleKey.RightArrow
+                    if (characterInfo.Key == ConsoleKey.DownArrow)
+                    {
+                        if (bufferPosition == 0)
+                        {
+                            Console.Beep();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                bufferPosition--;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                                ClearLine();
+                                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                            }
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                Console.Beep();
+                            }
+                        }
+                    }
+                    else if (characterInfo.Key == ConsoleKey.UpArrow) /* Handles going to earlier points in the history */
+                    {
+                        if (bufferPosition == 0)
+                        {
+                            if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
+                            {
+                                try
+                                {
+                                    CommandHistory.Add(command);
+                                    bufferPosition++;
+                                    command = CommandHistory.GetCommand(bufferPosition);
+                                    charCount = command.Length;
+                                    ClearLine();
+                                    Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                                }
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    Console.Beep();
+                                }
+                            }
+                            else
+                            {
+                                Console.Beep();
+                            }
+                        }
+                        else if (bufferPosition == CommandHistory.MaxIndex())
+                        {
+                            Console.Beep();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                bufferPosition++;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                                ClearLine();
+                                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                            }
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                Console.Beep();
+                            }
+                        }
+                    }
+                    else if (characterInfo.Key == ConsoleKey.RightArrow
                         || characterInfo.Key == ConsoleKey.LeftArrow)
                     {
-
+                        /* Ignores left and right arrow key currently */
+                        /* but one day I hope you could move in the command */
                     }
                     else
                     {
@@ -253,13 +322,29 @@ namespace ClutterFeed
                         charCount++;
                     }
                 }
+
             } while (writeChar != '\r' && message.Length <= 140);
 
             command = command.Replace("\r", "");
+            CommandHistory.Add(command);
+            bufferPosition = 0; /* resets the buffer position every time you finish typing a command */
+
+
             Console.WriteLine();
+            CommandHistory.RemoveEmpties();
 
             return command;
         }
 
+
+        private static void ClearLine()
+        {
+            System.Threading.Thread.Sleep(25);
+            for (int index = 1; index <= Console.WindowWidth; index++)
+            {
+                Console.SetCursorPosition(index - 1, Console.CursorTop);
+                Console.Write(" ");
+            }
+        }
     }
 }
