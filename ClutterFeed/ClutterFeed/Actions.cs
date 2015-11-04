@@ -707,6 +707,7 @@ namespace ClutterFeed
                     if (tweetCommand.ToLower().Split(' ')[0].CompareTo("/open") == 0)
                     {
                         Process.Start(tweet.LinkToTweet);
+                        tweetCommand = "/b";
                     }
 
                 } while (tweetCommand.ToLower().CompareTo("/b") != 0);
