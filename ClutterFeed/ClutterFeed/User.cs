@@ -206,6 +206,28 @@ namespace ClutterFeed
             WriteFile();
         }
 
+        public void SetDefault(Profile user)
+        {
+            foreach (Profile account in profiles)
+            {
+                if (account.Default)
+                {
+                    account.Default = false;
+                    account.Active = false;
+                }
+            }
+
+            foreach (Profile account in profiles)
+            {
+                if (account.Name.InsensitiveCompare(user.Name))
+                {
+                    account.Active = true;
+                    account.Default = true;
+                }
+            }
+            WriteFile();
+        }
+
         /// <summary>
         /// Writes the profiles and app key info to file
         /// </summary>

@@ -68,6 +68,8 @@ namespace ClutterFeed
 
         public ActionValue ProfileSelection()
         {
+            Console.CursorVisible = false;
+
             ConsoleKeyInfo pressedKey;
             int selection = 0;
             do
@@ -103,6 +105,26 @@ namespace ClutterFeed
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.BackgroundColor = ConsoleColor.Black;
 
+                if (selection == 3)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine();
+                CenterWrite("Select default profile");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+
+                if (selection == 4)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine();
+                CenterWrite("Go back");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+
                 pressedKey = Console.ReadKey(true);
                 if (pressedKey.Key == ConsoleKey.UpArrow)
                 {
@@ -117,7 +139,7 @@ namespace ClutterFeed
                 }
                 else if (pressedKey.Key == ConsoleKey.DownArrow)
                 {
-                    if (selection == 2)
+                    if (selection == 4)
                     {
                         Console.Write('\a');
                     }
@@ -206,12 +228,26 @@ namespace ClutterFeed
                 Profile selectUser = drawing.SelectUser();
                 getUser.SelectUser(selectUser.Name);
             }
+            else if (selection == 3)
+            {
+                Profile selectUser = drawing.SelectUser();
+                getUser.SetDefault(selectUser);
+                GetUpdates.ReauthenticateTwitter();
+            }
+            else if (selection == 4)
+            {
+                ActionValue back = new ActionValue();
+                back.AskForCommand = false;
+                Console.CursorVisible = true;
+                return back;
+            }
 
             ActionValue returnInfo = new ActionValue();
             returnInfo.AskForCommand = false;
             returnInfo.OverrideCommand = true;
             returnInfo.OverrideCommandString = "/fu";
 
+            Console.CursorVisible = true;
             return returnInfo;
         }
 
