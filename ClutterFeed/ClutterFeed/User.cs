@@ -29,8 +29,8 @@ namespace ClutterFeed
     {
         public static TwitterService Account;
 
-        List<Profile> profiles = new List<Profile>();
-        OAuthAccessToken appKey = new OAuthAccessToken();
+        public static List<Profile> profiles = new List<Profile>();
+        public static OAuthAccessToken appKey = new OAuthAccessToken();
 
 
         /// <summary>
@@ -116,6 +116,25 @@ namespace ClutterFeed
             }
 
         }
+
+        /// <summary>
+        /// Deactivates current active user and activates the selected user
+        /// </summary>
+        /// <param name="name">Profile name of the user</param>
+        public void SelectUser(string name)
+        {
+            foreach (Profile user in profiles)
+            {
+                if (user.Active)
+                {
+                    user.Active = false;
+                }
+                if (user.Name.InsensitiveCompare(name))
+                {
+                    user.Active = true;
+                }
+            }
+        }
         /// <summary>
         /// Creates a user using OAuth
         /// </summary>
@@ -162,6 +181,7 @@ namespace ClutterFeed
             newProfile.UserSecret = userKey.TokenSecret;
 
             profiles.Add(newProfile);
+            WriteFile();
         }
 
         /// <summary>

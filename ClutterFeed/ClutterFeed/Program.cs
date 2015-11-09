@@ -58,6 +58,11 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.Update(command);
                     }
 
+                    else if (command.InsensitiveCompare("/addaccount"))
+                    {
+                        commandMetadata = twitterDo.AddProfile();
+                    }
+
                     else if (command.Split(' ')[0].CompareTo("/r") == 0)
                     {
                         commandMetadata = twitterDo.ReplyGeneric(command);

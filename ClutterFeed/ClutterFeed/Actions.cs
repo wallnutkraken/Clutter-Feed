@@ -55,6 +55,15 @@ namespace ClutterFeed
             User.Account.IncludeRetweets = true;
         }
 
+        public ActionValue AddProfile()
+        {
+            getUser.AddProfile();
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("      User added");
+            Console.ForegroundColor = ConsoleColor.White;
+            return new ActionValue();
+        }
+
         public ActionValue NewTweet(string command)
         {
             ActionValue returnInfo = new ActionValue();

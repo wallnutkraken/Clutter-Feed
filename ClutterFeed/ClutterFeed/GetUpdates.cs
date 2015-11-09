@@ -194,7 +194,7 @@ namespace ClutterFeed
             files.Run();
 
             OAuthAccessToken userToken = files.GetUser();
-            OAuthAccessToken appToken = files.GetApp();
+            OAuthAccessToken appToken = User.appKey;
 
             User.Account = new TwitterService(appToken.Token, appToken.TokenSecret);
             User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
