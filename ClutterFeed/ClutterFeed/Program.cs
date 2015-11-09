@@ -35,6 +35,7 @@ namespace ClutterFeed
             SetScreenColor.SetColor(ConsoleColor.DarkBlue, 249, 129, 245); /* Makes the DarkBlue color pink */
 
             Console.ForegroundColor = ConsoleColor.White;
+            Console.BackgroundColor = ConsoleColor.Black;
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
 
