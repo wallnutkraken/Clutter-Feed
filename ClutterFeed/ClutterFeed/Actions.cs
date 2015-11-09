@@ -33,9 +33,9 @@ namespace ClutterFeed
     }
     class Actions
     {
-        //private TwitterService User.account = new TwitterService();
         private User getUser = new User();
         private StatusCommunication newTweet = new StatusCommunication();
+        private ScreenDraw drawing = new ScreenDraw();
         private GetUpdates showUpdates = new GetUpdates();
         private OAuthAccessToken key = new OAuthAccessToken();
 
@@ -55,13 +55,142 @@ namespace ClutterFeed
             User.Account.IncludeRetweets = true;
         }
 
-        public ActionValue AddProfile()
+        public static void CenterWrite(string text)
         {
-            getUser.AddProfile();
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("      User added");
-            Console.ForegroundColor = ConsoleColor.White;
-            return new ActionValue();
+            Console.SetCursorPosition((Console.WindowWidth / 2) - (text.Length / 2), Console.CursorTop);
+            Console.Write(text);
+        }
+        public static void CenterWriteLine(string text)
+        {
+            Console.SetCursorPosition((Console.WindowWidth / 2) - (text.Length / 2), Console.CursorTop);
+            Console.WriteLine(text);
+        }
+
+        public ActionValue ProfileSelection()
+        {
+            ConsoleKeyInfo pressedKey;
+            int selection = 0;
+            do
+            {
+                Console.Clear();
+                CenterWriteLine("What do you wish to do?");
+                if (selection == 0)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                CenterWrite("Add profile");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+
+                if (selection == 1)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine();
+                CenterWrite("Remove a profile");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+
+                if (selection == 2)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine();
+                CenterWrite("Switch profiles");
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.BackgroundColor = ConsoleColor.Black;
+
+                pressedKey = Console.ReadKey(true);
+                if (pressedKey.Key == ConsoleKey.UpArrow)
+                {
+                    if (selection == 0)
+                    {
+                        Console.Write('\a');
+                    }
+                    else
+                    {
+                        selection--;
+                    }
+                }
+                else if (pressedKey.Key == ConsoleKey.DownArrow)
+                {
+                    if (selection == 2)
+                    {
+                        Console.Write('\a');
+                    }
+                    else
+                    {
+                        selection++;
+                    }
+                }
+                Console.SetCursorPosition(0, 0);
+            } while (pressedKey.KeyChar.CompareTo('\r') != 0);
+
+            Console.Clear();
+            if (selection == 0)
+            {
+                getUser.AddProfile();
+            }
+            else if (selection == 1)
+            {
+                Profile deletingProfile = drawing.SelectUser();
+                int minorSelection = 0;
+                ConsoleKeyInfo pressedChar;
+                do
+                {
+                    Console.Clear();
+                    CenterWriteLine("Are you sure you want to remove " + deletingProfile.Name + "?");
+                    if (minorSelection == 0)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        CenterWrite("Yes");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        CenterWriteLine("Yes");
+                    }
+
+                    if (minorSelection == 1)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        CenterWrite("No");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        CenterWriteLine("No");
+                    }
+
+                    pressedChar = Console.ReadKey(true);
+                } while (pressedChar.KeyChar.CompareTo('\r') != 0);
+
+                if (minorSelection == 0)
+                {
+                    getUser.RemoveProfile(deletingProfile.Name);
+                }
+            }
+            else if (selection == 2)
+            {
+                Profile selectUser = drawing.SelectUser();
+                getUser.SelectUser(selectUser.Name);
+            }
+
+            ActionValue returnInfo = new ActionValue();
+            returnInfo.AskForCommand = false;
+            returnInfo.OverrideCommand = true;
+            returnInfo.OverrideCommandString = "/fu";
+
+            return returnInfo;
         }
 
         public ActionValue NewTweet(string command)
@@ -121,7 +250,7 @@ namespace ClutterFeed
                 screenName = TweetIdentification.GetTweetID(command.Split(' ')[1]).Status;
             }
             /* This is where the magic happens */
-            
+
             Friend luckyFriend = new Friend();
             luckyFriend.FriendToggle(screenName);
             returnInfo.AskForCommand = false;

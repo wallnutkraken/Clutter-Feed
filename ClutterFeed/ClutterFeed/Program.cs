@@ -58,9 +58,9 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.Update(command);
                     }
 
-                    else if (command.InsensitiveCompare("/addaccount"))
+                    else if (command.InsensitiveCompare("/accounts"))
                     {
-                        commandMetadata = twitterDo.AddProfile();
+                        commandMetadata = twitterDo.ProfileSelection();
                     }
 
                     else if (command.Split(' ')[0].CompareTo("/r") == 0)

@@ -134,6 +134,7 @@ namespace ClutterFeed
                     user.Active = true;
                 }
             }
+            GetUpdates.ReauthenticateTwitter();
         }
         /// <summary>
         /// Creates a user using OAuth
@@ -180,8 +181,19 @@ namespace ClutterFeed
             newProfile.UserKey = userKey.Token;
             newProfile.UserSecret = userKey.TokenSecret;
 
-            profiles.Add(newProfile);
-            WriteFile();
+            if (ProfileExists(newProfile))
+            {
+                ScreenDraw.ShowError("User already exists in the list");
+                Console.ReadKey(true);
+            }
+            else
+            {
+                profiles.Add(newProfile);
+                WriteFile();
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("User added");
+                Console.ForegroundColor = ConsoleColor.White;
+            }
         }
 
         /// <summary>
@@ -443,7 +455,20 @@ namespace ClutterFeed
             return command;
         }
 
-
+        /// <summary>
+        /// Checks if the profile exists in the list
+        /// </summary>
+        private bool ProfileExists(Profile user)
+        {
+            foreach (Profile item in profiles)
+            {
+                if (item.UserKey.CompareTo(user.UserKey) == 0)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
         private static void ClearLine()
         {
             System.Threading.Thread.Sleep(25);

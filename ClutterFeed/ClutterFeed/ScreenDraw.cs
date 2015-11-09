@@ -83,6 +83,61 @@ namespace ClutterFeed
                 Console.ForegroundColor = ConsoleColor.White;
             }
         }
+
+        public Profile SelectUser()
+        {
+            int selected = 0;
+            ConsoleKeyInfo pressedKey;
+            do
+            {
+                Console.Clear();
+                Actions.CenterWriteLine("Select the user:");
+
+                for (int index = 0; index < User.profiles.Count; index++)
+                {
+                    if (index == selected)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.BackgroundColor = ConsoleColor.White;
+                        Actions.CenterWrite(User.profiles[index].Name);
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.WriteLine();
+                    }
+                    else
+                    {
+                        Actions.CenterWriteLine(User.profiles[index].Name);
+                    }
+                }
+
+                pressedKey = Console.ReadKey(true);
+                if (pressedKey.Key == ConsoleKey.UpArrow)
+                {
+                    if (selected == 0)
+                    {
+                        Console.Write('\a');
+                    }
+                    else
+                    {
+                        selected--;
+                    }
+                }
+                else if (pressedKey.Key == ConsoleKey.DownArrow)
+                {
+                    if (selected == User.profiles.Count)
+                    {
+                        Console.Write('\a');
+                    }
+                    else
+                    {
+                        selected++;
+                    }
+                }
+            } while (pressedKey.KeyChar.CompareTo('\r') != 0);
+
+            return User.profiles[selected];
+        }
+
         public void ShowTimeline()
         {
             List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
