@@ -211,6 +211,8 @@ namespace ClutterFeed
             User files = new User();
             OAuthAccessToken userToken = files.GetUser();
             User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
+            TwitterAccount user = User.Account.GetAccountSettings(); /* Update screen name for user switching */
+            userScreenName = user.ScreenName;
         }
 
 
