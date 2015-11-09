@@ -39,7 +39,7 @@ namespace ClutterFeed
         public void ShowUpdates(TwitterService twitterAccess, GetUpdates showUpdates, bool fullUpdate)
         {
 
-            showUpdates.GetTweets(twitterAccess, fullUpdate);
+            showUpdates.GetTweets(fullUpdate);
 
             Console.Clear();
             ScreenDraw timeline = new ScreenDraw();

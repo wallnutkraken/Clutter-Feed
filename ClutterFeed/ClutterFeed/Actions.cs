@@ -47,7 +47,7 @@ namespace ClutterFeed
         public void SetUpTwitter()
         {
             key = getUser.GetUser();
-            User.Account = showUpdates.InitializeTwitter();
+            showUpdates.InitializeTwitter();
 
             Friend startFriend = new Friend();
             startFriend.ReadFriends();

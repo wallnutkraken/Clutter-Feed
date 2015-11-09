@@ -68,6 +68,7 @@
     <Compile Include="Friend.cs" />
     <Compile Include="GetUpdates.cs" />
     <Compile Include="InteractiveTweet.cs" />
+    <Compile Include="Profile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ScreenDraw.cs" />

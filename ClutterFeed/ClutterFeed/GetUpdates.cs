@@ -186,7 +186,7 @@ namespace ClutterFeed
         /// Initializes the API quickly
         /// </summary>
         /// <returns></returns>
-        public TwitterService InitializeTwitter()
+        public void InitializeTwitter()
         {
 
             User files = new User();
@@ -196,13 +196,21 @@ namespace ClutterFeed
             OAuthAccessToken userToken = files.GetUser();
             OAuthAccessToken appToken = files.GetApp();
 
-            TwitterService service = new TwitterService(appToken.Token, appToken.TokenSecret);
-            service.AuthenticateWith(userToken.Token, userToken.TokenSecret);
-            service.TraceEnabled = true;
-            TwitterAccount user = service.GetAccountSettings();
+            User.Account = new TwitterService(appToken.Token, appToken.TokenSecret);
+            User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
+            User.Account.TraceEnabled = true; /* Forget what this does */
+            TwitterAccount user = User.Account.GetAccountSettings();
             userScreenName = user.ScreenName;
+        }
 
-            return service;
+        /// <summary>
+        /// Reauthenticates twitter access when needed
+        /// </summary>
+        public static void ReauthenticateTwitter()
+        {
+            User files = new User();
+            OAuthAccessToken userToken = files.GetUser();
+            User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
         }
 
 

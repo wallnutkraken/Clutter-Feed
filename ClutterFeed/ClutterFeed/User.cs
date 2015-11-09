@@ -29,8 +29,12 @@ namespace ClutterFeed
     {
         public static TwitterService Account;
 
+        List<Profile> profiles = new List<Profile>();
+
         OAuthAccessToken userKey = new OAuthAccessToken();
         OAuthAccessToken appKey = new OAuthAccessToken();
+
+
         /// <summary>
         /// Checks if all the files are in order
         /// </summary>
@@ -46,7 +50,7 @@ namespace ClutterFeed
             int tempIndex = 0;
             while (tempIndex < readAPIKeys.Count) /* Removes empty lines */
             {
-                if (readAPIKeys[tempIndex] == "")
+                if (readAPIKeys[tempIndex].Trim(' ').CompareTo("") == 0)
                 {
                     readAPIKeys.RemoveAt(tempIndex);
                 }
@@ -56,21 +60,12 @@ namespace ClutterFeed
                 }
             }
 
-            if (readAPIKeys.Count != 4)
-            {
-                Console.WriteLine("Bad keys.conf file.");
-                Environment.Exit(0);
-            }
-
             bool appTokenExists = false;
             bool appSecretExists = false;
-            bool userTokenExists = false;
-            bool userSecretExists = false;
 
-            for (int index = 0; index < 4; index++)
+            for (int index = 0; index < readAPIKeys.Count; index++)
             {
-                string[] splitter = new string[1];
-                splitter = readAPIKeys[index].Split('=');
+                string[] splitter = readAPIKeys[index].Split('=');
                 if (splitter[0].ToLower().CompareTo("apptoken") == 0)
                 {
                     appTokenExists = true;
@@ -81,15 +76,33 @@ namespace ClutterFeed
                     appSecretExists = true;
                     appKey.TokenSecret = splitter[1];
                 }
-                if (splitter[0].ToLower().CompareTo("usertoken") == 0)
+                string[] profileSplitter = readAPIKeys[index].Split(' ');
+                Profile newProfile = new Profile();
+                if (profileSplitter[0].InsensitiveCompare("default")) /* Finds the default user */
                 {
-                    userTokenExists = true;
-                    userKey.Token = splitter[1];
+                    newProfile.Default = true;
+                    newProfile.Active = true;
                 }
-                if (splitter[0].ToLower().CompareTo("usersecret") == 0)
-                {
-                    userSecretExists = true;
-                    userKey.TokenSecret = splitter[1];
+                if (profileSplitter[0].InsensitiveCompare("default") || profileSplitter[0].InsensitiveCompare("profile"))
+                { /* Need to look for both so we can get both */
+                    newProfile.Name = profileSplitter[1];
+                    do
+                    {
+                        splitter = readAPIKeys[index].Split('=');
+
+                        if (splitter[0].ToLower().CompareTo("usertoken") == 0)
+                        {
+                            newProfile.UserKey = splitter[1];
+                        }
+                        if (splitter[0].ToLower().CompareTo("usersecret") == 0)
+                        {
+                            newProfile.UserSecret = splitter[1];
+                        }
+
+                        index++;
+                    } while (readAPIKeys[index].Trim(' ').CompareTo("}") != 0);
+
+                    profiles.Add(newProfile);
                 }
             }
 
@@ -98,7 +111,7 @@ namespace ClutterFeed
                 CreateUser();
             }
 
-            if ((appTokenExists == false) || (appSecretExists == false) || (userTokenExists == false) || (userSecretExists == false))
+            if ((appTokenExists == false) || (appSecretExists == false))
             {
                 Console.WriteLine("Error: keys.conf is set up improperly.");
                 Environment.Exit(0);
@@ -110,15 +123,23 @@ namespace ClutterFeed
         /// </summary>
         private void CreateUser()
         {
+            Profile defaultProfile = new Profile();
             TwitterService service = new TwitterService(appKey.Token, appKey.TokenSecret);
             OAuthRequestToken requestToken = service.GetRequestToken();
             Uri uri = service.GetAuthorizationUri(requestToken);
             Process.Start(uri.ToString());
             service.AuthenticateWith(appKey.Token, appKey.TokenSecret);
 
-            Console.Write("Please input the PIN: ");
+            Console.Write("Please input the authentication number: ");
             string verifier = Console.ReadLine();
             userKey = service.GetAccessToken(requestToken, verifier);
+            defaultProfile.Active = true;
+            defaultProfile.Default = true;
+            defaultProfile.UserKey = userKey.Token;
+            defaultProfile.UserSecret = userKey.TokenSecret;
+            defaultProfile.Name = userKey.ScreenName;
+
+            profiles.Add(defaultProfile);
 
             WriteFile();
         }
@@ -127,8 +148,21 @@ namespace ClutterFeed
             List<string> newFile = new List<string>();
             newFile.Add("appToken=" + appKey.Token);
             newFile.Add("appSecret=" + appKey.TokenSecret);
-            newFile.Add("userToken=" + userKey.Token);
-            newFile.Add("userSecret=" + userKey.TokenSecret);
+            foreach (Profile user in profiles)
+            {
+                if (user.Default)
+                {
+                    newFile.Add("DEFAULT " + user.Name);
+                }
+                else
+                {
+                    newFile.Add("PROFILE " + user.Name);
+                }
+                newFile.Add("{");
+                newFile.Add("userToken=" + user.UserKey);
+                newFile.Add("userSecret=" + user.UserSecret);
+                newFile.Add("}");
+            }
             File.WriteAllLines(Environment.CurrentDirectory + "/keys.conf", newFile);
         }
         public void Run()
@@ -138,7 +172,19 @@ namespace ClutterFeed
 
         public OAuthAccessToken GetUser()
         {
-            return userKey;
+            foreach (Profile user in profiles)
+            {
+                if (user.Default)
+                {
+                    OAuthAccessToken token = new OAuthAccessToken();
+                    token.Token = user.UserKey;
+                    token.TokenSecret = user.UserSecret;
+                    token.ScreenName = user.Name;
+
+                    return token;
+                }
+            }
+            return null;
         }
 
         public OAuthAccessToken GetApp()

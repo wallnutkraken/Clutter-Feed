@@ -38,5 +38,17 @@ namespace ClutterFeed
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
 
+        public static bool InsensitiveCompare(this String str, string comp)
+        {
+            if (str.ToLower().CompareTo(comp.ToLower()) == 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
     }
 }
