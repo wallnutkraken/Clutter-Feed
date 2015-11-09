@@ -462,6 +462,10 @@ namespace ClutterFeed
             Console.Write("/friend");
             CommandEplanation("Adds/removes a friend", Console.CursorTop);
 
+            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
+            Console.Write("/accounts");
+            CommandEplanation("Actions regarding twitter accounts", Console.CursorTop);
+
             string enter = "Press ENTER to close this dialog";
             Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
 
