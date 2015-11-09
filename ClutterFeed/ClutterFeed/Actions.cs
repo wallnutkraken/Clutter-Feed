@@ -198,7 +198,7 @@ namespace ClutterFeed
 
                 if (minorSelection == 0)
                 {
-                    getUser.RemoveProfile(deletingProfile.Name);
+                    getUser.RemoveProfile(deletingProfile);
                 }
             }
             else if (selection == 2)

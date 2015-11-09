@@ -200,15 +200,9 @@ namespace ClutterFeed
         /// Removes a profile by name and saves changes to file
         /// </summary>
         /// <param name="name"></param>
-        public void RemoveProfile(string name)
+        public void RemoveProfile(Profile name)
         {
-            foreach (Profile user in profiles)
-            {
-                if (user.Name.InsensitiveCompare(name))
-                {
-                    profiles.Remove(user);
-                }
-            }
+            profiles.Remove(name);
             WriteFile();
         }
 
