@@ -172,6 +172,28 @@ namespace ClutterFeed
                     }
 
                     pressedChar = Console.ReadKey(true);
+                    if (pressedChar.Key == ConsoleKey.UpArrow)
+                    {
+                        if (minorSelection == 0)
+                        {
+                            Console.Write('\a');
+                        }
+                        else
+                        {
+                            minorSelection--;
+                        }
+                    }
+                    else if (pressedChar.Key == ConsoleKey.DownArrow)
+                    {
+                        if (minorSelection == 1)
+                        {
+                            Console.Write('\a');
+                        }
+                        else
+                        {
+                            minorSelection++;
+                        }
+                    }
                 } while (pressedChar.KeyChar.CompareTo('\r') != 0);
 
                 if (minorSelection == 0)
