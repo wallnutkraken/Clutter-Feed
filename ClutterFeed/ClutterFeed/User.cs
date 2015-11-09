@@ -30,8 +30,6 @@ namespace ClutterFeed
         public static TwitterService Account;
 
         List<Profile> profiles = new List<Profile>();
-
-        OAuthAccessToken userKey = new OAuthAccessToken();
         OAuthAccessToken appKey = new OAuthAccessToken();
 
 
@@ -106,7 +104,7 @@ namespace ClutterFeed
                 }
             }
 
-            if ((userKey.Token == "") || (userKey.TokenSecret == ""))
+            if (profiles.Count == 0)
             {
                 CreateUser();
             }
@@ -123,6 +121,7 @@ namespace ClutterFeed
         /// </summary>
         private void CreateUser()
         {
+            OAuthAccessToken userKey = new OAuthAccessToken();
             Profile defaultProfile = new Profile();
             TwitterService service = new TwitterService(appKey.Token, appKey.TokenSecret);
             OAuthRequestToken requestToken = service.GetRequestToken();
@@ -143,6 +142,47 @@ namespace ClutterFeed
 
             WriteFile();
         }
+
+        
+        public void AddProfile()
+        {
+            OAuthAccessToken userKey = new OAuthAccessToken();
+            OAuthRequestToken requestToken = User.Account.GetRequestToken();
+            Uri uri = User.Account.GetAuthorizationUri(requestToken);
+            Process.Start(uri.ToString());
+
+            Console.Write("Please input the authentication number: ");
+            string verifier = Console.ReadLine();
+
+            userKey = User.Account.GetAccessToken(requestToken, verifier);
+            Profile newProfile = new Profile();
+
+            newProfile.Name = userKey.ScreenName;
+            newProfile.UserKey = userKey.Token;
+            newProfile.UserSecret = userKey.TokenSecret;
+
+            profiles.Add(newProfile);
+        }
+
+        /// <summary>
+        /// Removes a profile by name and saves changes to file
+        /// </summary>
+        /// <param name="name"></param>
+        public void RemoveProfile(string name)
+        {
+            foreach (Profile user in profiles)
+            {
+                if (user.Name.InsensitiveCompare(name))
+                {
+                    profiles.Remove(user);
+                }
+            }
+            WriteFile();
+        }
+
+        /// <summary>
+        /// Writes the profiles and app key info to file
+        /// </summary>
         private void WriteFile()
         {
             List<string> newFile = new List<string>();
@@ -174,7 +214,7 @@ namespace ClutterFeed
         {
             foreach (Profile user in profiles)
             {
-                if (user.Default)
+                if (user.Active)
                 {
                     OAuthAccessToken token = new OAuthAccessToken();
                     token.Token = user.UserKey;
