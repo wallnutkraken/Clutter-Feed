@@ -55,7 +55,7 @@ namespace ClutterFeed
         public string GenerateIdentification()
         {
             const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            var random = new Random();
+            Random random = new Random();
             string randomIdentifier = "";
             do
             {

@@ -52,11 +52,11 @@ namespace ClutterFeed
         /// <summary>
         /// Updates the list of tweets one has
         /// </summary>
-        public void GetTweets(TwitterService twitter, bool fullUpdate)
+        public void GetTweets(bool fullUpdate)
         {
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
             bool continueMethod = true;
-            var numUpdates = twitter.ListTweetsOnHomeTimeline(updateOpts);
+            var numUpdates = User.Account.ListTweetsOnHomeTimeline(updateOpts);
             List<TwitterStatus> unformattedTweets = new List<TwitterStatus>();
             try
             {
@@ -120,13 +120,13 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="twitter"></param>
         /// <returns></returns>
-        public List<InteractiveTweet> GetMentions(TwitterService twitter)
+        public List<InteractiveTweet> GetMentions()
         {
             ListTweetsMentioningMeOptions mentionOpts = new ListTweetsMentioningMeOptions();
             mentionOpts.IncludeEntities = true;
             mentionOpts.Count = 15;
 
-            List<TwitterStatus> mentions = twitter.ListTweetsMentioningMe(mentionOpts).ToList();
+            List<TwitterStatus> mentions = User.Account.ListTweetsMentioningMe(mentionOpts).ToList();
             List<InteractiveTweet> taggedMentions = new List<InteractiveTweet>();
             for (int index = 0; index < mentions.Count; index++)
             {
@@ -140,11 +140,10 @@ namespace ClutterFeed
         /// <summary>
         /// Returns the profile of a twitter user
         /// </summary>
-        /// <param name="twitterAccess">An authorized twitter service object</param>
         /// <param name="author">@name of the author</param>
-        public static TwitterUser GetUserProfile(TwitterService twitterAccess, string author)
+        public static TwitterUser GetUserProfile(string author)
         {
-            return twitterAccess.GetUserProfile(new GetUserProfileOptions());
+            return User.Account.GetUserProfile(new GetUserProfileOptions());
         }
 
         /// <summary>
@@ -153,12 +152,12 @@ namespace ClutterFeed
         /// <param name="twitter">An authorized twitter service object</param>
         /// <param name="targetScreenName">@name of the target</param>
         /// <returns></returns>
-        public static bool IsFollowing(TwitterService twitter, string targetScreenName)
+        public static bool IsFollowing(string targetScreenName)
         {
             GetFriendshipInfoOptions friendOpts = new GetFriendshipInfoOptions();
             friendOpts.SourceScreenName = userScreenName;
             friendOpts.TargetScreenName = targetScreenName;
-            TwitterFriendship friend = twitter.GetFriendshipInfo(friendOpts);
+            TwitterFriendship friend = User.Account.GetFriendshipInfo(friendOpts);
             try
             {
                 return friend.Relationship.Source.Following;
@@ -169,10 +168,10 @@ namespace ClutterFeed
             } /* Fingers crossed */
         }
 
-        public static bool IsBlocked(TwitterService twitter, string targetScreenName)
+        public static bool IsBlocked(string targetScreenName)
         {
             ListBlockedUsersOptions blockedListOpts = new ListBlockedUsersOptions();
-            var blockedList = twitter.ListBlockedUsers(blockedListOpts);
+            var blockedList = User.Account.ListBlockedUsers(blockedListOpts);
 
             for (int index = 0; index < blockedList.Count; index++)
             {

@@ -33,7 +33,7 @@ namespace ClutterFeed
     }
     class Actions
     {
-        private TwitterService twitterAccess = new TwitterService();
+        //private TwitterService User.account = new TwitterService();
         private User getUser = new User();
         private StatusCommunication newTweet = new StatusCommunication();
         private GetUpdates showUpdates = new GetUpdates();
@@ -47,12 +47,12 @@ namespace ClutterFeed
         public void SetUpTwitter()
         {
             key = getUser.GetUser();
-            twitterAccess = showUpdates.InitializeTwitter();
+            User.Account = showUpdates.InitializeTwitter();
 
             Friend startFriend = new Friend();
             startFriend.ReadFriends();
 
-            twitterAccess.IncludeRetweets = true;
+            User.Account.IncludeRetweets = true;
         }
 
         public ActionValue NewTweet(string command)
@@ -67,7 +67,7 @@ namespace ClutterFeed
                 return new ActionValue();
             }
 
-            newTweet.PostTweet(twitterAccess, command);
+            newTweet.PostTweet(User.Account, command);
             Thread.Sleep(200);
 
             returnInfo.AskForCommand = false;
@@ -162,7 +162,7 @@ namespace ClutterFeed
                     }
 
                     replyOpts.Status = replyOpts.Status + message;
-                    twitterAccess.BeginSendTweet(replyOpts);
+                    User.Account.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
                 }
@@ -196,7 +196,7 @@ namespace ClutterFeed
 
                     replyOpts.Status = replyOpts.Status + " ";
                     replyOpts.Status = replyOpts.Status + message;
-                    twitterAccess.BeginSendTweet(replyOpts);
+                    User.Account.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
                 }
@@ -226,7 +226,7 @@ namespace ClutterFeed
                     string message = command.Split(splitter, 3)[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     replyOpts.Status = message;
-                    twitterAccess.BeginSendTweet(replyOpts);
+                    User.Account.BeginSendTweet(replyOpts);
                     askForCommand = false;
                     Thread.Sleep(200);
                 }
@@ -305,7 +305,7 @@ namespace ClutterFeed
                             return new ActionValue();
                         }
 
-                        twitterAccess.Retweet(retweetOpts);
+                        User.Account.Retweet(retweetOpts);
 
                         GetUpdates retweetInvert = new GetUpdates();
                         retweetInvert.InvertRetweetStatus(tweetID);
@@ -362,13 +362,13 @@ namespace ClutterFeed
                         Console.ForegroundColor = ConsoleColor.White;
                         UnfavoriteTweetOptions unfavOpts = new UnfavoriteTweetOptions();
                         unfavOpts.Id = favOpts.Id;
-                        twitterAccess.BeginUnfavoriteTweet(unfavOpts);
+                        User.Account.BeginUnfavoriteTweet(unfavOpts);
 
                         favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
                     }
                     else
                     {
-                        twitterAccess.BeginFavoriteTweet(favOpts);
+                        User.Account.BeginFavoriteTweet(favOpts);
                         Console.ForegroundColor = ConsoleColor.Cyan;
                         Console.Write("      Favoriting.");
                         Console.ForegroundColor = ConsoleColor.White;
@@ -403,7 +403,7 @@ namespace ClutterFeed
                 DeleteTweetOptions delOpts = new DeleteTweetOptions();
                 delOpts.Id = tweetID;
 
-                twitterAccess.DeleteTweet(delOpts);
+                User.Account.DeleteTweet(delOpts);
 
                 returnInfo.OverrideCommandString = "/fu";
                 returnInfo.OverrideCommand = true;
@@ -436,11 +436,11 @@ namespace ClutterFeed
                     screenName = tweet.AuthorScreenName;
                 }
 
-                if (GetUpdates.IsBlocked(twitterAccess, screenName))
+                if (GetUpdates.IsBlocked(screenName))
                 {
                     UnblockUserOptions unblockOpts = new UnblockUserOptions();
                     unblockOpts.ScreenName = screenName;
-                    twitterAccess.UnblockUser(unblockOpts);
+                    User.Account.UnblockUser(unblockOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("      Successfully unblocked @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -449,7 +449,7 @@ namespace ClutterFeed
                 {
                     BlockUserOptions blockOpts = new BlockUserOptions();
                     blockOpts.ScreenName = screenName;
-                    twitterAccess.BlockUser(blockOpts);
+                    User.Account.BlockUser(blockOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("      Successfully blocked @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -462,11 +462,11 @@ namespace ClutterFeed
         {
             if (profileCommand)
             {
-                if (GetUpdates.IsBlocked(twitterAccess, screenName))
+                if (GetUpdates.IsBlocked(screenName))
                 {
                     UnblockUserOptions unblockOpts = new UnblockUserOptions();
                     unblockOpts.ScreenName = screenName;
-                    twitterAccess.UnblockUser(unblockOpts);
+                    User.Account.UnblockUser(unblockOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("      Successfully unblocked @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -475,7 +475,7 @@ namespace ClutterFeed
                 {
                     BlockUserOptions blockOpts = new BlockUserOptions();
                     blockOpts.ScreenName = screenName;
-                    twitterAccess.BlockUser(blockOpts);
+                    User.Account.BlockUser(blockOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("      Successfully blocked @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -514,11 +514,11 @@ namespace ClutterFeed
                     screenName = tweet.AuthorScreenName;
                 }
 
-                if (GetUpdates.IsFollowing(twitterAccess, screenName))
+                if (GetUpdates.IsFollowing(screenName))
                 {
                     UnfollowUserOptions unfollowOpts = new UnfollowUserOptions();
                     unfollowOpts.ScreenName = screenName;
-                    twitterAccess.UnfollowUser(unfollowOpts);
+                    User.Account.UnfollowUser(unfollowOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("      Successfully unfollowed @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -527,7 +527,7 @@ namespace ClutterFeed
                 {
                     FollowUserOptions followOpts = new FollowUserOptions();
                     followOpts.ScreenName = screenName;
-                    twitterAccess.FollowUser(followOpts);
+                    User.Account.FollowUser(followOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("      Successfully followed @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -539,11 +539,11 @@ namespace ClutterFeed
         {
             if (profileCommand)
             {
-                if (GetUpdates.IsFollowing(twitterAccess, screenName))
+                if (GetUpdates.IsFollowing(screenName))
                 {
                     UnfollowUserOptions unfollowOpts = new UnfollowUserOptions();
                     unfollowOpts.ScreenName = screenName;
-                    twitterAccess.UnfollowUser(unfollowOpts);
+                    User.Account.UnfollowUser(unfollowOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("      Successfully unfollowed @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -552,7 +552,7 @@ namespace ClutterFeed
                 {
                     FollowUserOptions followOpts = new FollowUserOptions();
                     followOpts.ScreenName = screenName;
-                    twitterAccess.FollowUser(followOpts);
+                    User.Account.FollowUser(followOpts);
                     Console.ForegroundColor = ConsoleColor.Green;
                     Console.Write("      Successfully followed @" + screenName);
                     Console.ForegroundColor = ConsoleColor.White;
@@ -618,13 +618,13 @@ namespace ClutterFeed
             }
 
             profileOpts.ScreenName = screenName;
-            TwitterUser profile = twitterAccess.GetUserProfileFor(profileOpts);
+            TwitterUser profile = User.Account.GetUserProfileFor(profileOpts);
             ScreenDraw showProfile = new ScreenDraw();
             string profileCommand = ""; /* The command from inside the profile screen */
 
             do
             {
-                if (GetUpdates.IsFollowing(twitterAccess, screenName)) /* Because the profile object doesn't say this */
+                if (GetUpdates.IsFollowing(screenName)) /* Because the profile object doesn't say this */
                 {
                     ScreenDraw.IsFollowing = true;
                 }
@@ -632,7 +632,7 @@ namespace ClutterFeed
                 {
                     ScreenDraw.IsFollowing = false;
                 }
-                if (GetUpdates.IsBlocked(twitterAccess, screenName))
+                if (GetUpdates.IsBlocked(screenName))
                 {
                     ScreenDraw.IsBlocked = true;
                 }
@@ -719,12 +719,12 @@ namespace ClutterFeed
 
         public ActionValue Update(string command)
         {
-            newTweet.ShowUpdates(twitterAccess, showUpdates, false);
+            newTweet.ShowUpdates(User.Account, showUpdates, false);
             return new ActionValue();
         }
         public ActionValue Update(string command, bool fullUpdate)
         {
-            newTweet.ShowUpdates(twitterAccess, showUpdates, fullUpdate);
+            newTweet.ShowUpdates(User.Account, showUpdates, fullUpdate);
             return new ActionValue();
         }
 
@@ -758,7 +758,7 @@ namespace ClutterFeed
 
             string mentionCommand = "";
             GetUpdates mentionGet = new GetUpdates();
-            List<InteractiveTweet> mentions = mentionGet.GetMentions(twitterAccess);
+            List<InteractiveTweet> mentions = mentionGet.GetMentions();
 
             do
             {
@@ -798,7 +798,7 @@ namespace ClutterFeed
 
         public ActionValue ApiInfo()
         {
-            TwitterRateLimitStatus rate = twitterAccess.Response.RateLimitStatus;
+            TwitterRateLimitStatus rate = User.Account.Response.RateLimitStatus;
             if (rate.RemainingHits >= 5)
             {
                 Console.ForegroundColor = ConsoleColor.Green;

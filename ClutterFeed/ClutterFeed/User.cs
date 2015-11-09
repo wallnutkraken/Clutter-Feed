@@ -27,6 +27,8 @@ namespace ClutterFeed
 {
     class User
     {
+        public static TwitterService Account;
+
         OAuthAccessToken userKey = new OAuthAccessToken();
         OAuthAccessToken appKey = new OAuthAccessToken();
         /// <summary>
