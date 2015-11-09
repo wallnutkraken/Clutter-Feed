@@ -346,7 +346,7 @@ namespace ClutterFeed
                     }
                     else
                     {
-                        Console.Beep();
+                        Console.Write('\a');
                     }
                 }
                 else
@@ -355,7 +355,7 @@ namespace ClutterFeed
                     {
                         if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
                         {
-                            Console.Beep();
+                            Console.Write('\a');
                         }
                         else
                         {
@@ -369,7 +369,7 @@ namespace ClutterFeed
                             }
                             catch (ArgumentOutOfRangeException)
                             {
-                                Console.Beep();
+                                Console.Write('\a');
                             }
                         }
                     }
@@ -390,17 +390,17 @@ namespace ClutterFeed
                                 }
                                 catch (ArgumentOutOfRangeException)
                                 {
-                                    Console.Beep();
+                                    Console.Write('\a');
                                 }
                             }
                             else
                             {
-                                Console.Beep();
+                                Console.Write('\a');
                             }
                         }
                         else if (bufferPosition == CommandHistory.MaxIndex())
                         {
-                            Console.Beep();
+                            Console.Write('\a');
                         }
                         else
                         {
@@ -414,7 +414,7 @@ namespace ClutterFeed
                             }
                             catch (ArgumentOutOfRangeException)
                             {
-                                Console.Beep();
+                                Console.Write('\a');
                             }
                         }
                     }
