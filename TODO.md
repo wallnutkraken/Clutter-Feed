@@ -13,9 +13,13 @@ Haha, "not that difficult", he says.
 
 #### A config file for colors
 
-#### Multi user support
-
 #### Direct message support
 
 #### Improve mentions
 TweetMoaSharp has more shit than TweetSharp
+
+#### /openlink command
+To find a link in a tweet and open it
+
+# **CONVERSATION COMMAND**
+I need it

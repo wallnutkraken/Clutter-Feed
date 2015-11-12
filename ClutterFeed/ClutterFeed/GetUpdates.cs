@@ -64,6 +64,8 @@ namespace ClutterFeed
             }
             catch (ArgumentNullException)
             {
+                TwitterResponse resp = User.Account.Response;
+
                 Console.Clear();
                 Console.ForegroundColor = ConsoleColor.Red;
                 string errorString = "ERROR: Empty list of tweets. Possibly API limited.";

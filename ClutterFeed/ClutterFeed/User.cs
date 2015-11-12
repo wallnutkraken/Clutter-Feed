@@ -38,12 +38,11 @@ namespace ClutterFeed
         /// </summary>
         private void ReadKeys()
         {
-            string userDir = Environment.CurrentDirectory;
-            if (!File.Exists(userDir + "/keys.conf"))
+            if (!File.Exists("keys.conf"))
             {
                 throw new FileNotFoundException("keys.conf does not exist.");
             }
-            List<string> readAPIKeys = File.ReadAllLines(userDir + "/keys.conf").ToList();
+            List<string> readAPIKeys = File.ReadAllLines("keys.conf").ToList();
 
             int tempIndex = 0;
             while (tempIndex < readAPIKeys.Count) /* Removes empty lines */
