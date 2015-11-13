@@ -24,7 +24,7 @@ using CursesSharp;
 
 namespace ClutterFeed
 {
-    
+
     class ScreenDraw
     {
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
@@ -160,18 +160,18 @@ namespace ClutterFeed
 
                 int splitter = ScreenInfo.WindowWidth - 13;
 
-                longUpdate = longUpdate.Replace("\n", "\n      ");
+                longUpdate = longUpdate.Replace("\n", " ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
                 string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
 
                 if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
                 {
-                    Tweets.Color = 103; /* The color of friendship */
+                    Tweets.Color = 3; /* The color of friendship */
                 }
                 else
                 {
-                    Tweets.Color = 101; /* Regular identifier color */
+                    Tweets.Color = 1; /* Regular identifier color */
                 }
 
                 Tweets.Add(updates[index].TweetIdentification + "    ");
@@ -204,6 +204,7 @@ namespace ClutterFeed
                 Tweets.Color = Colors.WHITE;
                 Tweets.Add("\n");
 
+                Tweets.Refresh();
             }
         }
 
@@ -218,104 +219,94 @@ namespace ClutterFeed
             if (IsFollowing)
             {
                 string follow = "You are following";
-                Console.SetCursorPosition((screenInfo.Left / 2) - (follow.Length / 2), 0);
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write(follow);
-                Console.ForegroundColor = ConsoleColor.White;
+                showProfile.Color = Colors.GREEN;
+                showProfile.Add(0, (ScreenInfo.WindowWidth / 2) - (follow.Length / 2), follow);
+                showProfile.Color = Colors.WHITE;
             }
             else if (IsBlocked)
             {
                 string blocked = "User is blocked.";
-                Console.SetCursorPosition((screenInfo.Left / 2) - (blocked.Length / 2), 0);
-                ScreenDraw.ShowError(blocked);
+                showProfile.Color = Colors.RED;
+                showProfile.Add(0, (ScreenInfo.WindowWidth / 2) - (blocked.Length / 2), blocked);
+                showProfile.Color = Colors.WHITE;
             }
 
-            Console.SetCursorPosition((screenInfo.Left / 2) - (profile.Name.Length / 2), 2);
-            Console.Write(profile.Name);
+            showProfile.Add(2, (ScreenInfo.WindowWidth / 2) - (profile.ScreenName.Length / 2), profile.ScreenName);
             if (Convert.ToBoolean(profile.IsVerified)) /* A verified symbol. Ish. */
             {
-                Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not Dark Magenta, see SetScreenColor.cs */
-                Console.Write(" ¤");
-                Console.ForegroundColor = ConsoleColor.White;
+                showProfile.Color = 102;
+                showProfile.Add(" ✓");
+                showProfile.Color = Colors.WHITE;
             }
+            
+            string atName ="@" + profile.ScreenName;
+            showProfile.Add(3, (ScreenInfo.WindowWidth / 2) - (atName.Length / 2), atName);
 
+            int bioStartLine = 5;
 
-            Console.SetCursorPosition((screenInfo.Left / 2) - ((profile.ScreenName.Length + 1) / 2), 3);
-            Console.Write("@" + profile.ScreenName);
-            if (Convert.ToBoolean(profile.IsProtected))
+            if (profile.Description.Length >= ScreenInfo.WindowWidth - 8)
             {
-                Console.ForegroundColor = ConsoleColor.DarkGray; /* This, however, is still Dark Gray */
-                Console.Write(" ×");
-                Console.ForegroundColor = ConsoleColor.White;
-            }
-
-            int bioStartLine = Console.CursorTop + 2;
-
-            if (profile.Description.Length >= screenInfo.Left - 8)
-            {
-                Console.SetCursorPosition(0, bioStartLine); /* Makes sure the bio starts on the right line */
-                int splitter = Console.WindowWidth - 8; /* Dictates how many characters to wait until splitting the bio */
+                int splitter = ScreenInfo.WindowWidth - 8; /* Dictates how many characters to wait until splitting the bio */
                 List<string> splitBio = profile.Description.SplitInParts(splitter).ToList();
                 for (int index = 0; index < splitBio.Count; index++) /* Writes the bio of the user */
                 {
-                    Console.SetCursorPosition((screenInfo.Left / 2) - (splitBio[index].Length / 2), Console.CursorTop);
-                    Console.Write(splitBio[index]);
-                    Console.SetCursorPosition(0, Console.CursorTop + 1); /* Moves the cursor a line down basically */
+                    showProfile.Add(bioStartLine, 4, splitBio[index]);
+                    bioStartLine++;
                 }
             }
             else
             {
-                Console.SetCursorPosition((screenInfo.Left / 2) - (profile.Description.Length / 2), bioStartLine);
-                Console.Write(profile.Description);
+                showProfile.Add(bioStartLine, 4, profile.Description);
             }
 
-            Console.SetCursorPosition(0, Console.CursorTop + 1);
+            int urlLine = bioStartLine + 1;
             if (profile.Url != null)
             {
-                Console.SetCursorPosition((screenInfo.Left / 2) - (profile.Url.Length / 2), Console.CursorTop);
-                /* The line above doesn't change the "top" position because the last iteration of the above loop did just that */
-                Console.ForegroundColor = ConsoleColor.Cyan; /* Again, not magenta */
-                Console.Write(profile.Url);
-                Console.ForegroundColor = ConsoleColor.White;
+                showProfile.Color = 102;
+                showProfile.Add(urlLine, (ScreenInfo.WindowWidth / 2) - (profile.Url.Length / 2), profile.Url);
+                showProfile.Color = Colors.WHITE;
             }
 
-            int infoBeltNameLine = /*screenInfo.Top -*/ Console.CursorTop + 2; /* Tweets, following, followers. You know! */
+            //int infoBeltNameLine = /*screenInfo.Top -*/ Console.CursorTop + 2; /* Tweets, following, followers. You know! */
 
-            /* Tweets */
+            ///* Tweets */
 
-            Console.SetCursorPosition(4, infoBeltNameLine); /* Okay, this might be a bit confusing */
-            string tweets = "Tweets:\n    "; /* After the word tweets, there is a newline, so in the end, it'll look like */
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;   /* Tweets: */
-            Console.Write(tweets);                         /* 32521 */
-            Console.ForegroundColor = ConsoleColor.White; /* ...At least, I hope */
-            Console.Write(profile.StatusesCount);
+            //Console.SetCursorPosition(4, infoBeltNameLine); /* Okay, this might be a bit confusing */
+            //string tweets = "Tweets:\n    "; /* After the word tweets, there is a newline, so in the end, it'll look like */
+            //Console.ForegroundColor = ConsoleColor.DarkMagenta;   /* Tweets: */
+            //Console.Write(tweets);                         /* 32521 */
+            //Console.ForegroundColor = ConsoleColor.White; /* ...At least, I hope */
+            //Console.Write(profile.StatusesCount);
 
-            /* Following */
+            ///* Following */
 
-            string following = "Following:";
-            Console.SetCursorPosition(((screenInfo.Left - 4) / 2) - (following.Length / 2), infoBeltNameLine);
-            int followingLeft = Console.CursorLeft;
-            Console.ForegroundColor = ConsoleColor.DarkMagenta; /* Color coding, or is it coating? Can't remember */
-            Console.Write(following);
-            Console.ForegroundColor = ConsoleColor.White;
+            //string following = "Following:";
+            //Console.SetCursorPosition(((screenInfo.Left - 4) / 2) - (following.Length / 2), infoBeltNameLine);
+            //int followingLeft = Console.CursorLeft;
+            //Console.ForegroundColor = ConsoleColor.DarkMagenta; /* Color coding, or is it coating? Can't remember */
+            //Console.Write(following);
+            //Console.ForegroundColor = ConsoleColor.White;
 
-            Console.SetCursorPosition(followingLeft, infoBeltNameLine + 1);
-            Console.Write(profile.FriendsCount);
+            //Console.SetCursorPosition(followingLeft, infoBeltNameLine + 1);
+            //Console.Write(profile.FriendsCount);
 
-            /* Followers */
+            ///* Followers */
 
-            string followers = "Followers:";
-            Console.SetCursorPosition((screenInfo.Left - followers.Length) - 4, infoBeltNameLine);
+            //string followers = "Followers:";
+            //Console.SetCursorPosition((screenInfo.Left - followers.Length) - 4, infoBeltNameLine);
 
-            int followersLeft = Console.CursorLeft;
-            Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not cyan btw [SetScreenColor.cs] */
-            Console.Write(followers);
-            Console.ForegroundColor = ConsoleColor.White;
+            //int followersLeft = Console.CursorLeft;
+            //Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not cyan btw [SetScreenColor.cs] */
+            //Console.Write(followers);
+            //Console.ForegroundColor = ConsoleColor.White;
 
-            Console.SetCursorPosition(followersLeft, infoBeltNameLine + 1);
-            Console.Write(profile.FollowersCount);
+            //Console.SetCursorPosition(followersLeft, infoBeltNameLine + 1);
+            //Console.Write(profile.FollowersCount);
 
-            Console.SetCursorPosition(0, Console.CursorTop + 4);
+            //Console.SetCursorPosition(0, Console.CursorTop + 4);
+            showProfile.Refresh();
+            showProfile.GetChar();
+            showProfile.Dispose();
         }
 
         private void CommandEplanation(string message, int top)
@@ -328,71 +319,67 @@ namespace ClutterFeed
         /// Draws the tweet on the screen
         /// </summary>
         /// <param name="tweet">tweet to draw</param>
-        public void DrawTweet(InteractiveTweet tweet)
-        {
-            Console.Clear();
+        //public void DrawTweet(InteractiveTweet tweet)
+        //{
+        //    Console.Clear();
 
-            string longUpdate = tweet.Contents;
-            int splitter = Console.WindowWidth - 10;
+        //    string longUpdate = tweet.Contents;
+        //    int splitter = Console.WindowWidth - 10;
 
-            longUpdate = longUpdate.Replace("\n", " ");
-            List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+        //    longUpdate = longUpdate.Replace("\n", " ");
+        //    List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
-            int startingLine = /* Math time! */
-                (Console.WindowHeight / 2) -  /* Middle of screen */
-                (shortenedUpdate.Count / 2) -/* Lines of the tweet */
-                1; /* Two lines for screen and display name divided by two, you get one */
+        //    int startingLine = /* Math time! */
+        //        (Console.WindowHeight / 2) -  /* Middle of screen */
+        //        (shortenedUpdate.Count / 2) -/* Lines of the tweet */
+        //        1; /* Two lines for screen and display name divided by two, you get one */
+            
 
-            Cursor position = new Cursor();
-            position.X = (Console.WindowWidth / 2) - (tweet.AuthorScreenName.Length / 2);
-            position.Y = startingLine;
-            position.SetPosition(position); /* Moves the cursor to the set X & Y co-ordinates */
+        //    Console.Write(tweet.AuthorScreenName);
+        //    string atName = "( " + tweet.AuthorDisplayName + " )";
+        //    position.X = (Console.WindowWidth / 2) - (atName.Length / 2);
+        //    position.Y = startingLine + 1;
+        //    position.SetPosition(position);
+        //    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+        //    Console.WriteLine(atName); /* WriteLine here because I want an extra empty line because pretty */
+        //    Console.ForegroundColor = ConsoleColor.White;
 
-            Console.Write(tweet.AuthorScreenName);
-            string atName = "( " + tweet.AuthorDisplayName + " )";
-            position.X = (Console.WindowWidth / 2) - (atName.Length / 2);
-            position.Y = startingLine + 1;
-            position.SetPosition(position);
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.WriteLine(atName); /* WriteLine here because I want an extra empty line because pretty */
-            Console.ForegroundColor = ConsoleColor.White;
+        //    for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
+        //    {
+        //        position.X = (Console.WindowWidth / 2) - (shortenedUpdate[index].Length / 2);
+        //        position.Y = position.GetPosition().Y + 1;
+        //        position.SetPosition(position);
+        //        Console.Write(shortenedUpdate[index]);
+        //    }
 
-            for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
-            {
-                position.X = (Console.WindowWidth / 2) - (shortenedUpdate[index].Length / 2);
-                position.Y = position.GetPosition().Y + 1;
-                position.SetPosition(position);
-                Console.Write(shortenedUpdate[index]);
-            }
+        //    int infoBeltLength = "Favorites: ".Length + /* Counts how long the info belt should be */
+        //        (tweet.FavoriteCount + " ").Length +
+        //        "Retweets: ".Length +
+        //        (tweet.RetweetCount + " ").Length;
 
-            int infoBeltLength = "Favorites: ".Length + /* Counts how long the info belt should be */
-                (tweet.FavoriteCount + " ").Length +
-                "Retweets: ".Length +
-                (tweet.RetweetCount + " ").Length;
+        //    position = position.GetPosition();
+        //    position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
+        //    position.Y = position.GetPosition().Y + 1;
+        //    position.SetPosition(position);
 
-            position = position.GetPosition();
-            position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
-            position.Y = position.GetPosition().Y + 1;
-            position.SetPosition(position);
+        //    if (tweet.IsFavorited)
+        //    {
+        //        Console.ForegroundColor = ConsoleColor.Yellow;
+        //    }
+        //    Console.Write("Favorites: " + tweet.FavoriteCount + " ");
+        //    Console.ForegroundColor = ConsoleColor.White;
 
-            if (tweet.IsFavorited)
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            }
-            Console.Write("Favorites: " + tweet.FavoriteCount + " ");
-            Console.ForegroundColor = ConsoleColor.White;
+        //    if (tweet.IsRetweeted)
+        //    {
+        //        Console.ForegroundColor = ConsoleColor.DarkGreen;
+        //    }
+        //    Console.Write("Retweets: " + tweet.RetweetCount + " ");
+        //    Console.ForegroundColor = ConsoleColor.White;
 
-            if (tweet.IsRetweeted)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-            }
-            Console.Write("Retweets: " + tweet.RetweetCount + " ");
-            Console.ForegroundColor = ConsoleColor.White;
-
-            position = position.GetPosition();
-            position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
-            position.MoveDown(3);
-        }
+        //    position = position.GetPosition();
+        //    position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
+        //    position.MoveDown(3);
+        //}
 
         public void ShowHelp()
         {

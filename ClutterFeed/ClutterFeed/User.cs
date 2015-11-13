@@ -317,7 +317,7 @@ namespace ClutterFeed
         }
         private static Window DrawConsoleNum(Window cmdWindow, int charCount)
         {
-            cmdWindow.Color = 101;
+            cmdWindow.Color = 1;
             cmdWindow.Add("[");
             if (charCount > 140)
             {
@@ -328,42 +328,13 @@ namespace ClutterFeed
                 cmdWindow.Color = Colors.WHITE;
             }
             cmdWindow.Add(Numberate(charCount));
-            cmdWindow.Color = 101;
+            cmdWindow.Color = 1;
             cmdWindow.Add("] > ");
 
             return cmdWindow;
         }
         public static string CounterConsole()
         {
-            //
-
-            //int charCount = 0;
-            //int buttonPress = 0;
-            //string command = "";
-            //do
-            //{
-            //    string prompt = Number(charCount) + "  > ";
-            //    cmdWindow.Clear();
-            //    cmdWindow.Add(prompt);
-            //    cmdWindow.Add(command);
-            //    cmdWindow.Refresh();
-            //    buttonPress = cmdWindow.GetChar();
-            //    if (buttonPress != 10)
-            //    {
-            //        if (buttonPress == 8)
-            //        {
-            //            command = command.Remove(command.Length - 1);
-            //            charCount--;
-            //        }
-            //        else if (charCount < 148)
-            //        {
-            //            command = command + Convert.ToChar(buttonPress);
-            //            charCount++;
-            //        }
-            //    }
-            //} while (buttonPress != 10);
-            //cmdWindow.Dispose();
-            //return command;
             Window cmdWindow = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
             int splitCount = 3;
             string command = "";

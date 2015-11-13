@@ -50,6 +50,14 @@ namespace ClutterFeed
             Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
             Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
 
+            Curses.StartColor();
+
+            Curses.InitPair(Colors.BLUE, 101, Colors.BLACK);
+            Curses.InitPair(2, 102, Colors.BLACK);
+            Curses.InitPair(3, 103, Colors.BLACK);
+            Curses.InitPair(4, 104, Colors.BLACK);
+            Curses.InitPair(5, 105, Colors.BLACK);
+
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
 

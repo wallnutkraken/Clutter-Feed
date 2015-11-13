@@ -839,9 +839,6 @@ namespace ClutterFeed
                 }
 
                 showProfile.ShowUserProfile(profile);
-                Cursor returnPosition = new Cursor();
-                returnPosition.X = Console.CursorLeft;
-                returnPosition.Y = Console.CursorTop;
 
                 profileCommand = User.CounterConsole();
 
@@ -897,7 +894,7 @@ namespace ClutterFeed
                 string tweetCommand = "";
                 do
                 {
-                    tweetDrawer.DrawTweet(tweet);
+                    //tweetDrawer.DrawTweet(tweet);
 
                     tweetCommand = User.CounterConsole();
 
