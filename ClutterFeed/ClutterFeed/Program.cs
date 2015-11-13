@@ -31,10 +31,7 @@ namespace ClutterFeed
     }
     class Program
     {
-        private static short[] color_table = {
-            Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
-            Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
-        };
+
 
         static void Main(string[] args)
         {
@@ -44,10 +41,14 @@ namespace ClutterFeed
             Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
             Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
             Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
+            Color.SelfColor = SetScreenColor.CursifyColor(new Color(96, 129, 245));
+            Color.MentionColor = SetScreenColor.CursifyColor(new Color(236, 183, 9));
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
             Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);
             Curses.InitColor(103, Color.FriendColor.Red, Color.FriendColor.Green, Color.FriendColor.Blue);
+            Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
+            Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;
