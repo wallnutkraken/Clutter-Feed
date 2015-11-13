@@ -47,7 +47,7 @@ namespace ClutterFeed
         /// </summary>
         public void SetUpTwitter()
         {
-            
+
             showUpdates.InitializeTwitter();
             key = getUser.GetUser();
 
@@ -231,7 +231,7 @@ namespace ClutterFeed
             {
                 Profile selectUser = drawing.SelectUser();
                 getUser.SelectUser(selectUser.Name);
-                
+
             }
             else if (selection == 3)
             {
@@ -259,9 +259,7 @@ namespace ClutterFeed
 
             if (command.Length > 140)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Tweet is too long.");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Tweet is too long.");
                 return new ActionValue();
             }
 
@@ -283,12 +281,6 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /friend [id]");
-                Console.WriteLine("      Example: /friend 3f");
-                Console.WriteLine("      If you meant to search by username,");
-                Console.WriteLine("      use /friend @username");
-                Console.ForegroundColor = ConsoleColor.White;
                 return returnInfo;
             }
             if (command.Split(' ')[1].StartsWith("@"))
@@ -297,12 +289,6 @@ namespace ClutterFeed
             }
             else if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /friend [id]");
-                Console.WriteLine("      Example: /friend 3f");
-                Console.WriteLine("      If you meant to search by username,");
-                Console.WriteLine("      use /friend @username");
-                Console.ForegroundColor = ConsoleColor.White;
                 return returnInfo;
             }
             else
@@ -330,10 +316,7 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /r [id] [reply]");
-                    Console.WriteLine("      Example: /r 3f Hey Adam, I'm doing fine!");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /r [id] [reply]");
                 }
                 else
                 {
@@ -380,10 +363,7 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /r [id] [reply]");
-                    Console.WriteLine("      Example: /r 3f Hey Adam, I'm doing fine!");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /r [id] [reply]");
                 }
                 else
                 {
@@ -412,10 +392,7 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /rn [id] [reply]");
-                    Console.WriteLine("      Example: /rn 3f ...and then it just went out of control!");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /rn [id] [reply]");
                 }
                 else
                 {
@@ -441,18 +418,13 @@ namespace ClutterFeed
 
             if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /link [id]");
-                Console.WriteLine("      Example: /link 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /link [id]");
             }
             else
             {
                 long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
                 InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("      " + tweet.LinkToTweet);
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage(tweet.LinkToTweet);
                 Process.Start(tweet.LinkToTweet);
             }
             return returnInfo;
@@ -466,10 +438,7 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /rt [id]");
-                    Console.WriteLine("      Example: /rt 3f");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /rt [id]");
                 }
                 else
                 {
@@ -530,10 +499,7 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /fav [id]");
-                    Console.WriteLine("      Example: /fav 3f");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /fav [id]");
                 }
                 else
                 {
@@ -577,10 +543,7 @@ namespace ClutterFeed
 
             if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /del [id]");
-                Console.WriteLine("      Example: /del 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /del [id]");
             }
             else
             {
@@ -602,10 +565,7 @@ namespace ClutterFeed
 
             if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /block [id]");
-                Console.WriteLine("      Example: /block 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /block [id]");
             }
             else
             {
@@ -626,52 +586,17 @@ namespace ClutterFeed
                     UnblockUserOptions unblockOpts = new UnblockUserOptions();
                     unblockOpts.ScreenName = screenName;
                     User.Account.UnblockUser(unblockOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("      Successfully unblocked @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Successfully unblocked @" + screenName);
                 }
                 else
                 {
                     BlockUserOptions blockOpts = new BlockUserOptions();
                     blockOpts.ScreenName = screenName;
                     User.Account.BlockUser(blockOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("      Successfully blocked @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Successfully blocked @" + screenName);
                 }
             }
             return returnInfo;
-        }
-
-        public ActionValue BlockUser(string command, bool profileCommand, string screenName)
-        {
-            if (profileCommand)
-            {
-                if (GetUpdates.IsBlocked(screenName))
-                {
-                    UnblockUserOptions unblockOpts = new UnblockUserOptions();
-                    unblockOpts.ScreenName = screenName;
-                    User.Account.UnblockUser(unblockOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("      Successfully unblocked @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    BlockUserOptions blockOpts = new BlockUserOptions();
-                    blockOpts.ScreenName = screenName;
-                    User.Account.BlockUser(blockOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("      Successfully blocked @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.ReadKey(true);
-                return new ActionValue();
-            }
-            else
-            {
-                return BlockUser(command);
-            }
         }
 
         public ActionValue FollowUser(string command)
@@ -680,10 +605,7 @@ namespace ClutterFeed
 
             if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /follow [id]");
-                Console.WriteLine("      Example: /follow 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /follow [id]");
             }
             else
             {
@@ -704,53 +626,18 @@ namespace ClutterFeed
                     UnfollowUserOptions unfollowOpts = new UnfollowUserOptions();
                     unfollowOpts.ScreenName = screenName;
                     User.Account.UnfollowUser(unfollowOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("      Successfully unfollowed @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Successfully unfollowed @" + screenName);
                 }
                 else
                 {
                     FollowUserOptions followOpts = new FollowUserOptions();
                     followOpts.ScreenName = screenName;
                     User.Account.FollowUser(followOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("      Successfully followed @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Successfully followed @" + screenName);
                 }
             }
             return returnInfo;
         }
-        public ActionValue FollowUser(string command, bool profileCommand, string screenName)
-        {
-            if (profileCommand)
-            {
-                if (GetUpdates.IsFollowing(screenName))
-                {
-                    UnfollowUserOptions unfollowOpts = new UnfollowUserOptions();
-                    unfollowOpts.ScreenName = screenName;
-                    User.Account.UnfollowUser(unfollowOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("      Successfully unfollowed @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                else
-                {
-                    FollowUserOptions followOpts = new FollowUserOptions();
-                    followOpts.ScreenName = screenName;
-                    User.Account.FollowUser(followOpts);
-                    Console.ForegroundColor = ConsoleColor.Green;
-                    Console.Write("      Successfully followed @" + screenName);
-                    Console.ForegroundColor = ConsoleColor.White;
-                }
-                Console.ReadKey(true);
-                return new ActionValue();
-            }
-            else
-            {
-                return FollowUser(command);
-            }
-        }
-
         /// <summary>
         /// Accesses the profile of a user
         /// </summary>
@@ -837,18 +724,12 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /tweet [id]");
-                Console.WriteLine("      Example: /tweet 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /tweet [id]");
                 return new ActionValue(); /* Exits method with default opts */
             }
             if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /tweet [id]");
-                Console.WriteLine("      Example: /tweet 3f");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /tweet [id]");
                 return new ActionValue(); /* Exits method with default opts */
             }
             else
@@ -856,24 +737,11 @@ namespace ClutterFeed
                 long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
                 InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
                 ScreenDraw tweetDrawer = new ScreenDraw();
-                string tweetCommand = "";
-                do
-                {
-                    //tweetDrawer.DrawTweet(tweet);
+                tweetDrawer.DrawTweet(tweet);
 
-                    tweetCommand = User.CounterConsole();
 
-                    if (tweetCommand.ToLower().Split(' ')[0].CompareTo("/open") == 0)
-                    {
-                        Process.Start(tweet.LinkToTweet);
-                        tweetCommand = "/b";
-                    }
-
-                } while (tweetCommand.ToLower().CompareTo("/b") != 0);
-                returnInfo.AskForCommand = false;
+                return returnInfo;
             }
-
-            return returnInfo;
         }
 
         public ActionValue Update(string command)
@@ -893,18 +761,12 @@ namespace ClutterFeed
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("      Wrong syntax. Use /id [id]");
-                    Console.WriteLine("      Example: /id 3f");
-                    Console.ForegroundColor = ConsoleColor.White;
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /id [id]");
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.Magenta;
-                    Console.Write("     Tweet ID: ");
-                    Console.ForegroundColor = ConsoleColor.White;
-                    var id = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-                    Console.WriteLine(id.InReplyToStatusId);
+                    string id = Convert.ToString(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                    ScreenDraw.ShowMessage("Tweet ID: " + id);
                 }
             }
             return new ActionValue();
@@ -914,34 +776,7 @@ namespace ClutterFeed
         public ActionValue Mentions(string command)
         {
             ActionValue returnInfo = new ActionValue();
-
-            string mentionCommand = "";
-            GetUpdates mentionGet = new GetUpdates();
-            List<InteractiveTweet> mentions = mentionGet.GetMentions();
-
-            do
-            {
-                ScreenDraw drawMentions = new ScreenDraw();
-                drawMentions.ShowMentions();
-                Console.SetCursorPosition(3, Console.CursorTop);
-                mentionCommand = User.CounterConsole();
-                /* Here the commands begin */
-
-                if (mentionCommand.ToLower().StartsWith("/rt"))
-                {
-                    Retweet(mentionCommand);
-                }
-                else if (mentionCommand.ToLower().StartsWith("/r"))
-                {
-                    ReplyGeneric(mentionCommand);
-                }
-                else if (mentionCommand.ToLower().StartsWith("/f"))
-                {
-                    FavoriteTweet(mentionCommand);
-                }
-
-            } while (mentionCommand.ToLower().CompareTo("/b") != 0);
-            returnInfo.AskForCommand = false;
+            ScreenDraw.ShowMessage("Currently disabled");
             return returnInfo;
         }
 

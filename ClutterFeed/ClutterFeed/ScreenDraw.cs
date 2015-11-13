@@ -333,67 +333,47 @@ namespace ClutterFeed
         /// Draws the tweet on the screen
         /// </summary>
         /// <param name="tweet">tweet to draw</param>
-        //public void DrawTweet(InteractiveTweet tweet)
-        //{
-        //    Console.Clear();
+        public void DrawTweet(InteractiveTweet tweet)
+        {
+            Curses.Echo = false;
+            Window tweetShow = new Window(8, ScreenInfo.WindowWidth, 11, 0);
+            string longUpdate = tweet.Contents;
+            int splitter = 120;
 
-        //    string longUpdate = tweet.Contents;
-        //    int splitter = Console.WindowWidth - 10;
+            tweetShow.Color = 14;
+            longUpdate = longUpdate.Replace("\n", " ");
+            List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+            
+            tweetShow.Add(tweet.AuthorScreenName + "\n");
+            string atName = "( " + tweet.AuthorDisplayName + " )\n";
+            tweetShow.Color = 11;
+            tweetShow.Add(atName);
+            tweetShow.Color = 14;
 
-        //    longUpdate = longUpdate.Replace("\n", " ");
-        //    List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+            for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
+            {
+                tweetShow.Add(shortenedUpdate[index] + "\n");
+            }
 
-        //    int startingLine = /* Math time! 
-        //        (Console.WindowHeight / 2) -  /* Middle of screen */
-        //        (shortenedUpdate.Count / 2) -/* Lines of the tweet */
-        //        1; /* Two lines for screen and display name divided by two, you get one */
+            if (tweet.IsFavorited)
+            {
+                tweetShow.Color = Colors.YELLOW;
+            }
+            tweetShow.Add("Favorites: " + tweet.FavoriteCount + " ");
+            tweetShow.Color = 14;
 
+            if (tweet.IsRetweeted)
+            {
+                tweetShow.Color = Colors.GREEN;
+            }
+            tweetShow.Add("Retweets: " + tweet.RetweetCount + " ");
+            tweetShow.Color = 14;
 
-        //    Console.Write(tweet.AuthorScreenName);
-        //    string atName = "( " + tweet.AuthorDisplayName + " )";
-        //    position.X = (Console.WindowWidth / 2) - (atName.Length / 2);
-        //    position.Y = startingLine + 1;
-        //    position.SetPosition(position);
-        //    Console.ForegroundColor = ConsoleColor.DarkMagenta;
-        //    Console.WriteLine(atName); /* WriteLine here because I want an extra empty line because pretty */
-        //    Console.ForegroundColor = ConsoleColor.White;
-
-        //    for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
-        //    {
-        //        position.X = (Console.WindowWidth / 2) - (shortenedUpdate[index].Length / 2);
-        //        position.Y = position.GetPosition().Y + 1;
-        //        position.SetPosition(position);
-        //        Console.Write(shortenedUpdate[index]);
-        //    }
-
-        //    int infoBeltLength = "Favorites: ".Length + /* Counts how long the info belt should be */
-        //        (tweet.FavoriteCount + " ").Length +
-        //        "Retweets: ".Length +
-        //        (tweet.RetweetCount + " ").Length;
-
-        //    position = position.GetPosition();
-        //    position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
-        //    position.Y = position.GetPosition().Y + 1;
-        //    position.SetPosition(position);
-
-        //    if (tweet.IsFavorited)
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.Yellow;
-        //    }
-        //    Console.Write("Favorites: " + tweet.FavoriteCount + " ");
-        //    Console.ForegroundColor = ConsoleColor.White;
-
-        //    if (tweet.IsRetweeted)
-        //    {
-        //        Console.ForegroundColor = ConsoleColor.DarkGreen;
-        //    }
-        //    Console.Write("Retweets: " + tweet.RetweetCount + " ");
-        //    Console.ForegroundColor = ConsoleColor.White;
-
-        //    position = position.GetPosition();
-        //    position.X = (Console.WindowWidth / 2) - (infoBeltLength / 2);
-        //    position.MoveDown(3);
-        //}
+            tweetShow.Refresh();
+            tweetShow.GetChar();
+            tweetShow.Dispose();
+            ShowTimeline();
+        }
 
         private void DrawAtEnd(Window where, int line, string message)
         {
