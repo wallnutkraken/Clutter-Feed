@@ -31,8 +31,11 @@ namespace ClutterFeed
     }
     class Program
     {
-
-
+        private static short[] color_table = {
+            Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
+            Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
+        };
+        
         static void Main(string[] args)
         {
             Curses.InitScr();
@@ -50,13 +53,23 @@ namespace ClutterFeed
             Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
             Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
 
-            Curses.StartColor();
+            if (Curses.HasColors)
+            {
+                Curses.StartColor();
+                for (short i = 1; i < 8; ++i)
+                    Curses.InitPair(i, color_table[i], Colors.BLACK);
+            }
+            else
+            {
+                Curses.EndWin();
+                Console.WriteLine("Color support not found");
+            }
 
-            Curses.InitPair(Colors.BLUE, 101, Colors.BLACK);
-            Curses.InitPair(2, 102, Colors.BLACK);
-            Curses.InitPair(3, 103, Colors.BLACK);
-            Curses.InitPair(4, 104, Colors.BLACK);
-            Curses.InitPair(5, 105, Colors.BLACK);
+            Curses.InitPair(11, 101, Colors.BLACK);
+            Curses.InitPair(12, 102, Colors.BLACK);
+            Curses.InitPair(13, 103, Colors.BLACK);
+            Curses.InitPair(14, 104, Colors.BLACK);
+            Curses.InitPair(15, 105, Colors.BLACK);
 
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
@@ -138,7 +151,7 @@ namespace ClutterFeed
                         }
                         catch (NullReferenceException exceptionInfo)
                         {
-                            ScreenDraw.ShowError(exceptionInfo.Message + "\n");
+                            ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
                             commandMetadata = new ActionValue();
                         }
                     }
@@ -162,16 +175,7 @@ namespace ClutterFeed
                     {
                         commandMetadata = twitterDo.ApiInfo();
                     }
-
-                    else
-                    {
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                        for (int index = 0; index < Console.WindowWidth; index++)
-                        {
-                            Console.Write(' ');
-                        }
-                        Console.SetCursorPosition(0, Console.CursorTop - 1);
-                    }
+                    
                 }
                 /* End of commands */
 
@@ -197,7 +201,11 @@ namespace ClutterFeed
                     Thread.Sleep(200);
                 }
             } while ((!command.ToLower().StartsWith("/q")));
-            Console.Clear();
+
+            ScreenDraw.HeadLine.Dispose();
+            ScreenDraw.Tweets.Dispose();
+            
+            Curses.EndWin();
         }
     }
 }

@@ -38,7 +38,9 @@ namespace ClutterFeed
         {
             HeadLine = new Window(1, ScreenInfo.WindowWidth, 0, 0);
             HeadLine.AttrOn(Attrs.BOLD);
-            HeadLine.Add("ClutterFeed version " + Version + "\tSigned on as: " + GetUpdates.userScreenName);
+            HeadLine.Add("ClutterFeed version " + Version);
+            string signOn = "Signed on as: @" + GetUpdates.userScreenName;
+            HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             HeadLine.Refresh();
 
             Tweets = new Window(ScreenInfo.WindowHeight - 3, ScreenInfo.WindowWidth, 1, 0);
@@ -63,27 +65,29 @@ namespace ClutterFeed
 
         private void ShowInteractions(InteractiveTweet update)
         {
+            int curx, cury;
+            Tweets.GetCursorYX(out cury, out curx);
             if (update.IsFavorited && update.IsRetweeted) /* Adds a neat little symbol for rts/favs */
             {
-                ScreenDraw.Tweets.Color = Colors.YELLOW;
-                Tweets.Add("★");
-                ScreenDraw.Tweets.Color = Colors.GREEN;
-                Tweets.Add("⇄");
-                ScreenDraw.Tweets.Color = Colors.WHITE;
+                Tweets.Color = Colors.YELLOW;
+                Tweets.Add(cury, 3, "★");
+                Tweets.Color = Colors.GREEN;
+                Tweets.Add(cury, 4, "➥ ");
+                Tweets.Color = Colors.WHITE;
             }
             else if (update.IsFavorited)
             {
-                ScreenDraw.Tweets.Color = Colors.YELLOW;
-                Tweets.Add("★");
-                ScreenDraw.Tweets.Color = Colors.WHITE;
+                Tweets.Color = Colors.YELLOW;
+                Tweets.Add(cury, 3, "★  ");
+                Tweets.Color = Colors.WHITE;
             }
             else if (update.IsRetweeted)
             {
                 Tweets.AttrOn(Attrs.BOLD);
-                ScreenDraw.Tweets.Color = Colors.GREEN;
-                Tweets.Add("⇄");
+                Tweets.Color = Colors.GREEN;
+                Tweets.Add(cury, 3, "➥  ");
                 Tweets.AttrOff(Attrs.BOLD);
-                ScreenDraw.Tweets.Color = Colors.WHITE;
+                Tweets.Color = Colors.WHITE;
             }
         }
 
@@ -143,6 +147,7 @@ namespace ClutterFeed
 
         public void ShowTimeline()
         {
+            Tweets.Clear();
             List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
             int index;
             if (updates.Count > 12)
@@ -167,11 +172,11 @@ namespace ClutterFeed
 
                 if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
                 {
-                    Tweets.Color = 3; /* The color of friendship */
+                    Tweets.Color = 13; /* The color of friendship */
                 }
                 else
                 {
-                    Tweets.Color = 1; /* Regular identifier color */
+                    Tweets.Color = 11; /* Regular identifier color */
                 }
 
                 Tweets.Add(updates[index].TweetIdentification + "    ");
@@ -182,11 +187,11 @@ namespace ClutterFeed
 
                 if (updates[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
-                    Tweets.Color = 104;
+                    Tweets.Color = 14;
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
                 {
-                    Tweets.Color = 105;
+                    Tweets.Color = 15;
                 }
 
                 for (int updateIndex = 0; updateIndex < shortenedUpdate.Count; updateIndex++)
@@ -204,15 +209,17 @@ namespace ClutterFeed
                 Tweets.Color = Colors.WHITE;
                 Tweets.Add("\n");
 
-                Tweets.Refresh();
+
             }
+            Tweets.Refresh();
         }
 
         public void ShowUserProfile(TweetSharp.TwitterUser profile)
         {
             if (profile == null)
             {
-                throw new NullReferenceException("User does not exist");
+                ScreenDraw.ShowMessage("Such a user does not exist");
+                return;
             }
             Window showProfile = new Window(12, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
 
@@ -231,15 +238,15 @@ namespace ClutterFeed
                 showProfile.Color = Colors.WHITE;
             }
 
-            showProfile.Add(2, (ScreenInfo.WindowWidth / 2) - (profile.ScreenName.Length / 2), profile.ScreenName);
+            showProfile.Add(2, (ScreenInfo.WindowWidth / 2) - (profile.Name.Length / 2), profile.Name);
             if (Convert.ToBoolean(profile.IsVerified)) /* A verified symbol. Ish. */
             {
                 showProfile.Color = 102;
                 showProfile.Add(" ✓");
                 showProfile.Color = Colors.WHITE;
             }
-            
-            string atName ="@" + profile.ScreenName;
+
+            string atName = "@" + profile.ScreenName;
             showProfile.Add(3, (ScreenInfo.WindowWidth / 2) - (atName.Length / 2), atName);
 
             int bioStartLine = 5;
@@ -267,46 +274,37 @@ namespace ClutterFeed
                 showProfile.Color = Colors.WHITE;
             }
 
-            //int infoBeltNameLine = /*screenInfo.Top -*/ Console.CursorTop + 2; /* Tweets, following, followers. You know! */
+            int infoBeltNameLine = urlLine + 2; /* Tweets, following, followers. You know! */
 
-            ///* Tweets */
+            /* Tweets */
 
-            //Console.SetCursorPosition(4, infoBeltNameLine); /* Okay, this might be a bit confusing */
-            //string tweets = "Tweets:\n    "; /* After the word tweets, there is a newline, so in the end, it'll look like */
-            //Console.ForegroundColor = ConsoleColor.DarkMagenta;   /* Tweets: */
-            //Console.Write(tweets);                         /* 32521 */
-            //Console.ForegroundColor = ConsoleColor.White; /* ...At least, I hope */
-            //Console.Write(profile.StatusesCount);
+            showProfile.Color = 11;
+            showProfile.Add(infoBeltNameLine, 0, "Tweets:\n");
+            showProfile.Color = Colors.WHITE;
+            showProfile.Add(profile.StatusesCount + "");
 
-            ///* Following */
+            /* Following */
 
-            //string following = "Following:";
-            //Console.SetCursorPosition(((screenInfo.Left - 4) / 2) - (following.Length / 2), infoBeltNameLine);
-            //int followingLeft = Console.CursorLeft;
-            //Console.ForegroundColor = ConsoleColor.DarkMagenta; /* Color coding, or is it coating? Can't remember */
-            //Console.Write(following);
-            //Console.ForegroundColor = ConsoleColor.White;
+            string following = "Following:";
+            showProfile.Color = 11;
+            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth / 2) - (following.Length / 2), following);
+            showProfile.Color = Colors.WHITE;
+            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth / 2) - (following.Length / 2), profile.FriendsCount + "");
 
-            //Console.SetCursorPosition(followingLeft, infoBeltNameLine + 1);
-            //Console.Write(profile.FriendsCount);
+            /* Followers */
 
-            ///* Followers */
+            string followers = "Followers:";
+            showProfile.Color = 11;
+            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth - followers.Length - 1), followers);
+            showProfile.Color = Colors.WHITE;
+            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth - followers.Length - 1), profile.FollowersCount + "");
 
-            //string followers = "Followers:";
-            //Console.SetCursorPosition((screenInfo.Left - followers.Length) - 4, infoBeltNameLine);
-
-            //int followersLeft = Console.CursorLeft;
-            //Console.ForegroundColor = ConsoleColor.DarkMagenta; /* This is not cyan btw [SetScreenColor.cs] */
-            //Console.Write(followers);
-            //Console.ForegroundColor = ConsoleColor.White;
-
-            //Console.SetCursorPosition(followersLeft, infoBeltNameLine + 1);
-            //Console.Write(profile.FollowersCount);
-
-            //Console.SetCursorPosition(0, Console.CursorTop + 4);
             showProfile.Refresh();
             showProfile.GetChar();
             showProfile.Dispose();
+
+            ScreenDraw draw = new ScreenDraw();
+            draw.ShowTimeline();
         }
 
         private void CommandEplanation(string message, int top)
@@ -329,11 +327,11 @@ namespace ClutterFeed
         //    longUpdate = longUpdate.Replace("\n", " ");
         //    List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
-        //    int startingLine = /* Math time! */
+        //    int startingLine = /* Math time! 
         //        (Console.WindowHeight / 2) -  /* Middle of screen */
         //        (shortenedUpdate.Count / 2) -/* Lines of the tweet */
         //        1; /* Two lines for screen and display name divided by two, you get one */
-            
+
 
         //    Console.Write(tweet.AuthorScreenName);
         //    string atName = "( " + tweet.AuthorDisplayName + " )";
@@ -381,91 +379,74 @@ namespace ClutterFeed
         //    position.MoveDown(3);
         //}
 
+        private void DrawAtEnd(Window where, int line, string message)
+        {
+            where.Add(line, (ScreenInfo.WindowWidth - message.Length - 1), message);
+        }
         public void ShowHelp()
         {
-            Console.Clear();
-            int linestart = 6;
 
-            Console.SetCursorPosition(linestart, 3);
-            Console.Write("/h, /help");
-            CommandEplanation("Shows this dialog.", 3);
+            Window help = new Window(20, ScreenInfo.WindowWidth, 5, 0);
+            help.Color = 14;
 
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/rt");
-            CommandEplanation("Retweets/undos a retweet on a selected tweet.", Console.CursorTop);
+            help.Add("/h, /help");
+            DrawAtEnd(help, 0, "Shows this dialog\n");
 
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/fav, /f");
-            CommandEplanation("Favourites a selected tweet", Console.CursorTop);
+            help.Add("/rt");
+            DrawAtEnd(help, 1, "Retweets/undos a retweet on a selected tweet\n");
 
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/unfav, /uf");
-            CommandEplanation("Unfavourites a selected tweet", Console.CursorTop);
+            help.Add("/fav, /f");
+            DrawAtEnd(help, 2, "Favourites a selected tweet\n");
 
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/api");
-            CommandEplanation("Shows the remaining API hits", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/r");
-            CommandEplanation("Replies to everyone in the selected tweet", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/rc");
-            CommandEplanation("Replies only to the author of the tweet", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/rn");
-            CommandEplanation("Replies without using @ at all", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/id");
-            CommandEplanation("Shows the ID of the tweet", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/profile");
-            CommandEplanation("Shows the profile of the selected user", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/me");
-            CommandEplanation("Shows your mentions", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/link");
-            CommandEplanation("Links you to a tweet", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/tweet");
-            CommandEplanation("Shows you details of a tweet", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/open");
-            CommandEplanation("Opens the tweet in browser (only from /tweet)", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/friend");
-            CommandEplanation("Adds/removes a friend", Console.CursorTop);
-
-            Console.SetCursorPosition(linestart, Console.CursorTop + 1);
-            Console.Write("/accounts");
-            CommandEplanation("Actions regarding twitter accounts", Console.CursorTop);
+            help.Add("/unfav, /uf");
+            DrawAtEnd(help, 3, "Unfavourites a selected tweet\n");
+            
+            help.Add("/api");
+            DrawAtEnd(help, 4, "Shows the remaining API hits\n");
+            
+            help.Add("/r");
+            DrawAtEnd(help, 5, "Replies to everyone in the selected tweet\n");
+            
+            help.Add("/rc");
+            DrawAtEnd(help, 6, "Replies only to the author of the tweet\n");
+            
+            help.Add("/rn");
+            DrawAtEnd(help, 7, "Replies without using @ at all\n");
+            
+            help.Add("/id");
+            DrawAtEnd(help, 8, "Shows the ID of the tweet\n");
+            
+            help.Add("/profile");
+            DrawAtEnd(help, 9, "Shows the profile of the selected user\n");
+            
+            help.Add("/me");
+            DrawAtEnd(help, 10, "Shows your mentions\n");
+            
+            help.Add("/link");
+            DrawAtEnd(help, 11, "Links you to a tweet\n");
+            
+            help.Add("/tweet");
+            DrawAtEnd(help, 12, "Shows you details of a tweet\n");
+            
+            help.Add("/open");
+            DrawAtEnd(help, 13, "Opens the tweet in browser (only from /tweet)\n");
+            
+            help.Add("/friend");
+            DrawAtEnd(help, 14, "Adds/removes a friend\n");
+            
+            help.Add("/accounts");
+            DrawAtEnd(help, 15, "Actions regarding twitter accounts\n");
 
             string enter = "Press ENTER to close this dialog";
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (enter.Length / 2), Console.WindowHeight - 1);
+            help.Add(18, (ScreenInfo.WindowWidth / 2) - (enter.Length / 2), enter);
 
-            Console.CursorVisible = false;
+            Curses.Echo = false;
 
-            Console.ForegroundColor = ConsoleColor.DarkMagenta;
-            Console.Write(enter);
-            Console.ForegroundColor = ConsoleColor.White;
-
-            char keypress = ' ';
+            int keypress;
             do
             {
-                keypress = Console.ReadKey(true).KeyChar;
-            } while (keypress != '\r');
-
-            Console.CursorVisible = true;
+                keypress = help.GetChar();
+            } while (keypress != 10);
         }
 
         public void ShowMentions()
@@ -515,18 +496,17 @@ namespace ClutterFeed
             }
         }
 
-        public static void ShowError(string message)
+        public static void ShowMessage(string message)
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.Write("      " + message);
-            Console.ForegroundColor = ConsoleColor.White;
-        }
-
-        public static void ShowSuccess(string message)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.Write("      " + message);
-            Console.ForegroundColor = ConsoleColor.White;
+            Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+            Curses.Echo = false;
+            errorMessage.Color = 11;
+            errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            errorMessage.Color = Colors.WHITE;
+            errorMessage.GetChar();
+            errorMessage.Dispose();
+            ScreenDraw drawer = new ScreenDraw();
+            drawer.ShowTimeline();
         }
 
     }

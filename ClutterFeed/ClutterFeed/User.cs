@@ -188,13 +188,13 @@ namespace ClutterFeed
 
             if (ProfileExists(newProfile))
             {
-                ScreenDraw.ShowError("User already exists in the list");
+                ScreenDraw.ShowMessage("User already exists in the list");
             }
             else
             {
                 profiles.Add(newProfile);
                 WriteFile();
-                ScreenDraw.ShowSuccess("User added");
+                ScreenDraw.ShowMessage("User added");
             }
             Curses.Echo = false;
             auth.Dispose();
@@ -317,7 +317,7 @@ namespace ClutterFeed
         }
         private static Window DrawConsoleNum(Window cmdWindow, int charCount)
         {
-            cmdWindow.Color = 1;
+            cmdWindow.Color = 11;
             cmdWindow.Add("[");
             if (charCount > 140)
             {
@@ -328,8 +328,9 @@ namespace ClutterFeed
                 cmdWindow.Color = Colors.WHITE;
             }
             cmdWindow.Add(Numberate(charCount));
-            cmdWindow.Color = 1;
+            cmdWindow.Color = 11;
             cmdWindow.Add("] > ");
+            cmdWindow.Color = Colors.WHITE;
 
             return cmdWindow;
         }
@@ -460,7 +461,7 @@ namespace ClutterFeed
                 {
                     buttonPress = int.MinValue;
                 }
-                else
+                else if (charCount < 146)
                 {
                     command = command + Convert.ToChar(buttonPress);
                     try

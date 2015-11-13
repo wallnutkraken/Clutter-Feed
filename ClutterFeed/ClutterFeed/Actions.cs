@@ -486,19 +486,14 @@ namespace ClutterFeed
                     }
                     catch (KeyNotFoundException exceptionInfo)
                     {
-                        Console.ForegroundColor = ConsoleColor.Red;
-                        Console.WriteLine("      " + exceptionInfo.Message);
-                        Console.ForegroundColor = ConsoleColor.White;
+                        ScreenDraw.ShowMessage(exceptionInfo.Message);
                         finishBlock = false;
                     }
                     if (finishBlock)
                     {
                         if (tweet.IsRetweeted)
                         {
-                            Console.ForegroundColor = ConsoleColor.Red;
-                            Console.WriteLine("      Unretweeting currently is not supported.");
-                            Console.WriteLine("      Might be something with the API.");
-                            Console.ForegroundColor = ConsoleColor.White;
+                            ScreenDraw.ShowMessage("Unretweeting is currently unsupported");
                             return new ActionValue();
                         }
 
@@ -507,10 +502,7 @@ namespace ClutterFeed
                         GetUpdates retweetInvert = new GetUpdates();
                         retweetInvert.InvertRetweetStatus(tweetID);
 
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("      Retweeted.");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.ReadKey(true);
+                        ScreenDraw.ShowMessage("Retweeted");
 
                         returnInfo.OverrideCommand = true;
                         returnInfo.OverrideCommandString = "/fu";
@@ -554,9 +546,7 @@ namespace ClutterFeed
 
                     if (tweet.IsFavorited)
                     {
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("      Unfavoriting.");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        ScreenDraw.ShowMessage("Unfavoriting");
                         UnfavoriteTweetOptions unfavOpts = new UnfavoriteTweetOptions();
                         unfavOpts.Id = favOpts.Id;
                         User.Account.BeginUnfavoriteTweet(unfavOpts);
@@ -566,14 +556,11 @@ namespace ClutterFeed
                     else
                     {
                         User.Account.BeginFavoriteTweet(favOpts);
-                        Console.ForegroundColor = ConsoleColor.Cyan;
-                        Console.Write("      Favoriting.");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        ScreenDraw.ShowMessage("Favoriting");
 
                         favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
 
                     }
-                    Console.ReadKey(true);
                     returnInfo.OverrideCommand = true;
                     returnInfo.OverrideCommandString = "/fu";
                     returnInfo.AskForCommand = false;
@@ -817,47 +804,24 @@ namespace ClutterFeed
             profileOpts.ScreenName = screenName;
             TwitterUser profile = User.Account.GetUserProfileFor(profileOpts);
             ScreenDraw showProfile = new ScreenDraw();
-            string profileCommand = ""; /* The command from inside the profile screen */
-
-            do
+            if (GetUpdates.IsFollowing(screenName)) /* Because the profile object doesn't say this */
             {
-                if (GetUpdates.IsFollowing(screenName)) /* Because the profile object doesn't say this */
-                {
-                    ScreenDraw.IsFollowing = true;
-                }
-                else
-                {
-                    ScreenDraw.IsFollowing = false;
-                }
-                if (GetUpdates.IsBlocked(screenName))
-                {
-                    ScreenDraw.IsBlocked = true;
-                }
-                else
-                {
-                    ScreenDraw.IsBlocked = false;
-                }
+                ScreenDraw.IsFollowing = true;
+            }
+            else
+            {
+                ScreenDraw.IsFollowing = false;
+            }
+            if (GetUpdates.IsBlocked(screenName))
+            {
+                ScreenDraw.IsBlocked = true;
+            }
+            else
+            {
+                ScreenDraw.IsBlocked = false;
+            }
 
-                showProfile.ShowUserProfile(profile);
-
-                profileCommand = User.CounterConsole();
-
-                string[] splitCommand = new string[2];
-                splitCommand = profileCommand.Split(' ');
-
-                if (splitCommand[0].ToLower().CompareTo("/follow") == 0 || splitCommand[0].ToLower().CompareTo("/f") == 0)
-                {
-                    FollowUser(profileCommand, true, screenName);
-                }
-
-                if (splitCommand[0].ToLower().CompareTo("/block") == 0)
-                {
-                    BlockUser(profileCommand, true, screenName);
-                }
-
-            } while (profileCommand.ToLower().CompareTo("/b") != 0);
-
-
+            showProfile.ShowUserProfile(profile);
             returnInfo.AskForCommand = false;
             return returnInfo;
         }
@@ -985,6 +949,7 @@ namespace ClutterFeed
             ActionValue returnInfo = new ActionValue();
             ScreenDraw drawHelp = new ScreenDraw();
             drawHelp.ShowHelp();
+            drawHelp.ShowTimeline();
             returnInfo.AskForCommand = false;
 
             return returnInfo;
@@ -993,22 +958,8 @@ namespace ClutterFeed
         public ActionValue ApiInfo()
         {
             TwitterRateLimitStatus rate = User.Account.Response.RateLimitStatus;
-            if (rate.RemainingHits >= 5)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-            }
-            else if (rate.RemainingHits >= 1)
-            {
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-            }
-            else
-            {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            Console.WriteLine("      You have " + rate.RemainingHits + " remaining calls out of your " + rate.HourlyLimit + " limit");
 
-            Console.ForegroundColor = ConsoleColor.White;
-
+            ScreenDraw.ShowMessage("      You have " + rate.RemainingHits + " remaining calls out of your " + rate.HourlyLimit + " limit");
             return new ActionValue(); /* Returns default values */
         }
 
