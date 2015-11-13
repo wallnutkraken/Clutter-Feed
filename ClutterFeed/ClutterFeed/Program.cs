@@ -35,7 +35,7 @@ namespace ClutterFeed
             Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
             Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
         };
-        
+
         static void Main(string[] args)
         {
             Curses.InitScr();
@@ -52,6 +52,7 @@ namespace ClutterFeed
             Curses.InitColor(103, Color.FriendColor.Red, Color.FriendColor.Green, Color.FriendColor.Blue);
             Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
             Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
+
 
             if (Curses.HasColors)
             {
@@ -70,6 +71,8 @@ namespace ClutterFeed
             Curses.InitPair(13, 103, Colors.BLACK);
             Curses.InitPair(14, 104, Colors.BLACK);
             Curses.InitPair(15, 105, Colors.BLACK);
+
+            Curses.InitPair(21, Colors.BLACK, 101);
 
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
@@ -175,7 +178,7 @@ namespace ClutterFeed
                     {
                         commandMetadata = twitterDo.ApiInfo();
                     }
-                    
+
                 }
                 /* End of commands */
 
@@ -204,8 +207,9 @@ namespace ClutterFeed
 
             ScreenDraw.HeadLine.Dispose();
             ScreenDraw.Tweets.Dispose();
-            
+
             Curses.EndWin();
+
         }
     }
 }

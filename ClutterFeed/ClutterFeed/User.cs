@@ -166,13 +166,29 @@ namespace ClutterFeed
             WriteFile();
         }
 
+        private bool DefaultExists()
+        {
+            foreach (Profile user in profiles)
+            {
+                if (user.Default == true)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
 
         public void AddProfile()
         {
+            ScreenDraw.Tweets.Clear();
+            ScreenDraw.Tweets.Refresh();
+
             OAuthAccessToken userKey = new OAuthAccessToken();
             OAuthRequestToken requestToken = User.Account.GetRequestToken();
+            Window auth = new Window(1, ScreenInfo.WindowWidth, 3, 0);
             Uri uri = User.Account.GetAuthorizationUri(requestToken);
-            Window auth = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            Process.Start(uri.ToString());
+            
             Curses.Echo = true;
 
             auth.Add("Please input the authentication number: ");
@@ -198,6 +214,9 @@ namespace ClutterFeed
             }
             Curses.Echo = false;
             auth.Dispose();
+
+            ScreenDraw draw = new ScreenDraw();
+            draw.ShowTimeline();
         }
 
         /// <summary>
@@ -264,19 +283,34 @@ namespace ClutterFeed
 
         public OAuthAccessToken GetUser()
         {
-            foreach (Profile user in profiles)
+            if (DefaultExists())
             {
-                if (user.Active)
+                foreach (Profile user in profiles)
                 {
-                    OAuthAccessToken token = new OAuthAccessToken();
-                    token.Token = user.UserKey;
-                    token.TokenSecret = user.UserSecret;
-                    token.ScreenName = user.Name;
+                    if (user.Active)
+                    {
+                        OAuthAccessToken token = new OAuthAccessToken();
+                        token.Token = user.UserKey;
+                        token.TokenSecret = user.UserSecret;
+                        token.ScreenName = user.Name;
+                        WriteFile();
 
-                    return token;
+                        return token;
+                    }
                 }
+                return null;
             }
-            return null;
+            else
+            {
+                profiles[0].Default = true;
+                profiles[0].Active = true;
+                OAuthAccessToken token = new OAuthAccessToken();
+                token.Token = profiles[0].UserKey;
+                token.TokenSecret = profiles[0].UserSecret;
+                token.ScreenName = profiles[0].Name;
+                
+                return token;
+            }
         }
 
         public OAuthAccessToken GetApp()

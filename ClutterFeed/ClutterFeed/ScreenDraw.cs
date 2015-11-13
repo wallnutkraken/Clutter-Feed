@@ -30,7 +30,7 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        private static string Version = "1.5-devel";
+        public static string Version = "1.5-devel";
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
@@ -90,35 +90,48 @@ namespace ClutterFeed
                 Tweets.Color = Colors.WHITE;
             }
         }
-
+        private Window menu { get; set; }
+        private void MenuDrawInMiddle(string message)
+        {
+            int line = 0;
+            int notNessecary;
+            menu.GetCursorYX(out line, out notNessecary);
+            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+        }
+        private void MenuDrawInMiddle(string message, int line)
+        {
+            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+        }
         public Profile SelectUser()
         {
+            menu = new Window(User.profiles.Count + 1, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - (User.profiles.Count + 1) / 2, 0);
             int selected = 0;
-            ConsoleKeyInfo pressedKey;
+            menu.Keypad = true;
+            int pressedKey = 0;
+            Curses.Newlines = true;
             do
             {
-                Console.Clear();
-                Actions.CenterWriteLine("Select the user:");
+                menu.Color = 11;
+                menu.Clear();
+                MenuDrawInMiddle("Select the user:", 0);
 
                 for (int index = 0; index < User.profiles.Count; index++)
                 {
                     if (index == selected)
                     {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        Actions.CenterWrite(User.profiles[index].Name);
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.WriteLine();
+                        menu.Color = 21;
+                        MenuDrawInMiddle(User.profiles[index].Name, index + 1);
+                        menu.Color = 11;
                     }
                     else
                     {
-                        Actions.CenterWriteLine(User.profiles[index].Name);
+                        MenuDrawInMiddle(User.profiles[index].Name, index + 1);
                     }
                 }
 
-                pressedKey = Console.ReadKey(true);
-                if (pressedKey.Key == ConsoleKey.UpArrow)
+                menu.Refresh();
+                pressedKey = menu.GetChar();
+                if (pressedKey == Keys.UP)
                 {
                     if (selected == 0)
                     {
@@ -129,7 +142,7 @@ namespace ClutterFeed
                         selected--;
                     }
                 }
-                else if (pressedKey.Key == ConsoleKey.DownArrow)
+                else if (pressedKey == Keys.DOWN)
                 {
                     if (selected == User.profiles.Count)
                     {
@@ -140,8 +153,11 @@ namespace ClutterFeed
                         selected++;
                     }
                 }
-            } while (pressedKey.KeyChar.CompareTo('\r') != 0);
+            } while (pressedKey != 10);
 
+            menu.Clear();
+            menu.Refresh();
+            menu.Dispose();
             return User.profiles[selected];
         }
 
@@ -460,8 +476,6 @@ namespace ClutterFeed
                     mentions.Add(allTweets[index]);
                 }
             }
-
-            Console.Clear();
 
             int numberToDisplay = 14;
             if (mentions.Count < 15)

@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using TweetSharp;
 using System.Threading;
 using System.Diagnostics;
+using CursesSharp;
 
 namespace ClutterFeed
 {
@@ -46,8 +47,9 @@ namespace ClutterFeed
         /// </summary>
         public void SetUpTwitter()
         {
-            key = getUser.GetUser();
+            
             showUpdates.InitializeTwitter();
+            key = getUser.GetUser();
 
             Friend startFriend = new Friend();
             startFriend.ReadFriends();
@@ -67,92 +69,97 @@ namespace ClutterFeed
             Console.WriteLine(text);
         }
 
+        private Window menu { get; set; }
+        private void MenuDrawInMiddle(string message)
+        {
+            int line = 0;
+            int notNessecary;
+            menu.GetCursorYX(out line, out notNessecary);
+            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+        }
+        private void MenuDrawInMiddle(string message, int line)
+        {
+            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+        }
         public ActionValue ProfileSelection()
         {
-            Console.CursorVisible = false;
-
-            ConsoleKeyInfo pressedKey;
+            int pressedKey;
             int selection = 0;
+            menu = new Window(User.profiles.Count + 10, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 2, 0);
             do
             {
-                Console.Clear();
-                CenterWriteLine("What do you wish to do?");
+                menu.Clear();
+                menu.Keypad = true;
+                menu.Color = 11;
+                MenuDrawInMiddle("What would you like to do?\n", 0);
                 if (selection == 0)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    menu.Color = 21;
                 }
-                CenterWrite("Add profile");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                MenuDrawInMiddle("Add profile");
+                menu.Color = 11;
+                menu.Add("\n");
 
                 if (selection == 1)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    menu.Color = 21;
                 }
-                Console.WriteLine();
-                CenterWrite("Remove a profile");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                MenuDrawInMiddle("Remove a profile");
+                menu.Add("\n");
+                menu.Color = 11;
 
                 if (selection == 2)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    menu.Color = 21;
                 }
-                Console.WriteLine();
-                CenterWrite("Switch profiles");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                MenuDrawInMiddle("Switch profiles");
+                menu.Add("\n");
+                menu.Color = 11;
 
                 if (selection == 3)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    menu.Color = 21;
                 }
-                Console.WriteLine();
-                CenterWrite("Select default profile");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                menu.Refresh();
+                MenuDrawInMiddle("Select default profile");
+                menu.Add("\n");
+                menu.Color = 11;
 
                 if (selection == 4)
                 {
-                    Console.BackgroundColor = ConsoleColor.White;
-                    Console.ForegroundColor = ConsoleColor.Black;
+                    menu.Color = 21;
                 }
-                Console.WriteLine();
-                CenterWrite("Go back");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.BackgroundColor = ConsoleColor.Black;
+                MenuDrawInMiddle("Go back");
+                menu.Color = 11;
+                menu.Refresh();
 
-                pressedKey = Console.ReadKey(true);
-                if (pressedKey.Key == ConsoleKey.UpArrow)
+                pressedKey = menu.GetChar();
+                if (pressedKey == Keys.UP)
                 {
                     if (selection == 0)
                     {
-                        Console.Write('\a');
+                        Curses.Beep();
                     }
                     else
                     {
                         selection--;
                     }
                 }
-                else if (pressedKey.Key == ConsoleKey.DownArrow)
+                else if (pressedKey == Keys.DOWN)
                 {
                     if (selection == 4)
                     {
-                        Console.Write('\a');
+                        Curses.Beep();
                     }
                     else
                     {
                         selection++;
                     }
                 }
-                Console.SetCursorPosition(0, 0);
-            } while (pressedKey.KeyChar.CompareTo('\r') != 0);
+            } while (pressedKey != 10);
 
-            Console.Clear();
+            menu.Clear();
+            menu.Refresh();
             if (selection == 0)
             {
                 getUser.AddProfile();
@@ -161,63 +168,59 @@ namespace ClutterFeed
             {
                 Profile deletingProfile = drawing.SelectUser();
                 int minorSelection = 0;
-                ConsoleKeyInfo pressedChar;
+                int pressedChar;
                 do
                 {
-                    Console.Clear();
-                    CenterWriteLine("Are you sure you want to remove " + deletingProfile.Name + "?");
+                    menu.Clear();
+                    menu.Color = 11;
+                    MenuDrawInMiddle("Are you sure you want to remove " + deletingProfile.Name + "?", 0);
                     if (minorSelection == 0)
                     {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        CenterWrite("Yes");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.WriteLine();
+                        menu.Color = 21;
+                        MenuDrawInMiddle("Yes", 2);
+                        menu.Color = 11;
                     }
                     else
                     {
-                        CenterWriteLine("Yes");
+                        MenuDrawInMiddle("Yes", 2);
                     }
 
                     if (minorSelection == 1)
                     {
-                        Console.ForegroundColor = ConsoleColor.Black;
-                        Console.BackgroundColor = ConsoleColor.White;
-                        CenterWrite("No");
-                        Console.ForegroundColor = ConsoleColor.White;
-                        Console.BackgroundColor = ConsoleColor.Black;
-                        Console.WriteLine();
+                        menu.Color = 21;
+                        MenuDrawInMiddle("No", 3);
+                        menu.Color = 11;
                     }
                     else
                     {
-                        CenterWriteLine("No");
+                        MenuDrawInMiddle("No", 3);
                     }
+                    menu.Refresh();
 
-                    pressedChar = Console.ReadKey(true);
-                    if (pressedChar.Key == ConsoleKey.UpArrow)
+                    pressedChar = menu.GetChar();
+                    if (pressedChar == Keys.UP)
                     {
                         if (minorSelection == 0)
                         {
-                            Console.Write('\a');
+                            Curses.Beep();
                         }
                         else
                         {
                             minorSelection--;
                         }
                     }
-                    else if (pressedChar.Key == ConsoleKey.DownArrow)
+                    else if (pressedChar == Keys.DOWN)
                     {
                         if (minorSelection == 1)
                         {
-                            Console.Write('\a');
+                            Curses.Beep();
                         }
                         else
                         {
                             minorSelection++;
                         }
                     }
-                } while (pressedChar.KeyChar.CompareTo('\r') != 0);
+                } while (pressedChar != 10);
 
                 if (minorSelection == 0)
                 {
@@ -228,6 +231,7 @@ namespace ClutterFeed
             {
                 Profile selectUser = drawing.SelectUser();
                 getUser.SelectUser(selectUser.Name);
+                
             }
             else if (selection == 3)
             {
@@ -239,7 +243,6 @@ namespace ClutterFeed
             {
                 ActionValue back = new ActionValue();
                 back.AskForCommand = false;
-                Console.CursorVisible = true;
                 return back;
             }
 
@@ -247,8 +250,6 @@ namespace ClutterFeed
             returnInfo.AskForCommand = false;
             returnInfo.OverrideCommand = true;
             returnInfo.OverrideCommandString = "/fu";
-
-            Console.CursorVisible = true;
             return returnInfo;
         }
 

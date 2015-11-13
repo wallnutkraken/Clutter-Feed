@@ -214,6 +214,11 @@ namespace ClutterFeed
             User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
             TwitterAccount user = User.Account.GetAccountSettings(); /* Update screen name for user switching */
             userScreenName = user.ScreenName;
+            ScreenDraw.HeadLine.Clear();
+            ScreenDraw.HeadLine.Add("ClutterFeed version " + ScreenDraw.Version);
+            string signOn = "Signed on as: @" + GetUpdates.userScreenName;
+            ScreenDraw.HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
+            ScreenDraw.HeadLine.Refresh();
         }
 
 
