@@ -19,20 +19,35 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TweetSharp;
 using System.Threading;
+using CursesSharp;
 
 namespace ClutterFeed
 {
+    public static class ScreenInfo
+    {
+        public static int WindowHeight = 30;
+        public static int WindowWidth = 120;
+    }
     class Program
     {
+        private static short[] color_table = {
+            Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
+            Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
+        };
 
         static void Main(string[] args)
         {
-            Console.OutputEncoding = System.Text.Encoding.Unicode; /* Enables unicode */
-            SetScreenColor.SetColor(ConsoleColor.Cyan, 0, 126, 199); /* Changes cyan to dark blue-ish */
-            SetScreenColor.SetColor(ConsoleColor.DarkMagenta, 66, 140, 187); /* Makes the DarkMagenta color blue-ish */
-            SetScreenColor.SetColor(ConsoleColor.DarkBlue, 249, 129, 245); /* Makes the DarkBlue color pink */
+            Curses.InitScr();
+            Curses.Newlines = true;
+            Curses.ResizeTerm(ScreenInfo.WindowHeight, ScreenInfo.WindowWidth);
+            Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
+            Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
+            Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
+
+            Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
+            Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);
+            Curses.InitColor(103, Color.FriendColor.Red, Color.FriendColor.Green, Color.FriendColor.Blue);
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.BackgroundColor = ConsoleColor.Black;

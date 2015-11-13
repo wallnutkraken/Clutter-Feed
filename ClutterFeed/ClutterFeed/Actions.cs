@@ -53,6 +53,7 @@ namespace ClutterFeed
             startFriend.ReadFriends();
 
             User.Account.IncludeRetweets = true;
+            drawing.StartScreen();
         }
 
         public static void CenterWrite(string text)
@@ -842,7 +843,7 @@ namespace ClutterFeed
                 returnPosition.X = Console.CursorLeft;
                 returnPosition.Y = Console.CursorTop;
 
-                profileCommand = User.GetCommand();
+                profileCommand = User.CounterConsole();
 
                 string[] splitCommand = new string[2];
                 splitCommand = profileCommand.Split(' ');

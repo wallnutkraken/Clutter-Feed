@@ -20,14 +20,29 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Drawing;
+using CursesSharp;
 
 namespace ClutterFeed
 {
+    
     class ScreenDraw
     {
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
+        private static string Version = "1.5-devel";
+        public static Window HeadLine { get; set; }
+        public static Window Tweets { get; set; }
+
+        public void StartScreen()
+        {
+            HeadLine = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            HeadLine.AttrOn(Attrs.BOLD);
+            HeadLine.Add("ClutterFeed version " + Version + "\tSigned on as: " + GetUpdates.userScreenName);
+            HeadLine.Refresh();
+
+            Tweets = new Window(ScreenInfo.WindowHeight - 3, ScreenInfo.WindowWidth, 1, 0);
+        }
         /// <summary>
         /// Removes mentions from the list
         /// </summary>
@@ -50,37 +65,25 @@ namespace ClutterFeed
         {
             if (update.IsFavorited && update.IsRetweeted) /* Adds a neat little symbol for rts/favs */
             {
-                Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetPosition();
-                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("[");
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write("▀");
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("]");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.Tweets.Color = Colors.YELLOW;
+                Tweets.Add("★");
+                ScreenDraw.Tweets.Color = Colors.GREEN;
+                Tweets.Add("⇄");
+                ScreenDraw.Tweets.Color = Colors.WHITE;
             }
             else if (update.IsFavorited)
             {
-                Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetPosition();
-                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Console.Write("[▀]");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.Tweets.Color = Colors.YELLOW;
+                Tweets.Add("★");
+                ScreenDraw.Tweets.Color = Colors.WHITE;
             }
             else if (update.IsRetweeted)
             {
-                Cursor cursorPosition = new Cursor();
-                cursorPosition = cursorPosition.GetPosition();
-                Console.SetCursorPosition((cursorPosition.X - 3), cursorPosition.Y);
-
-                Console.ForegroundColor = ConsoleColor.DarkGreen;
-                Console.Write("[▀]");
-                Console.ForegroundColor = ConsoleColor.White;
+                Tweets.AttrOn(Attrs.BOLD);
+                ScreenDraw.Tweets.Color = Colors.GREEN;
+                Tweets.Add("⇄");
+                Tweets.AttrOff(Attrs.BOLD);
+                ScreenDraw.Tweets.Color = Colors.WHITE;
             }
         }
 
@@ -155,7 +158,7 @@ namespace ClutterFeed
                 string longUpdate = updates[index].AuthorScreenName + ": " + updates[index].Contents;
 
 
-                int splitter = Console.WindowWidth - 13;
+                int splitter = ScreenInfo.WindowWidth - 13;
 
                 longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
@@ -183,7 +186,7 @@ namespace ClutterFeed
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
                 {
-                    SetScreenColor.SetColor(ConsoleColor.DarkBlue, 255, 179, 64); /* Makes DarkBlue orange-ish */
+                    //SetScreenColor.SetColor(ConsoleColor.DarkBlue, 255, 179, 64); /* Makes DarkBlue orange-ish */
                     Console.ForegroundColor = ConsoleColor.DarkBlue;
                 }
 

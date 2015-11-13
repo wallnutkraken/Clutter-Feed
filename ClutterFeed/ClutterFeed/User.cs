@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using System.IO;
 using TweetSharp;
 using System.Diagnostics;
+using CursesSharp;
 
 namespace ClutterFeed
 {
@@ -110,8 +111,7 @@ namespace ClutterFeed
 
             if ((appTokenExists == false) || (appSecretExists == false))
             {
-                Console.WriteLine("Error: keys.conf is set up improperly.");
-                Environment.Exit(0);
+                throw new FileLoadException("keys.conf is set up improperly.");
             }
 
         }
@@ -148,8 +148,11 @@ namespace ClutterFeed
             Process.Start(uri.ToString());
             service.AuthenticateWith(appKey.Token, appKey.TokenSecret);
 
-            Console.Write("Please input the authentication number: ");
-            string verifier = Console.ReadLine();
+            Window auth = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            Curses.Echo = true;
+            auth.Add("Please input the authentication number: ");
+            auth.Refresh();
+            string verifier = auth.GetString(7);
             userKey = service.GetAccessToken(requestToken, verifier);
             defaultProfile.Active = true;
             defaultProfile.Default = true;
@@ -158,20 +161,23 @@ namespace ClutterFeed
             defaultProfile.Name = userKey.ScreenName;
 
             profiles.Add(defaultProfile);
-
+            Curses.Echo = false;
+            auth.Dispose();
             WriteFile();
         }
 
-        
+
         public void AddProfile()
         {
             OAuthAccessToken userKey = new OAuthAccessToken();
             OAuthRequestToken requestToken = User.Account.GetRequestToken();
             Uri uri = User.Account.GetAuthorizationUri(requestToken);
-            Process.Start(uri.ToString());
+            Window auth = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            Curses.Echo = true;
 
-            Console.Write("Please input the authentication number: ");
-            string verifier = Console.ReadLine();
+            auth.Add("Please input the authentication number: ");
+            auth.Refresh();
+            string verifier = auth.GetString(7);
 
             userKey = User.Account.GetAccessToken(requestToken, verifier);
             Profile newProfile = new Profile();
@@ -183,16 +189,15 @@ namespace ClutterFeed
             if (ProfileExists(newProfile))
             {
                 ScreenDraw.ShowError("User already exists in the list");
-                Console.ReadKey(true);
             }
             else
             {
                 profiles.Add(newProfile);
                 WriteFile();
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.WriteLine("User added");
-                Console.ForegroundColor = ConsoleColor.White;
+                ScreenDraw.ShowSuccess("User added");
             }
+            Curses.Echo = false;
+            auth.Dispose();
         }
 
         /// <summary>
@@ -278,13 +283,6 @@ namespace ClutterFeed
         {
             return appKey;
         }
-        public static string GetCommand()
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.Write("      > ");
-            Console.ForegroundColor = ConsoleColor.White;
-            return Console.ReadLine();
-        }
 
         public static bool IsMissingArgs(string command)
         {
@@ -294,178 +292,222 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Error: input was not complete.");
-                Console.WriteLine("      You probaby didn't use enough args");
-                Console.ForegroundColor = ConsoleColor.White;
+                Window argsMiss = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+                argsMiss.Add("      Error: input was not complete.\n");
+                argsMiss.Add("      You probaby didn't use enough args");
+                argsMiss.Refresh();
+                argsMiss.GetChar();
+                argsMiss.Dispose();
                 return true;
             }
             return false;
         }
 
-        private static int bufferPosition = 0;
+        /// <summary>
+        /// Turns a number into the string I want
+        /// </summary>
+        private static string Numberate(int number)
+        {
+            if (number < 10)
+                return "00" + number;
+            else if (number < 100)
+                return "0" + number;
+            else
+                return number + "";
+        }
+        private static Window DrawConsoleNum(Window cmdWindow, int charCount)
+        {
+            cmdWindow.Color = 101;
+            cmdWindow.Add("[");
+            if (charCount > 140)
+            {
+                cmdWindow.Color = Colors.RED;
+            }
+            else
+            {
+                cmdWindow.Color = Colors.WHITE;
+            }
+            cmdWindow.Add(Numberate(charCount));
+            cmdWindow.Color = 101;
+            cmdWindow.Add("] > ");
+
+            return cmdWindow;
+        }
         public static string CounterConsole()
         {
+            //
+
+            //int charCount = 0;
+            //int buttonPress = 0;
+            //string command = "";
+            //do
+            //{
+            //    string prompt = Number(charCount) + "  > ";
+            //    cmdWindow.Clear();
+            //    cmdWindow.Add(prompt);
+            //    cmdWindow.Add(command);
+            //    cmdWindow.Refresh();
+            //    buttonPress = cmdWindow.GetChar();
+            //    if (buttonPress != 10)
+            //    {
+            //        if (buttonPress == 8)
+            //        {
+            //            command = command.Remove(command.Length - 1);
+            //            charCount--;
+            //        }
+            //        else if (charCount < 148)
+            //        {
+            //            command = command + Convert.ToChar(buttonPress);
+            //            charCount++;
+            //        }
+            //    }
+            //} while (buttonPress != 10);
+            //cmdWindow.Dispose();
+            //return command;
+            Window cmdWindow = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
             int splitCount = 3;
             string command = "";
             string message = "";
-            char writeChar = '\0';
             int charCount = 0;
+            int buttonPress = 0;
             char[] splitter = new char[1];
-            splitter[0] = ' '; /* FUCK C# honestly */
-
-            int cursorPosX = Console.CursorTop;
+            splitter[0] = ' '; /* A little awkward of an approach */
             do
             {
-                Console.SetCursorPosition(0, cursorPosX);
-
-                if (charCount > 140)
-                {
-                    Console.ForegroundColor = ConsoleColor.Red;
-                }
+                cmdWindow.Clear();
 
                 if (command.StartsWith("/"))
                 {
                     try
                     {
                         message = command.Split(splitter, splitCount)[2];
-                        Console.Write("[{0:000}] ", message.Length);
+                        cmdWindow = DrawConsoleNum(cmdWindow, message.Length);
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        Console.Write("[{0:000}] ", charCount);
+                        cmdWindow = DrawConsoleNum(cmdWindow, message.Length);
                     }
                 }
                 else
                 {
-                    Console.Write("[{0:000}] ", charCount);
+                    cmdWindow = DrawConsoleNum(cmdWindow, charCount);
                 }
 
+                cmdWindow.Add(command);
+                cmdWindow.Refresh();
 
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                Console.Write("> ");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.Write(command);
-                ConsoleKeyInfo characterInfo = Console.ReadKey(true);
-                writeChar = characterInfo.KeyChar;
+                buttonPress = cmdWindow.GetChar();
 
-                if (writeChar == '\b')
+                if (buttonPress == 8) /* 8 is backspace */
                 {
                     if (charCount != 0)
                     {
-                        if (Console.CursorLeft == 0)
-                        {
-                            Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop - 1);
-                            Console.Write(' ');
-                            Console.SetCursorPosition(Console.WindowWidth - 1, Console.CursorTop);
-                        }
-                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
-                        Console.Write(" ");
-                        Console.SetCursorPosition(Console.CursorLeft - 1, Console.CursorTop);
                         command = command.Remove(command.Length - 1, 1);
                         charCount--;
                     }
                     else
                     {
-                        Console.Write('\a');
+                        Curses.Beep();
                     }
+                }
+                //else
+                //{
+                //if (characterInfo.Key == ConsoleKey.DownArrow)
+                //{
+                //    if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
+                //    {
+                //        Console.Write('\a');
+                //    }
+                //    else
+                //    {
+                //        try
+                //        {
+                //            bufferPosition--;
+                //            command = CommandHistory.GetCommand(bufferPosition);
+                //            charCount = command.Length;
+                //            ClearLine();
+                //            Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                //        }
+                //        catch (ArgumentOutOfRangeException)
+                //        {
+                //            Console.Write('\a');
+                //        }
+                //    }
+                //}
+                //else if (characterInfo.Key == ConsoleKey.UpArrow) /* Handles going to earlier points in the history */
+                //{
+                //    if (bufferPosition == 0)
+                //    {
+                //        if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
+                //        {
+                //            try
+                //            {
+                //                CommandHistory.Add(command);
+                //                bufferPosition++;
+                //                command = CommandHistory.GetCommand(bufferPosition);
+                //                charCount = command.Length;
+                //                ClearLine();
+                //                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                //            }
+                //            catch (ArgumentOutOfRangeException)
+                //            {
+                //                Console.Write('\a');
+                //            }
+                //        }
+                //        else
+                //        {
+                //            Console.Write('\a');
+                //        }
+                //    }
+                //    else if (bufferPosition == CommandHistory.MaxIndex())
+                //    {
+                //        Console.Write('\a');
+                //    }
+                //    else
+                //    {
+                //        try
+                //        {
+                //            bufferPosition++;
+                //            command = CommandHistory.GetCommand(bufferPosition);
+                //            charCount = command.Length;
+                //            ClearLine();
+                //            Console.SetCursorPosition(8 + charCount, Console.CursorTop);
+                //        }
+                //        catch (ArgumentOutOfRangeException)
+                //        {
+                //            Console.Write('\a');
+                //        }
+                //    }
+                //}
+                //else if (characterInfo.Key == ConsoleKey.RightArrow
+                //    || characterInfo.Key == ConsoleKey.LeftArrow)
+                //{
+                //    /* Ignores left and right arrow key currently */
+                //    /* but one day I hope you could move in the command */
+                //}
+                else if (buttonPress == 10) /* 10 is return */
+                {
+                    buttonPress = int.MinValue;
                 }
                 else
                 {
-                    if (characterInfo.Key == ConsoleKey.DownArrow)
+                    command = command + Convert.ToChar(buttonPress);
+                    try
                     {
-                        if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
-                        {
-                            Console.Write('\a');
-                        }
-                        else
-                        {
-                            try
-                            {
-                                bufferPosition--;
-                                command = CommandHistory.GetCommand(bufferPosition);
-                                charCount = command.Length;
-                                ClearLine();
-                                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                            }
-                            catch (ArgumentOutOfRangeException)
-                            {
-                                Console.Write('\a');
-                            }
-                        }
+                        message = command.Split(splitter, splitCount)[2];
                     }
-                    else if (characterInfo.Key == ConsoleKey.UpArrow) /* Handles going to earlier points in the history */
-                    {
-                        if (bufferPosition == 0)
-                        {
-                            if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
-                            {
-                                try
-                                {
-                                    CommandHistory.Add(command);
-                                    bufferPosition++;
-                                    command = CommandHistory.GetCommand(bufferPosition);
-                                    charCount = command.Length;
-                                    ClearLine();
-                                    Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                                }
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    Console.Write('\a');
-                                }
-                            }
-                            else
-                            {
-                                Console.Write('\a');
-                            }
-                        }
-                        else if (bufferPosition == CommandHistory.MaxIndex())
-                        {
-                            Console.Write('\a');
-                        }
-                        else
-                        {
-                            try
-                            {
-                                bufferPosition++;
-                                command = CommandHistory.GetCommand(bufferPosition);
-                                charCount = command.Length;
-                                ClearLine();
-                                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                            }
-                            catch (ArgumentOutOfRangeException)
-                            {
-                                Console.Write('\a');
-                            }
-                        }
-                    }
-                    else if (characterInfo.Key == ConsoleKey.RightArrow
-                        || characterInfo.Key == ConsoleKey.LeftArrow)
-                    {
-                        /* Ignores left and right arrow key currently */
-                        /* but one day I hope you could move in the command */
-                    }
-                    else
-                    {
-                        command = command + writeChar;
-                        try
-                        {
-                            message = command.Split(splitter, splitCount)[2];
-                        }
-                        catch (IndexOutOfRangeException) { }
-                        charCount++;
-                    }
+                    catch (IndexOutOfRangeException) { }
+                    charCount++;
                 }
+                //}
 
-            } while (writeChar != '\r' && message.Length <= 140);
+            } while (buttonPress != int.MinValue);
 
-            command = command.Replace("\r", "");
-            CommandHistory.Add(command);
-            bufferPosition = 0; /* resets the buffer position every time you finish typing a command */
+            //CommandHistory.Add(command);
 
 
-            Console.WriteLine();
-            CommandHistory.RemoveEmpties();
+            //Console.WriteLine();
+            //CommandHistory.RemoveEmpties();
 
             return command;
         }
@@ -483,15 +525,6 @@ namespace ClutterFeed
                 }
             }
             return false;
-        }
-        private static void ClearLine()
-        {
-            System.Threading.Thread.Sleep(25);
-            for (int index = 1; index <= Console.WindowWidth; index++)
-            {
-                Console.SetCursorPosition(index - 1, Console.CursorTop);
-                Console.Write(" ");
-            }
         }
     }
 }

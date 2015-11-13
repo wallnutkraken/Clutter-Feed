@@ -40,8 +40,6 @@ namespace ClutterFeed
         {
 
             showUpdates.GetTweets(fullUpdate);
-
-            Console.Clear();
             ScreenDraw timeline = new ScreenDraw();
             timeline.ShowTimeline();
         }
