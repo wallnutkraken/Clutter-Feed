@@ -8,13 +8,6 @@ namespace ClutterFeed
 {
     class Color
     {
-        public enum CustomColors
-        {
-            Identifier = 101,
-            Link = 102,
-            Friend = 103,
-            Self = 104
-        }
         public short Red { get; set; }
         public short Green { get; set; }
         public short Blue { get; set; }
@@ -35,5 +28,6 @@ namespace ClutterFeed
         public static Color FriendColor { get; set; }
         public static Color LinkColor { get; set; }
         public static Color SelfColor { get; set; }
+        public static Color MentionColor { get; set; }
     }
 }

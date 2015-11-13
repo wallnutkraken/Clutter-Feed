@@ -87,7 +87,6 @@
     <Compile Include="Actions.cs" />
     <Compile Include="Color.cs" />
     <Compile Include="CommandHistory.cs" />
-    <Compile Include="Cursor.cs" />
     <Compile Include="Friend.cs" />
     <Compile Include="GetUpdates.cs" />
     <Compile Include="InteractiveTweet.cs" />

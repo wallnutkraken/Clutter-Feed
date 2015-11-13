@@ -145,9 +145,9 @@ namespace ClutterFeed
         {
             List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
             int index;
-            if (updates.Count > 14)
+            if (updates.Count > 12)
             {
-                index = 14;
+                index = 12;
             }
             else
             {
@@ -167,43 +167,42 @@ namespace ClutterFeed
 
                 if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Tweets.Color = 103; /* The color of friendship */
                 }
                 else
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkMagenta;
+                    Tweets.Color = 101; /* Regular identifier color */
                 }
 
-                Console.Write(updates[index].TweetIdentification + "    ");
-                Console.ForegroundColor = ConsoleColor.White;
+                Tweets.Add(updates[index].TweetIdentification + "    ");
+                Tweets.Color = Colors.WHITE;
                 bool identificationWritten = true;
 
                 ShowInteractions(updates[index]);
 
                 if (updates[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
-                    Console.ForegroundColor = ConsoleColor.DarkGray;
+                    Tweets.Color = 104;
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
                 {
-                    //SetScreenColor.SetColor(ConsoleColor.DarkBlue, 255, 179, 64); /* Makes DarkBlue orange-ish */
-                    Console.ForegroundColor = ConsoleColor.DarkBlue;
+                    Tweets.Color = 105;
                 }
 
                 for (int updateIndex = 0; updateIndex < shortenedUpdate.Count; updateIndex++)
                 {
                     if (identificationWritten)
                     {
-                        Console.WriteLine(shortenedUpdate[updateIndex]);
+                        Tweets.Add(shortenedUpdate[updateIndex] + "\n");
                         identificationWritten = false;
                     }
                     else
                     {
-                        Console.WriteLine("      " + shortenedUpdate[updateIndex]);
+                        Tweets.Add("      " + shortenedUpdate[updateIndex]);
                     }
                 }
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.WriteLine();
+                Tweets.Color = Colors.WHITE;
+                Tweets.Add("\n");
 
             }
         }
@@ -214,12 +213,7 @@ namespace ClutterFeed
             {
                 throw new NullReferenceException("User does not exist");
             }
-
-            Console.Clear();
-
-            ScreenSize screenInfo = new ScreenSize();
-            screenInfo.Left = Console.WindowWidth;
-            screenInfo.Top = Console.WindowHeight;
+            Window showProfile = new Window(12, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
 
             if (IsFollowing)
             {

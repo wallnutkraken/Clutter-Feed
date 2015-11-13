@@ -50,8 +50,6 @@ namespace ClutterFeed
             Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
             Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
 
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.BackgroundColor = ConsoleColor.Black;
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
 
