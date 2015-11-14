@@ -249,7 +249,11 @@ namespace ClutterFeed
                 {
                     if (identificationWritten)
                     {
-                        Tweets.Add(shortenedUpdate[updateIndex] + "\n");
+                        string[] tweetParts = shortenedUpdate[updateIndex].Split(':');
+                        Tweets.AttrOn(Attrs.BOLD);
+                        Tweets.Add(tweetParts[0] + ":");
+                        Tweets.AttrOff(Attrs.BOLD);
+                        Tweets.Add(tweetParts[1] + "\n");
                         identificationWritten = false;
                     }
                     else
