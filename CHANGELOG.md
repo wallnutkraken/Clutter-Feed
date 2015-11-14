@@ -1,6 +1,16 @@
 # **Release change log**
 
-### Version 1.3:
+### Changes in Version 1.4:
+- Added support for multiple twitter accounts
+- Ported over the entire project to a curses library:
+	- No longer limited by cmd
+	- Better color support
+	- Changed the look of ClutterFeed in some areas
+- Fixed a bug that wouldn't remove profiles correctly
+- Fixed a bug that would make ClutterFeed unable to start if you deleted the default profile from within ClutterFeed
+- Changed the beeps to not be spammable
+
+### Changes in Version 1.3:
 - Added command history feature for the command console (use up and down keys to use)
 - Added a /friend command which lets you set users as friends, and their tweet identifier would show up in a different color than regular users' identifiers
 - Added a /tweet command which shows the selected tweet and more information about it
@@ -11,7 +21,7 @@
 - Fixed a bug that would cause a crash when looking up the profile of an non-existant user
 - Fixed a bug where the /rn command would only tweet the first word
 
-### Version 1.2:
+### Changes in Version 1.2:
 - You can now reply, favorite and retweet in the mention screen
 - Tweets are now cached until a full update is made
 - Added a /link command to give you the link to a tweet
@@ -44,4 +54,3 @@ These features were included:
 - Searching for profiles.
 - Looking at profiles for every tweet.
 -A help prompt.
-
