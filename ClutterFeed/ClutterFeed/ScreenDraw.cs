@@ -74,6 +74,10 @@ namespace ClutterFeed
             string signOn = "Next update in: " + clock +  ". Signed on as: @" + GetUpdates.userScreenName;
             HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             HeadLine.Refresh();
+            if (User.CounterConsoleWin != null)
+            {
+                User.CounterConsoleWin.Refresh();
+            }
         }
         public void StartScreen()
         {

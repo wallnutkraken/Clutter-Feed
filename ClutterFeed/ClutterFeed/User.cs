@@ -32,7 +32,7 @@ namespace ClutterFeed
 
         public static List<Profile> profiles = new List<Profile>();
         public static OAuthAccessToken appKey = new OAuthAccessToken();
-
+        public static Window CounterConsoleWin;
 
         /// <summary>
         /// Checks if all the files are in order
@@ -370,8 +370,8 @@ namespace ClutterFeed
         }
         public static string CounterConsole()
         {
-            Window cmdWindow = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
-            cmdWindow.Keypad = true;
+            CounterConsoleWin = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
+            CounterConsoleWin.Keypad = true;
 
             int splitCount = 3;
             string command = "";
@@ -384,29 +384,29 @@ namespace ClutterFeed
             splitter[0] = ' '; /* A little awkward of an approach */
             do
             {
-                cmdWindow.Clear();
+                CounterConsoleWin.Clear();
 
                 if (command.StartsWith("/"))
                 {
                     try
                     {
                         message = command.Split(splitter, splitCount)[2];
-                        cmdWindow = DrawConsoleNum(cmdWindow, message.Length);
+                        CounterConsoleWin = DrawConsoleNum(CounterConsoleWin, message.Length);
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        cmdWindow = DrawConsoleNum(cmdWindow, message.Length);
+                        CounterConsoleWin = DrawConsoleNum(CounterConsoleWin, message.Length);
                     }
                 }
                 else
                 {
-                    cmdWindow = DrawConsoleNum(cmdWindow, charCount);
+                    CounterConsoleWin = DrawConsoleNum(CounterConsoleWin, charCount);
                 }
 
-                cmdWindow.Add(command);
-                cmdWindow.Refresh();
+                CounterConsoleWin.Add(command);
+                CounterConsoleWin.Refresh();
 
-                buttonPress = cmdWindow.GetChar();
+                buttonPress = CounterConsoleWin.GetChar();
 
                 if (buttonPress == 8) /* 8 is backspace */
                 {
