@@ -371,12 +371,16 @@ namespace ClutterFeed
         public static string CounterConsole()
         {
             Window cmdWindow = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
+            cmdWindow.Keypad = true;
+
             int splitCount = 3;
             string command = "";
             string message = "";
             int charCount = 0;
             int buttonPress = 0;
+            int bufferPosition = 0;
             char[] splitter = new char[1];
+
             splitter[0] = ' '; /* A little awkward of an approach */
             do
             {
@@ -416,82 +420,76 @@ namespace ClutterFeed
                         Curses.Beep();
                     }
                 }
-                //else
-                //{
-                //if (characterInfo.Key == ConsoleKey.DownArrow)
-                //{
-                //    if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
-                //    {
-                //        Console.Write('\a');
-                //    }
-                //    else
-                //    {
-                //        try
-                //        {
-                //            bufferPosition--;
-                //            command = CommandHistory.GetCommand(bufferPosition);
-                //            charCount = command.Length;
-                //            ClearLine();
-                //            Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                //        }
-                //        catch (ArgumentOutOfRangeException)
-                //        {
-                //            Console.Write('\a');
-                //        }
-                //    }
-                //}
-                //else if (characterInfo.Key == ConsoleKey.UpArrow) /* Handles going to earlier points in the history */
-                //{
-                //    if (bufferPosition == 0)
-                //    {
-                //        if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
-                //        {
-                //            try
-                //            {
-                //                CommandHistory.Add(command);
-                //                bufferPosition++;
-                //                command = CommandHistory.GetCommand(bufferPosition);
-                //                charCount = command.Length;
-                //                ClearLine();
-                //                Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                //            }
-                //            catch (ArgumentOutOfRangeException)
-                //            {
-                //                Console.Write('\a');
-                //            }
-                //        }
-                //        else
-                //        {
-                //            Console.Write('\a');
-                //        }
-                //    }
-                //    else if (bufferPosition == CommandHistory.MaxIndex())
-                //    {
-                //        Console.Write('\a');
-                //    }
-                //    else
-                //    {
-                //        try
-                //        {
-                //            bufferPosition++;
-                //            command = CommandHistory.GetCommand(bufferPosition);
-                //            charCount = command.Length;
-                //            ClearLine();
-                //            Console.SetCursorPosition(8 + charCount, Console.CursorTop);
-                //        }
-                //        catch (ArgumentOutOfRangeException)
-                //        {
-                //            Console.Write('\a');
-                //        }
-                //    }
-                //}
-                //else if (characterInfo.Key == ConsoleKey.RightArrow
-                //    || characterInfo.Key == ConsoleKey.LeftArrow)
-                //{
-                //    /* Ignores left and right arrow key currently */
-                //    /* but one day I hope you could move in the command */
-                //}
-                else if (buttonPress == 10) /* 10 is return */
+                else
+                {
+                    if (buttonPress == Keys.DOWN)
+                    {
+                        if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
+                        {
+                            Curses.Beep();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                bufferPosition--;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                            }
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                Curses.Beep();
+                            }
+                        }
+                    }
+                    else if (buttonPress == Keys.UP) /* Handles going to earlier points in the history */
+                    {
+                        if (bufferPosition == 0)
+                        {
+                            if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
+                            {
+                                try
+                                {
+                                    CommandHistory.Add(command);
+                                    bufferPosition++;
+                                    command = CommandHistory.GetCommand(bufferPosition);
+                                    charCount = command.Length;
+                                }
+                                catch (ArgumentOutOfRangeException)
+                                {
+                                    Curses.Beep();
+                                }
+                            }
+                            else
+                            {
+                                Curses.Beep();
+                            }
+                        }
+                        else if (bufferPosition == CommandHistory.MaxIndex())
+                        {
+                            Curses.Beep();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                bufferPosition++;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                            }
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                Curses.Beep();
+                            }
+                        }
+                    }
+                    else if (buttonPress == Keys.RIGHT
+                        || buttonPress == Keys.LEFT)
+                    {
+                        /* Ignores left and right arrow key currently */
+                        /* but one day I hope you could move in the command */
+                    }
+                    else if (buttonPress == 10) /* 10 is return */
                 {
                     buttonPress = int.MinValue;
                 }
@@ -505,15 +503,12 @@ namespace ClutterFeed
                     catch (IndexOutOfRangeException) { }
                     charCount++;
                 }
-                //}
+                }
 
             } while (buttonPress != int.MinValue);
 
-            //CommandHistory.Add(command);
-
-
-            //Console.WriteLine();
-            //CommandHistory.RemoveEmpties();
+            CommandHistory.Add(command);
+            CommandHistory.RemoveEmpties();
 
             return command;
         }
