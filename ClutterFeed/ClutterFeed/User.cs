@@ -36,6 +36,19 @@ namespace ClutterFeed
         public static Window CounterConsoleWin;
         private const string CONFIG = "clutterfeed.conf";
 
+        public int GetTimeout()
+        {
+            ReadConfig();
+            foreach (string line in ConfigFile)
+            {
+                if (line.ToLower().Contains("refresh") && line.StartsWith("#") == false)
+                {
+                    return int.Parse(line.Split('=')[1]);
+                }
+            }
+            return 300;
+        }
+
         /// <summary>
         /// Checks if all the files are in order
         /// </summary>
@@ -119,7 +132,10 @@ namespace ClutterFeed
         }
         private void ReadConfig()
         {
-            ConfigFile = File.ReadAllLines(CONFIG).ToList();
+            if (ConfigFile == null)
+            {
+                ConfigFile = File.ReadAllLines(CONFIG).ToList();
+            }
         }
         public static bool ConfigExists()
         {
@@ -148,7 +164,7 @@ namespace ClutterFeed
                     while (ConfigFile[index].CompareTo("}") != 0)
                     {
                         string[] splitLine = ConfigFile[index].Split('=');
-                        if (splitLine[0].InsensitiveCompare("identifiercolor"))
+                        if (splitLine[0].InsensitiveCompare("identifiercolor") && ConfigFile[index].StartsWith("#") == false)
                         {
                             string[] colorSetting = splitLine[1].Split(',');
                             short red = short.Parse(colorSetting[0]);
@@ -156,7 +172,7 @@ namespace ClutterFeed
                             short blue = short.Parse(colorSetting[2]);
                             Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
                         }
-                        else if (splitLine[0].InsensitiveCompare("linkcolor"))
+                        else if (splitLine[0].InsensitiveCompare("linkcolor") && ConfigFile[index].StartsWith("#") == false)
                         {
                             string[] colorSetting = splitLine[1].Split(',');
                             short red = short.Parse(colorSetting[0]);
@@ -164,7 +180,7 @@ namespace ClutterFeed
                             short blue = short.Parse(colorSetting[2]);
                             Color.LinkColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
                         }
-                        else if (splitLine[0].InsensitiveCompare("friendcolor"))
+                        else if (splitLine[0].InsensitiveCompare("friendcolor") && ConfigFile[index].StartsWith("#") == false)
                         {
                             string[] colorSetting = splitLine[1].Split(',');
                             short red = short.Parse(colorSetting[0]);
@@ -172,7 +188,7 @@ namespace ClutterFeed
                             short blue = short.Parse(colorSetting[2]);
                             Color.FriendColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
                         }
-                        else if (splitLine[0].InsensitiveCompare("selfcolor"))
+                        else if (splitLine[0].InsensitiveCompare("selfcolor") && ConfigFile[index].StartsWith("#") == false)
                         {
                             string[] colorSetting = splitLine[1].Split(',');
                             short red = short.Parse(colorSetting[0]);
@@ -180,7 +196,7 @@ namespace ClutterFeed
                             short blue = short.Parse(colorSetting[2]);
                             Color.SelfColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
                         }
-                        else if (splitLine[0].InsensitiveCompare("mentioncolor"))
+                        else if (splitLine[0].InsensitiveCompare("mentioncolor") && ConfigFile[index].StartsWith("#") == false)
                         {
                             string[] colorSetting = splitLine[1].Split(',');
                             short red = short.Parse(colorSetting[0]);

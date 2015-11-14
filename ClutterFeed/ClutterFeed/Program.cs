@@ -39,17 +39,18 @@ namespace ClutterFeed
         static void Main(string[] args)
         {
             Curses.InitScr();
-            TimeLeft = 300;
             Curses.Newlines = true;
             Curses.ResizeTerm(ScreenInfo.WindowHeight, ScreenInfo.WindowWidth);
             if (User.ConfigExists() == false)
             {
                 User.SetUnsetColorsToDefaults();
+                TimeLeft = 300;
             }
             else
             {
-                User colors = new User();
-                colors.FindColors();
+                User config = new User();
+                TimeLeft = config.GetTimeout();
+                config.FindColors();
             }
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);

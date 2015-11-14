@@ -1,0 +1,24 @@
+#This is an example configuration file for ClutterFeed
+#ClutterFeed does not require this file to exist to work
+#and will use hardcoded defaults if it cannot find it.
+#Make sure that you use the correct syntax when configuring
+#Clutterfeed. The comments in this file will try to explain
+#what each configuration does and what are the legal values
+#for each of them.
+
+COLORS
+{
+#The colors are defined as such:
+#color=red,green,blue
+#Note: you cannot make up your own colors and have
+#to use the names that are provided here.
+identifierColor=225,126,199
+linkColor=66,140,187
+friendColor=249,129,245
+selfColor=225,165,0
+mentionColor=236,183,0
+}
+#Refresh sets how often ClutterFeed automatically recieves
+#new updates from the Twitter API. This value is in seconds.
+#Setting it to 0 will NOT disable auto-updating.
+REFRESH=60
