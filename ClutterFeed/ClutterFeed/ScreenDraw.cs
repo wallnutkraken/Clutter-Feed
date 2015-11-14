@@ -249,9 +249,11 @@ namespace ClutterFeed
                 {
                     if (identificationWritten)
                     {
-                        string[] tweetParts = shortenedUpdate[updateIndex].Split(':');
+                        char[] splitChar = new char[1];
+                        splitChar[0] = ' '; /* Yay for workarounds! */
+                        string[] tweetParts = shortenedUpdate[updateIndex].Split(splitChar, 2);
                         Tweets.AttrOn(Attrs.BOLD);
-                        Tweets.Add(tweetParts[0] + ":");
+                        Tweets.Add(tweetParts[0] + " ");
                         Tweets.AttrOff(Attrs.BOLD);
                         Tweets.Add(tweetParts[1] + "\n");
                         identificationWritten = false;
