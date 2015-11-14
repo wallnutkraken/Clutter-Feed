@@ -35,10 +35,11 @@ namespace ClutterFeed
             Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
             Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
         };
-
+        public static int TimeLeft { get; set; }
         static void Main(string[] args)
         {
             Curses.InitScr();
+            TimeLeft = 300;
             Curses.Newlines = true;
             Curses.ResizeTerm(ScreenInfo.WindowHeight, ScreenInfo.WindowWidth);
             Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
@@ -79,6 +80,10 @@ namespace ClutterFeed
             twitterDo.SetUpTwitter();
 
             string command = "/fullupdate";
+            AutoResetEvent autoEvent = new AutoResetEvent(false);
+            TimerCallback call = twitterDo.RefreshTweets;
+            
+            Timer tim = new Timer(call, null, 0, 1000);
             do
             {
                 ActionValue commandMetadata = new ActionValue();
@@ -206,6 +211,7 @@ namespace ClutterFeed
                 }
             } while ((!command.ToLower().StartsWith("/q")));
 
+            tim.Dispose();
             ScreenDraw.HeadLine.Dispose();
             ScreenDraw.Tweets.Dispose();
 

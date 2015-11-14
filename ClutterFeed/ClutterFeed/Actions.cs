@@ -791,6 +791,22 @@ namespace ClutterFeed
             }
         }
 
+        public void RefreshTweets(object stateInfo)
+        {
+            if (Program.TimeLeft == 0)
+            {
+                showUpdates.GetTweets(false);
+                ScreenDraw.UpdateHeader();
+                drawing.ShowTimeline();
+                Program.TimeLeft = 300;
+            }
+            else
+            {
+                Program.TimeLeft--;
+                ScreenDraw.UpdateHeader();
+            }
+        }
+
         public ActionValue Update(string command)
         {
             newTweet.ShowUpdates(User.Account, showUpdates, false);
