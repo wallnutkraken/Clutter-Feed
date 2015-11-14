@@ -282,11 +282,7 @@ namespace ClutterFeed
             {
                 return returnInfo;
             }
-            if (command.Split(' ')[1].StartsWith("@"))
-            {
-                screenName = command.Split(' ')[1].Remove(0, 1);
-            }
-            else if (command.Split(' ')[1].Length != 2)
+            if (command.Split(' ')[1].Length != 2)
             {
                 return returnInfo;
             }
