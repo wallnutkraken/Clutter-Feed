@@ -2,12 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace ClutterFeed
 {
     class Color
     {
+        
         public short Red { get; set; }
         public short Green { get; set; }
         public short Blue { get; set; }
@@ -24,10 +25,10 @@ namespace ClutterFeed
 
         }
 
-        public static Color IdentifierColor { get; set; }
-        public static Color FriendColor { get; set; }
-        public static Color LinkColor { get; set; }
-        public static Color SelfColor { get; set; }
-        public static Color MentionColor { get; set; }
+        public static Color IdentifierColor { get; set; } = null;
+        public static Color FriendColor { get; set; } = null;
+        public static Color LinkColor { get; set; } = null;
+        public static Color SelfColor { get; set; } = null;
+        public static Color MentionColor { get; set; } = null;
     }
 }

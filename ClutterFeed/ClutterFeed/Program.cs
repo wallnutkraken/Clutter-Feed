@@ -42,11 +42,15 @@ namespace ClutterFeed
             TimeLeft = 300;
             Curses.Newlines = true;
             Curses.ResizeTerm(ScreenInfo.WindowHeight, ScreenInfo.WindowWidth);
-            Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
-            Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
-            Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
-            Color.SelfColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
-            Color.MentionColor = SetScreenColor.CursifyColor(new Color(236, 183, 9));
+            if (User.ConfigExists() == false)
+            {
+                User.SetUnsetColorsToDefaults();
+            }
+            else
+            {
+                User colors = new User();
+                colors.FindColors();
+            }
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
             Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);

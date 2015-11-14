@@ -32,7 +32,9 @@ namespace ClutterFeed
 
         public static List<Profile> profiles = new List<Profile>();
         public static OAuthAccessToken appKey = new OAuthAccessToken();
+        private List<string> ConfigFile;
         public static Window CounterConsoleWin;
+        private const string CONFIG = "clutterfeed.conf";
 
         /// <summary>
         /// Checks if all the files are in order
@@ -114,6 +116,110 @@ namespace ClutterFeed
                 throw new FileLoadException("keys.conf is set up improperly.");
             }
 
+        }
+        private void ReadConfig()
+        {
+            ConfigFile = File.ReadAllLines(CONFIG).ToList();
+        }
+        public static bool ConfigExists()
+        {
+            return File.Exists(CONFIG);
+        }
+        public bool ColorsDefined()
+        {
+            ReadConfig();
+            foreach (string line in ConfigFile)
+            {
+                if (line.InsensitiveCompare("COLORS"))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public void FindColors()
+        {
+            ReadConfig();
+            for (int index = 0; index < ConfigFile.Count; index++)
+            {
+                if (ConfigFile[index].InsensitiveCompare("colors"))
+                {
+                    index = index + 2;
+                    while (ConfigFile[index].CompareTo("}") != 0)
+                    {
+                        string[] splitLine = ConfigFile[index].Split('=');
+                        if (splitLine[0].InsensitiveCompare("identifiercolor"))
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
+                        else if (splitLine[0].InsensitiveCompare("linkcolor"))
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.LinkColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
+                        else if (splitLine[0].InsensitiveCompare("friendcolor"))
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.FriendColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
+                        else if (splitLine[0].InsensitiveCompare("selfcolor"))
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.SelfColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
+                        else if (splitLine[0].InsensitiveCompare("mentioncolor"))
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.MentionColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
+                        index++;
+                    }
+                }
+            }
+            SetUnsetColorsToDefaults();
+        }
+
+        /// <summary>
+        /// Sets the colors that weren't set to defaults
+        /// </summary>
+        public static void SetUnsetColorsToDefaults()
+        {
+            if (Color.IdentifierColor == null)
+            {
+                Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
+            }
+            if (Color.LinkColor == null)
+            {
+                Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
+            }
+            if (Color.FriendColor == null)
+            {
+                Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
+            }
+            if (Color.SelfColor == null)
+            {
+                Color.SelfColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
+            }
+            if (Color.MentionColor == null)
+            {
+                Color.MentionColor = SetScreenColor.CursifyColor(new Color(236, 183, 9));
+            }
         }
 
         /// <summary>
