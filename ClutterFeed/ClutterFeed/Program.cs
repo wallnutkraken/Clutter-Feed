@@ -44,7 +44,7 @@ namespace ClutterFeed
             Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
             Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
             Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
-            Color.SelfColor = SetScreenColor.CursifyColor(new Color(225, 69, 0));
+            Color.SelfColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
             Color.MentionColor = SetScreenColor.CursifyColor(new Color(236, 183, 9));
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
