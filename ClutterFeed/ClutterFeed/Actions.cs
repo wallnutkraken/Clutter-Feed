@@ -794,7 +794,7 @@ namespace ClutterFeed
                 showUpdates.GetTweets(false);
                 ScreenDraw.UpdateHeader();
                 drawing.ShowTimeline();
-                Program.TimeLeft = 300;
+                Program.TimeLeft = Program.ConfigSetTimeout;
             }
             else
             {

@@ -35,6 +35,7 @@ namespace ClutterFeed
             Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
             Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
         };
+        public static int ConfigSetTimeout { get; set; }
         public static int TimeLeft { get; set; }
         static void Main(string[] args)
         {
@@ -44,14 +45,15 @@ namespace ClutterFeed
             if (User.ConfigExists() == false)
             {
                 User.SetUnsetColorsToDefaults();
-                TimeLeft = 300;
+                ConfigSetTimeout = 301;
             }
             else
             {
                 User config = new User();
-                TimeLeft = config.GetTimeout();
+                ConfigSetTimeout = config.GetTimeout() + 1;
                 config.FindColors();
             }
+            TimeLeft = ConfigSetTimeout;
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
             Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);
