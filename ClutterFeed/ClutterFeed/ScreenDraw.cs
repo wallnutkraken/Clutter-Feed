@@ -164,17 +164,9 @@ namespace ClutterFeed
         public void ShowTimeline()
         {
             Tweets.Clear();
+            Tweets.EnableScroll = true;
             List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
-            int index;
-            if (updates.Count > 12)
-            {
-                index = 12;
-            }
-            else
-            {
-                index = updates.Count - 1;
-            }
-            for (; index >= 0; index--)
+            for (int index = updates.Count - 1; index >= 0; index--)
             {
                 string longUpdate = updates[index].AuthorScreenName + ": " + updates[index].Contents;
 
@@ -225,7 +217,7 @@ namespace ClutterFeed
                 Tweets.Color = Colors.WHITE;
                 Tweets.Add("\n");
 
-
+                Tweets.Refresh();
             }
             Tweets.Refresh();
         }
@@ -343,7 +335,7 @@ namespace ClutterFeed
             tweetShow.Color = 14;
             longUpdate = longUpdate.Replace("\n", " ");
             List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
-            
+
             tweetShow.Add(tweet.AuthorScreenName + "\n");
             string atName = "( " + tweet.AuthorDisplayName + " )\n";
             tweetShow.Color = 11;
@@ -396,40 +388,40 @@ namespace ClutterFeed
 
             help.Add("/unfav, /uf");
             DrawAtEnd(help, 3, "Unfavourites a selected tweet\n");
-            
+
             help.Add("/api");
             DrawAtEnd(help, 4, "Shows the remaining API hits\n");
-            
+
             help.Add("/r");
             DrawAtEnd(help, 5, "Replies to everyone in the selected tweet\n");
-            
+
             help.Add("/rc");
             DrawAtEnd(help, 6, "Replies only to the author of the tweet\n");
-            
+
             help.Add("/rn");
             DrawAtEnd(help, 7, "Replies without using @ at all\n");
-            
+
             help.Add("/id");
             DrawAtEnd(help, 8, "Shows the ID of the tweet\n");
-            
+
             help.Add("/profile");
             DrawAtEnd(help, 9, "Shows the profile of the selected user\n");
-            
+
             help.Add("/me");
             DrawAtEnd(help, 10, "Shows your mentions\n");
-            
+
             help.Add("/link");
             DrawAtEnd(help, 11, "Links you to a tweet\n");
-            
+
             help.Add("/tweet");
             DrawAtEnd(help, 12, "Shows you details of a tweet\n");
-            
+
             help.Add("/open");
             DrawAtEnd(help, 13, "Opens the tweet in browser (only from /tweet)\n");
-            
+
             help.Add("/friend");
             DrawAtEnd(help, 14, "Adds/removes a friend\n");
-            
+
             help.Add("/accounts");
             DrawAtEnd(help, 15, "Actions regarding twitter accounts\n");
 
