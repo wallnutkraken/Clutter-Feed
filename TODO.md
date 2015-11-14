@@ -8,8 +8,6 @@ Not in any specific order
  Not that difficult
 Haha, "not that difficult", he says.
 
-#### A config file for colors
-
 #### Direct message support
 
 #### Improve mentions
