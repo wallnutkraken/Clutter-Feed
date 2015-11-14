@@ -30,7 +30,7 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        public static string Version = "1.5-devel";
+        public static string Version = "1.4-beta";
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
@@ -216,8 +216,6 @@ namespace ClutterFeed
                 }
                 Tweets.Color = Colors.WHITE;
                 Tweets.Add("\n");
-
-                Tweets.Refresh();
             }
             Tweets.Refresh();
         }

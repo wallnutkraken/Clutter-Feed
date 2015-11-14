@@ -40,7 +40,6 @@ namespace ClutterFeed
         private GetUpdates showUpdates = new GetUpdates();
         private OAuthAccessToken key = new OAuthAccessToken();
 
-        public static string SpecialCommandCase { get; set; }
 
         /// <summary>
         /// Initializes all the important objects and the API
@@ -327,7 +326,16 @@ namespace ClutterFeed
 
                     replyOpts.Status = replyOpts.Status + " ";
 
-                    InteractiveTweet tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
+                    InteractiveTweet tweetReplyingTo;
+                    try
+                    {
+                        tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
+                    }
+                    catch (KeyNotFoundException exIn)
+                    {
+                        ScreenDraw.ShowMessage(exIn.Message);
+                        return new ActionValue();
+                    }
                     string[] words = tweetReplyingTo.Contents.Split(' ');
                     string userScreenName = GetUpdates.userScreenName.ToLower();
 
@@ -422,10 +430,17 @@ namespace ClutterFeed
             }
             else
             {
-                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                ScreenDraw.ShowMessage(tweet.LinkToTweet);
-                Process.Start(tweet.LinkToTweet);
+                try
+                {
+                    long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                    InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                    ScreenDraw.ShowMessage(tweet.LinkToTweet);
+                    Process.Start(tweet.LinkToTweet);
+                }
+                catch (KeyNotFoundException exIn)
+                {
+                    ScreenDraw.ShowMessage(exIn.Message);
+                }
             }
             return returnInfo;
         }
@@ -509,7 +524,16 @@ namespace ClutterFeed
 
                     long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                     favOpts.Id = tweetID;
-                    InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                    InteractiveTweet tweet = null;
+                    try
+                    {
+                        tweet = TweetIdentification.FindTweet(tweetID);
+                    }
+                    catch (KeyNotFoundException exIn)
+                    {
+                        ScreenDraw.ShowMessage(exIn.Message);
+                        return returnInfo;
+                    }
 
                     if (tweet.IsFavorited)
                     {
@@ -576,9 +600,16 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                    InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                    screenName = tweet.AuthorScreenName;
+                    try
+                    {
+                        long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                        InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                        screenName = tweet.AuthorScreenName;
+                    }
+                    catch (KeyNotFoundException exIn)
+                    {
+                        ScreenDraw.ShowMessage(exIn.Message);
+                    }
                 }
 
                 if (GetUpdates.IsBlocked(screenName))
@@ -616,9 +647,16 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                    InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                    screenName = tweet.AuthorScreenName;
+                    try
+                    {
+                        long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                        InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                        screenName = tweet.AuthorScreenName;
+                    }
+                    catch (KeyNotFoundException exIn)
+                    {
+                        ScreenDraw.ShowMessage(exIn.Message);
+                    }
                 }
 
                 if (GetUpdates.IsFollowing(screenName))
@@ -735,7 +773,16 @@ namespace ClutterFeed
             else
             {
                 long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                InteractiveTweet tweet = null;
+                try
+                {
+                    tweet = TweetIdentification.FindTweet(tweetID);
+                }
+                catch (KeyNotFoundException exIn)
+                {
+                    ScreenDraw.ShowMessage(exIn.Message);
+                    return returnInfo;
+                }
                 ScreenDraw tweetDrawer = new ScreenDraw();
                 tweetDrawer.DrawTweet(tweet);
 
