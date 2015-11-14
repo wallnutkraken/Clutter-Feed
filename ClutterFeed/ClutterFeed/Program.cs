@@ -37,6 +37,7 @@ namespace ClutterFeed
         };
         public static int ConfigSetTimeout { get; set; }
         public static int TimeLeft { get; set; }
+        public static Timer UpdateTimer { get; set; }
         static void Main(string[] args)
         {
             Curses.InitScr();
@@ -90,7 +91,7 @@ namespace ClutterFeed
             AutoResetEvent autoEvent = new AutoResetEvent(false);
             TimerCallback call = twitterDo.RefreshTweets;
             
-            Timer tim = new Timer(call, null, 0, 1000);
+            UpdateTimer = new Timer(call, null, 0, 1000);
             do
             {
                 ActionValue commandMetadata = new ActionValue();
@@ -218,7 +219,7 @@ namespace ClutterFeed
                 }
             } while ((!command.ToLower().StartsWith("/q")));
 
-            tim.Dispose();
+            UpdateTimer.Dispose();
             ScreenDraw.HeadLine.Dispose();
             ScreenDraw.Tweets.Dispose();
 

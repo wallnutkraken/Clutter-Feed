@@ -17,7 +17,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using CursesSharp;
 using TweetSharp;
 using System.Media;
 
@@ -66,15 +66,20 @@ namespace ClutterFeed
             {
                 TwitterResponse resp = User.Account.Response;
                 
-                Console.ForegroundColor = ConsoleColor.Red;
-                string errorString = "ERROR: Empty list of tweets. Possibly API limited.";
-                Console.SetCursorPosition((Console.WindowWidth / 2) - (errorString.Length / 2), Console.WindowHeight / 2);
-                Console.Write(errorString);
-                Console.ReadKey(true);
-                Console.Clear();
-                Console.WriteLine("Please wait a bit before using the API again.");
-                Console.WriteLine("However, you can use /api to see the status of the API limit.");
-                Console.ForegroundColor = ConsoleColor.White;
+                if (resp.RateLimitStatus.RemainingHits == 0)
+                {
+                    ScreenDraw.ShowMessage("You have hit the API Limit. Please try again in a few minutes");
+                }
+                else if (resp.RateLimitStatus.RemainingHits < 0)
+                {
+                    Program.UpdateTimer.Dispose();
+                    ScreenDraw.ShowMessage("An error occured when retrieving tweets from Twitter. Please restart ClutterFeed");
+                    System.Threading.Thread.Sleep(1000);
+                    ScreenDraw.Tweets.Dispose();
+                    ScreenDraw.HeadLine.Dispose();
+                    Curses.EndWin();
+                    Environment.Exit(1);
+                }
                 continueMethod = false;
             }
             int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
