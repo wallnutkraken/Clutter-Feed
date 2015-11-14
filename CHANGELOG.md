@@ -2,6 +2,7 @@
 
 ### Changes in Version 1.4:
 - Added support for multiple twitter accounts
+- Added a timed update, to update tweets every 5 minutes
 - Ported over the entire project to a curses library:
 	- No longer limited by cmd
 	- Better color support
