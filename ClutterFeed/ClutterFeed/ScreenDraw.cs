@@ -169,9 +169,10 @@ namespace ClutterFeed
             for (int index = updates.Count - 1; index >= 0; index--)
             {
                 string longUpdate = updates[index].AuthorScreenName + ": " + updates[index].Contents;
+                int maxX, maxY;
+                Tweets.GetMaxYX(out maxY, out maxX);
 
-
-                int splitter = ScreenInfo.WindowWidth - 13;
+                int splitter = maxX - 13;
 
                 longUpdate = longUpdate.Replace("\n", " ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
@@ -195,6 +196,7 @@ namespace ClutterFeed
 
                 if (updates[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
+                    Tweets.AttrOn(Attrs.BOLD);
                     Tweets.Color = 14;
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
@@ -215,6 +217,7 @@ namespace ClutterFeed
                     }
                 }
                 Tweets.Color = Colors.WHITE;
+                Tweets.AttrOff(Attrs.BOLD);
                 Tweets.Add("\n");
             }
             Tweets.Refresh();
