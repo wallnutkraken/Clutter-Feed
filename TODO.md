@@ -15,3 +15,7 @@ TweetMoaSharp has more shit than TweetSharp
 
 # **CONVERSATION COMMAND**
 I need it
+
+### A --debug launch option
+
+### Shortcuts
