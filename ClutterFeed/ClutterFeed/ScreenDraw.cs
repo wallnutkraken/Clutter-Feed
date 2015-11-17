@@ -215,7 +215,7 @@ namespace ClutterFeed
 
                 int splitter = maxX - 13;
 
-                longUpdate = longUpdate.Replace("\n", " ");
+                //longUpdate = longUpdate.Replace("\n", " ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
                 string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
@@ -547,6 +547,24 @@ namespace ClutterFeed
             errorMessage.Dispose();
             ScreenDraw drawer = new ScreenDraw();
             drawer.ShowTimeline();
+        }
+
+        public static void ShowMessage(string message, bool noRefresh)
+        {
+            if (noRefresh)
+            {
+                Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+                Curses.Echo = false;
+                errorMessage.Color = 11;
+                errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+                errorMessage.Color = Colors.WHITE;
+                errorMessage.GetChar();
+                errorMessage.Dispose();
+            }
+            else
+            {
+                ShowMessage(message);
+            }
         }
 
     }
