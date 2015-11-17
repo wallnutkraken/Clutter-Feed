@@ -540,74 +540,49 @@ namespace ClutterFeed
                 CounterConsoleWin.Refresh();
 
                 buttonPress = CounterConsoleWin.GetChar();
-
-                if (buttonPress < 57344)
+                if (buttonPress == 8) /* 8 is backspace */
                 {
-                    if (buttonPress == 8) /* 8 is backspace */
+                    if (charCount != 0)
                     {
-                        if (charCount != 0)
-                        {
-                            command = command.Remove(command.Length - 1, 1);
-                            charCount--;
-                        }
-                        else
-                        {
-                            Curses.Beep();
-                        }
+                        command = command.Remove(command.Length - 1, 1);
+                        charCount--;
                     }
                     else
                     {
-                        if (buttonPress == Keys.DOWN)
+                        Curses.Beep();
+                    }
+                }
+                else
+                {
+                    if (buttonPress == Keys.DOWN)
+                    {
+                        if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
                         {
-                            if (bufferPosition == 0) /* Nothing happens if you're already at the latest command possible */
+                            Curses.Beep();
+                        }
+                        else
+                        {
+                            try
+                            {
+                                bufferPosition--;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                            }
+                            catch (ArgumentOutOfRangeException)
                             {
                                 Curses.Beep();
-                            }
-                            else
-                            {
-                                try
-                                {
-                                    bufferPosition--;
-                                    command = CommandHistory.GetCommand(bufferPosition);
-                                    charCount = command.Length;
-                                }
-                                catch (ArgumentOutOfRangeException)
-                                {
-                                    Curses.Beep();
-                                }
                             }
                         }
-                        else if (buttonPress == Keys.UP) /* Handles going to earlier points in the history */
+                    }
+                    else if (buttonPress == Keys.UP) /* Handles going to earlier points in the history */
+                    {
+                        if (bufferPosition == 0)
                         {
-                            if (bufferPosition == 0)
-                            {
-                                if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
-                                {
-                                    try
-                                    {
-                                        CommandHistory.Add(command);
-                                        bufferPosition++;
-                                        command = CommandHistory.GetCommand(bufferPosition);
-                                        charCount = command.Length;
-                                    }
-                                    catch (ArgumentOutOfRangeException)
-                                    {
-                                        Curses.Beep();
-                                    }
-                                }
-                                else
-                                {
-                                    Curses.Beep();
-                                }
-                            }
-                            else if (bufferPosition == CommandHistory.MaxIndex())
-                            {
-                                Curses.Beep();
-                            }
-                            else
+                            if (CommandHistory.MaxIndex() != bufferPosition || CommandHistory.MaxIndex() == 0)
                             {
                                 try
                                 {
+                                    CommandHistory.Add(command);
                                     bufferPosition++;
                                     command = CommandHistory.GetCommand(bufferPosition);
                                     charCount = command.Length;
@@ -617,18 +592,42 @@ namespace ClutterFeed
                                     Curses.Beep();
                                 }
                             }
+                            else
+                            {
+                                Curses.Beep();
+                            }
                         }
-                        else if (buttonPress == Keys.RIGHT
-                            || buttonPress == Keys.LEFT)
+                        else if (bufferPosition == CommandHistory.MaxIndex())
                         {
-                            /* Ignores left and right arrow key currently */
-                            /* but one day I hope you could move in the command */
+                            Curses.Beep();
                         }
-                        else if (buttonPress == 10 || buttonPress == Keys.ENTER) /* 10 is return */
+                        else
                         {
-                            buttonPress = int.MinValue;
+                            try
+                            {
+                                bufferPosition++;
+                                command = CommandHistory.GetCommand(bufferPosition);
+                                charCount = command.Length;
+                            }
+                            catch (ArgumentOutOfRangeException)
+                            {
+                                Curses.Beep();
+                            }
                         }
-                        else if (charCount < 146)
+                    }
+                    else if (buttonPress == Keys.RIGHT
+                        || buttonPress == Keys.LEFT)
+                    {
+                        /* Ignores left and right arrow key currently */
+                        /* but one day I hope you could move in the command */
+                    }
+                    else if (buttonPress == 10 || buttonPress == Keys.ENTER) /* 10 is return */
+                    {
+                        buttonPress = int.MinValue;
+                    }
+                    else if (charCount < 146)
+                    {
+                        if (buttonPress < 57344)
                         {
                             command = command + Convert.ToChar(buttonPress);
                             try
@@ -640,6 +639,7 @@ namespace ClutterFeed
                         }
                     }
                 }
+
 
             } while (buttonPress != int.MinValue);
 
