@@ -56,7 +56,7 @@
     <StartupObject>ClutterFeed.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="CursesSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=AMD64">
+    <Reference Include="CursesSharp, Version=1.0.0.0, Culture=neutral, processorArchitecture=x86">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>bin\Debug\CursesSharp.dll</HintPath>
     </Reference>
