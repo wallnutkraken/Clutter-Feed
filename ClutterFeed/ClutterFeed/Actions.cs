@@ -572,9 +572,19 @@ namespace ClutterFeed
                 delOpts.Id = tweetID;
 
                 User.Account.DeleteTweet(delOpts);
-
-                returnInfo.OverrideCommandString = "/fu";
-                returnInfo.OverrideCommand = true;
+                TwitterResponse result = User.Account.Response;
+                if (result.Error == null)
+                {
+                    GetUpdates.localTweetList.Remove(TweetIdentification.FindTweet(tweetID));
+                    ScreenDraw.ShowMessage("Deleted");
+                    ScreenDraw draw = new ScreenDraw();
+                    draw.ShowTimeline();
+                }
+                else
+                {
+                    ScreenDraw.ShowMessage(result.Error.Code + ": " + result.Error.Message);
+                }
+                
             }
             return returnInfo;
         }
@@ -583,9 +593,9 @@ namespace ClutterFeed
         {
             ActionValue returnInfo = new ActionValue();
 
-            if (command.Split(' ')[1].Length != 2)
+            if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
             {
-                ScreenDraw.ShowMessage("Wrong syntax. Use /block [id]");
+                ScreenDraw.ShowMessage("Wrong syntax. Use /block [id] or /block @[name]");
             }
             else
             {
@@ -613,14 +623,28 @@ namespace ClutterFeed
                     UnblockUserOptions unblockOpts = new UnblockUserOptions();
                     unblockOpts.ScreenName = screenName;
                     User.Account.UnblockUser(unblockOpts);
-                    ScreenDraw.ShowMessage("Successfully unblocked @" + screenName);
+                    if (User.Account.Response.Error == null)
+                    {
+                        ScreenDraw.ShowMessage("Successfully unblocked @" + screenName);
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                    }
                 }
                 else
                 {
                     BlockUserOptions blockOpts = new BlockUserOptions();
                     blockOpts.ScreenName = screenName;
                     User.Account.BlockUser(blockOpts);
-                    ScreenDraw.ShowMessage("Successfully blocked @" + screenName);
+                    if (User.Account.Response.Error == null)
+                    {
+                        ScreenDraw.ShowMessage("Successfully blocked @" + screenName);
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                    }
                 }
             }
             return returnInfo;
@@ -630,9 +654,9 @@ namespace ClutterFeed
         {
             ActionValue returnInfo = new ActionValue();
 
-            if (command.Split(' ')[1].Length != 2)
+            if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
             {
-                ScreenDraw.ShowMessage("Wrong syntax. Use /follow [id]");
+                ScreenDraw.ShowMessage("Wrong syntax. Use /follow [id] or /follow @[name]");
             }
             else
             {
@@ -660,14 +684,28 @@ namespace ClutterFeed
                     UnfollowUserOptions unfollowOpts = new UnfollowUserOptions();
                     unfollowOpts.ScreenName = screenName;
                     User.Account.UnfollowUser(unfollowOpts);
-                    ScreenDraw.ShowMessage("Successfully unfollowed @" + screenName);
+                    if (User.Account.Response.Error == null)
+                    {
+                        ScreenDraw.ShowMessage("Successfully unfollowed @" + screenName);
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                    }
                 }
                 else
                 {
                     FollowUserOptions followOpts = new FollowUserOptions();
                     followOpts.ScreenName = screenName;
                     User.Account.FollowUser(followOpts);
-                    ScreenDraw.ShowMessage("Successfully followed @" + screenName);
+                    if (User.Account.Response.Error == null)
+                    {
+                        ScreenDraw.ShowMessage("Successfully followed @" + screenName);
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                    }
                 }
             }
             return returnInfo;
@@ -689,16 +727,7 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /profile [id]");
-                Console.WriteLine("      Example: /profile 3f");
-                Console.WriteLine("      If you meant to search by username,");
-                Console.WriteLine("      use /profile @username");
-                Console.ForegroundColor = ConsoleColor.White;
-                Console.ReadKey(true);
-                returnInfo.OverrideCommandString = "/u";
-                returnInfo.OverrideCommand = true;
-                returnInfo.AskForCommand = false;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /profile [id] or /profile @[name]");
                 return returnInfo;
             }
             if (command.Split(' ')[1].StartsWith("@"))
@@ -707,15 +736,7 @@ namespace ClutterFeed
             }
             else if (command.Split(' ')[1].Length != 2)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.WriteLine("      Wrong syntax. Use /profile [id]");
-                Console.WriteLine("      Example: /profile 3f");
-                Console.WriteLine("      If you meant to search by username,");
-                Console.WriteLine("      use /profile @username");
-                Console.ForegroundColor = ConsoleColor.White;
-                returnInfo.OverrideCommandString = "/u";
-                returnInfo.OverrideCommand = true;
-                returnInfo.AskForCommand = false;
+                ScreenDraw.ShowMessage("Wrong syntax. Use /profile [id] or /profile @[name]");
                 return returnInfo;
             }
             else
@@ -743,7 +764,14 @@ namespace ClutterFeed
                 ScreenDraw.IsBlocked = false;
             }
 
-            showProfile.ShowUserProfile(profile);
+            if (User.Account.Response.Error == null)
+            {
+                showProfile.ShowUserProfile(profile);
+            }
+            else
+            {
+                ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+            }
             returnInfo.AskForCommand = false;
             return returnInfo;
         }
@@ -779,8 +807,15 @@ namespace ClutterFeed
                     ScreenDraw.ShowMessage(exIn.Message);
                     return returnInfo;
                 }
-                ScreenDraw tweetDrawer = new ScreenDraw();
-                tweetDrawer.DrawTweet(tweet);
+                if (User.Account.Response.Error == null)
+                {
+                    ScreenDraw tweetDrawer = new ScreenDraw();
+                    tweetDrawer.DrawTweet(tweet);
+                }
+                else
+                {
+                    ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                }
 
 
                 return returnInfo;
