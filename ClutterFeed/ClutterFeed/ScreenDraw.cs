@@ -265,6 +265,10 @@ namespace ClutterFeed
                 }
                 Tweets.Color = Colors.WHITE;
                 Tweets.AttrOff(Attrs.BOLD);
+                if (Settings.NoSquash == true)
+                {
+                    Tweets.Add("\n");
+                }
             }
             Tweets.Refresh();
         }

@@ -840,7 +840,7 @@ namespace ClutterFeed
                 showUpdates.GetTweets(false);
                 ScreenDraw.UpdateHeader();
                 drawing.ShowTimeline();
-                Program.TimeLeft = Program.ConfigSetTimeout;
+                Program.TimeLeft = Settings.RefreshSeconds;
             }
             else
             {

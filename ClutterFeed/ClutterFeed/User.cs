@@ -36,17 +36,27 @@ namespace ClutterFeed
         public static Window CounterConsoleWin;
         private const string CONFIG = "clutterfeed.conf";
 
-        public int GetTimeout()
+        public void GetConsts()
         {
             ReadConfig();
             foreach (string line in ConfigFile)
             {
                 if (line.ToLower().Contains("refresh") && line.StartsWith("#") == false)
                 {
-                    return int.Parse(line.Split('=')[1]);
+                    Settings.RefreshSeconds = int.Parse(line.Split('=')[1]);
+                }
+                if (line.ToLower().Contains("nosquash") && line.StartsWith("#") == false)
+                {
+                    if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
+                    {
+                        Settings.NoSquash = true;
+                    }
                 }
             }
-            return 300;
+            if (Settings.RefreshSeconds == 0)
+            {
+                Settings.RefreshSeconds = 300;
+            }
         }
 
         /// <summary>
