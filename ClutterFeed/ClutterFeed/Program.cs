@@ -110,14 +110,24 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.Update(command);
                     }
 
-                    else if (command.InsensitiveCompare("/accounts"))
+                    else if (command.Command("/accounts"))
                     {
                         commandMetadata = twitterDo.ProfileSelection();
                     }
 
-                    else if (command.Split(' ')[0].CompareTo("/r") == 0)
+                    else if (command.Command("/r"))
                     {
                         commandMetadata = twitterDo.ReplyGeneric(command);
+                    }
+
+                    else if (command.Command("/block"))
+                    {
+                        commandMetadata = twitterDo.BlockUser(command);
+                    }
+
+                    else if (command.Command("/follow"))
+                    {
+                        commandMetadata = twitterDo.FollowUser(command);
                     }
 
                     else if (command.Split(' ')[0].CompareTo("/id") == 0)
