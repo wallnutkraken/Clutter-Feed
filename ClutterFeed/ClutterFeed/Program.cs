@@ -203,12 +203,21 @@ namespace ClutterFeed
                         commandMetadata = twitterDo.ApiInfo();
                     }
 
+                    else
+                    {
+                        ScreenDraw.ShowMessage("Such a command does not exist");
+                    }
+
                 }
                 /* End of commands */
 
                 if (command.ToLower().StartsWith("/") == false) /* EXCEPT for this one */
                 {
                     commandMetadata = twitterDo.NewTweet(command);
+                    if (User.Account.Response.Error != null)
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error);
+                    }
                 }
                 if (commandMetadata.AskForCommand)
                 {

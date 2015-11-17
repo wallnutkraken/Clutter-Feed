@@ -473,6 +473,12 @@ namespace ClutterFeed
             help.Add("/accounts");
             DrawAtEnd(help, 15, "Actions regarding twitter accounts\n");
 
+            help.Add("/follow");
+            DrawAtEnd(help, 16, "Follows or unfollows the selected user\n");
+
+            help.Add("/block");
+            DrawAtEnd(help, 17, "Blocks or unblocks the selected user\n");
+
             string enter = "Press ENTER to close this dialog";
             help.Add(18, (ScreenInfo.WindowWidth / 2) - (enter.Length / 2), enter);
 

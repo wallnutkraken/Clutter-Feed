@@ -474,19 +474,30 @@ namespace ClutterFeed
                     {
                         if (tweet.IsRetweeted)
                         {
-                            ScreenDraw.ShowMessage("Unretweeting is currently unsupported");
+                            User.Account.Retweet(retweetOpts);
+                            if (User.Account.Response.Error != null)
+                            {
+                                ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                            }
                             return new ActionValue();
                         }
 
                         User.Account.Retweet(retweetOpts);
+                        if (User.Account.Response.Error == null)
+                        {
+                            GetUpdates retweetInvert = new GetUpdates();
+                            retweetInvert.InvertRetweetStatus(tweetID);
 
-                        GetUpdates retweetInvert = new GetUpdates();
-                        retweetInvert.InvertRetweetStatus(tweetID);
+                            ScreenDraw.ShowMessage("Retweeted");
 
-                        ScreenDraw.ShowMessage("Retweeted");
+                            ScreenDraw redraw = new ScreenDraw();
+                            redraw.ShowTimeline();
+                        }
+                        else
+                        {
+                            ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                        }
 
-                        returnInfo.OverrideCommand = true;
-                        returnInfo.OverrideCommandString = "/fu";
                         returnInfo.AskForCommand = false;
                     }
                 }
@@ -888,8 +899,14 @@ namespace ClutterFeed
         public ActionValue ApiInfo()
         {
             TwitterRateLimitStatus rate = User.Account.Response.RateLimitStatus;
-
-            ScreenDraw.ShowMessage("      You have " + rate.RemainingHits + " remaining calls out of your " + rate.HourlyLimit + " limit");
+            if (User.Account.Response.Error == null)
+            {
+                ScreenDraw.ShowMessage("You have " + rate.RemainingHits + " remaining calls out of your " + rate.HourlyLimit + " limit");
+            }
+            else
+            {
+                ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+            }
             return new ActionValue(); /* Returns default values */
         }
 
