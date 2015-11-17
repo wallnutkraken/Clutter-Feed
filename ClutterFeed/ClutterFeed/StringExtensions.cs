@@ -37,6 +37,10 @@ namespace ClutterFeed
             for (var i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
+        public static bool Command(this String command, string wantedCommand)
+        {
+            return command.ToLower().Split(' ')[0].CompareTo(wantedCommand) == 0;
+        }
 
         public static bool InsensitiveCompare(this String str, string comp)
         {
