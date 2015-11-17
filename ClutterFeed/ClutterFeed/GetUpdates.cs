@@ -206,7 +206,7 @@ namespace ClutterFeed
             User.Account.AuthenticateWith(userToken.Token, userToken.TokenSecret);
             User.Account.TraceEnabled = true; /* Forget what this does */
             TwitterAccount user = User.Account.GetAccountSettings();
-            if (User.Account.Response != null)
+            if (User.Account.Response.Error != null)
             {
                 ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message, true);
                 Curses.EndWin();

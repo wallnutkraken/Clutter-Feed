@@ -215,7 +215,7 @@ namespace ClutterFeed
 
                 int splitter = maxX - 13;
 
-                //longUpdate = longUpdate.Replace("\n", " ");
+                longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
 
                 string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
@@ -260,12 +260,11 @@ namespace ClutterFeed
                     }
                     else
                     {
-                        Tweets.Add("      " + shortenedUpdate[updateIndex]);
+                        Tweets.Add("      " + shortenedUpdate[updateIndex] + "\n");
                     }
                 }
                 Tweets.Color = Colors.WHITE;
                 Tweets.AttrOff(Attrs.BOLD);
-                Tweets.Add("\n");
             }
             Tweets.Refresh();
         }
