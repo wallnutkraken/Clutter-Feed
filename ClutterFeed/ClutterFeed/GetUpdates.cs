@@ -49,11 +49,23 @@ namespace ClutterFeed
             return doesIt;
         }
 
+        private void CleanTweets()
+        {
+            try
+            {
+                if (localTweetList.Count >= 60)
+                {
+                    localTweetList.RemoveRange(localTweetList.Count - 21, 20);
+                }
+            }
+            catch (NullReferenceException) { }
+        }
         /// <summary>
         /// Updates the list of tweets one has
         /// </summary>
         public void GetTweets(bool fullUpdate)
         {
+            CleanTweets();
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
             bool continueMethod = true;
             var numUpdates = User.Account.ListTweetsOnHomeTimeline(updateOpts);
@@ -232,6 +244,12 @@ namespace ClutterFeed
             ScreenDraw.HeadLine.Refresh();
         }
 
+        private string FixSigns(string message)
+        {
+            message = message.Replace("&lt;", "<");
+            message = message.Replace("&gt;", ">");
+            return message;
+        }
 
         /// <summary>
         /// Converts the TwitterStatus object into a more readily usable InteractiveTweet object
@@ -243,7 +261,7 @@ namespace ClutterFeed
             InteractiveTweet formedTweet = new InteractiveTweet();
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = tweet.Text;
+            formedTweet.Contents = FixSigns(tweet.Text);
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
@@ -281,7 +299,7 @@ namespace ClutterFeed
             /* Big block of filling the InteractiveTweet properties */
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = tweet.Text;
+            formedTweet.Contents = FixSigns(tweet.Text);
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
