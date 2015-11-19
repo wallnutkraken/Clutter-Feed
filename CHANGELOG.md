@@ -1,5 +1,15 @@
 # **Release change log**
 
+### Changes in Version 1.5:
+- Added a configuration file
+- Added support for custom colors with the config file
+- Made the author's @name in a tweet be bold for readability
+- Readded /follow ad /block
+- Added twitter error messages 
+- Fixed a bug that caused ClutterFeed to crash if you start it while API limited
+- Fixed a bug where > and < were not escaped properly
+- Fixed a bug with lines being split weirdly
+
 ### Changes in Version 1.4:
 - Added support for multiple twitter accounts
 - Added a timed update, to update tweets every 5 minutes
