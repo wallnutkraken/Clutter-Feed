@@ -224,7 +224,16 @@ namespace ClutterFeed
                 Curses.EndWin();
                 Environment.Exit(0);
             }
-            userScreenName = user.ScreenName;
+            try
+            {
+                userScreenName = user.ScreenName;
+            }
+            catch (NullReferenceException)
+            {
+                ScreenDraw.ShowMessage("Twitter is currently unavailable.", true);
+                Curses.EndWin();
+                Environment.Exit(0);
+            }
         }
 
         /// <summary>
