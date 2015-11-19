@@ -30,7 +30,7 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        public static string Version = "1.5-testing";
+        public static string Version = "1.5";
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
