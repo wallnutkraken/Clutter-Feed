@@ -91,7 +91,7 @@ namespace ClutterFeed
             AutoResetEvent autoEvent = new AutoResetEvent(false);
             TimerCallback call = twitterDo.RefreshTweets;
             
-            UpdateTimer = new Timer(call, null, 0, 1000);
+           // UpdateTimer = new Timer(call, null, 0, 1000);
             do
             {
                 ActionValue commandMetadata = new ActionValue();

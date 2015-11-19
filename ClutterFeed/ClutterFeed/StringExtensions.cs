@@ -54,5 +54,37 @@ namespace ClutterFeed
             }
         }
 
+        /// <summary>
+        /// Splits the string into where it has newlines, and then splits them more if the lines are longer than split
+        /// </summary>
+        /// <param name="split">number of characters to split at</param>
+        /// <returns></returns>
+        public static string[] PartNewlineSplit(this String s, int split)
+        {
+            string[] lines = s.Split('\n');
+            List<string> splittedList = new List<string>();
+            for (int index = 0; index < lines.Length; index++)
+            {
+                if (lines[index].Length > split)
+                {
+                    IEnumerable<string> temp = lines[index].SplitInParts(split);
+                    IEnumerator<string> enumerate = temp.GetEnumerator();
+                    enumerate.MoveNext();
+                    splittedList.Add(enumerate.Current);
+                    bool end = false;
+                    do
+                    {
+                        end = enumerate.MoveNext();
+                        splittedList.Add(enumerate.Current);
+                    } while (end == false);
+                }
+                else
+                {
+                    splittedList.Add(lines[index]);
+                }
+            }
+            return splittedList.ToArray();
+        }
+
     }
 }

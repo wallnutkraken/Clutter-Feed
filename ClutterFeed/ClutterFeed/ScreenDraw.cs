@@ -215,8 +215,8 @@ namespace ClutterFeed
 
                 int splitter = maxX - 13;
 
-                longUpdate = longUpdate.Replace("\n", "\n      ");
-                List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+                //longUpdate = longUpdate.Replace("\n", "\n      ");
+                List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
 
                 string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
 
@@ -249,8 +249,7 @@ namespace ClutterFeed
                 {
                     if (identificationWritten)
                     {
-                        char[] splitChar = new char[1];
-                        splitChar[0] = ' '; /* Yay for workarounds! */
+                        char[] splitChar = { ' ' };
                         string[] tweetParts = shortenedUpdate[updateIndex].Split(splitChar, 2);
                         Tweets.AttrOn(Attrs.BOLD);
                         Tweets.Add(tweetParts[0] + " ");
