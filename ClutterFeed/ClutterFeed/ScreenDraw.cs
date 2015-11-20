@@ -585,6 +585,7 @@ namespace ClutterFeed
         {
             TimerMan.Pause();
             Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+            errorMessage.Box((int)'|', (int)'-');
             Curses.Echo = false;
             errorMessage.Color = 11;
             errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
@@ -602,6 +603,7 @@ namespace ClutterFeed
             {
                 TimerMan.Pause();
                 Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+                errorMessage.Box((int)'|', (int)'-');
                 Curses.Echo = false;
                 errorMessage.Color = 11;
                 errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
