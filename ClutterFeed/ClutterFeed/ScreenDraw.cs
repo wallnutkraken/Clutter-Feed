@@ -297,7 +297,7 @@ namespace ClutterFeed
                 return;
             }
             Window showProfile = new Window(12, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
-
+            showProfile.Box((int)'|', (int)'-');
             if (IsFollowing)
             {
                 string follow = "You are following";
@@ -398,6 +398,7 @@ namespace ClutterFeed
             TimerMan.Pause();
             Curses.Echo = false;
             Window tweetShow = new Window(8, ScreenInfo.WindowWidth, 11, 0);
+            tweetShow.Box((int)'|', (int)'-');
             string longUpdate = tweet.Contents;
             int splitter = 120;
 
@@ -439,70 +440,93 @@ namespace ClutterFeed
 
         private void DrawAtEnd(Window where, int line, string message)
         {
-            where.Add(line, (ScreenInfo.WindowWidth - message.Length - 1), message);
+            where.Add(line, (ScreenInfo.WindowWidth - message.Length - 3), message);
         }
         public void ShowHelp()
         {
             TimerMan.Pause();
-            Window help = new Window(20, ScreenInfo.WindowWidth, 5, 0);
+            Window help = new Window(22, ScreenInfo.WindowWidth, 4, 0);
             help.Color = 14;
 
-            help.Add("/h, /help");
-            DrawAtEnd(help, 0, "Shows this dialog\n");
+            int num = 2;
+            help.Add(num, 2,"/h, /help");
+            DrawAtEnd(help, num, "Shows this dialog\n");
+            num++;
 
-            help.Add("/rt");
-            DrawAtEnd(help, 1, "Retweets/undos a retweet on a selected tweet\n");
+            help.Add(num, 2, ("/rt"));
+            DrawAtEnd(help, num, "Retweets/undos a retweet on a selected tweet\n");
+            num++;
 
-            help.Add("/fav, /f");
-            DrawAtEnd(help, 2, "Favourites a selected tweet\n");
+            help.Add(num, 2,"/fav, /f");
+            DrawAtEnd(help, num, "Favourites a selected tweet\n");
+            num++;
 
-            help.Add("/unfav, /uf");
-            DrawAtEnd(help, 3, "Unfavourites a selected tweet\n");
+            help.Add(num, 2,"/unfav, /uf");
+            DrawAtEnd(help, num, "Unfavourites a selected tweet\n");
+            num++;
 
-            help.Add("/api");
-            DrawAtEnd(help, 4, "Shows the remaining API hits\n");
+            help.Add(num, 2,"/api");
+            DrawAtEnd(help, num, "Shows the remaining API hits\n");
+            num++;
 
-            help.Add("/r");
-            DrawAtEnd(help, 5, "Replies to everyone in the selected tweet\n");
+            help.Add(num, 2,"/r");
+            DrawAtEnd(help, num, "Replies to everyone in the selected tweet\n");
+            num++;
 
-            help.Add("/rc");
-            DrawAtEnd(help, 6, "Replies only to the author of the tweet\n");
+            help.Add(num, 2,"/rc");
+            DrawAtEnd(help, num, "Replies only to the author of the tweet\n");
+            num++;
 
-            help.Add("/rn");
-            DrawAtEnd(help, 7, "Replies without using @ at all\n");
+            help.Add(num, 2,"/rn");
+            DrawAtEnd(help, num, "Replies without using @ at all\n");
+            num++;
 
-            help.Add("/id");
-            DrawAtEnd(help, 8, "Shows the ID of the tweet\n");
+            help.Add(num, 2,"/id");
+            DrawAtEnd(help, num, "Shows the ID of the tweet\n");
+            num++;
 
-            help.Add("/profile");
-            DrawAtEnd(help, 9, "Shows the profile of the selected user\n");
+            help.Add(num, 2,"/profile");
+            DrawAtEnd(help, num, "Shows the profile of the selected user\n");
+            num++;
 
-            help.Add("/me");
-            DrawAtEnd(help, 10, "Shows your mentions\n");
+            help.Add(num, 2,"/me");
+            DrawAtEnd(help, num, "Shows your mentions\n");
+            num++;
 
-            help.Add("/link");
-            DrawAtEnd(help, 11, "Links you to a tweet\n");
+            help.Add(num, 2,"/link");
+            DrawAtEnd(help, num, "Links you to a tweet\n");
+            num++;
 
-            help.Add("/tweet");
-            DrawAtEnd(help, 12, "Shows you details of a tweet\n");
+            help.Add(num, 2,"/tweet");
+            DrawAtEnd(help, num, "Shows you details of a tweet\n");
+            num++;
 
-            help.Add("/open");
-            DrawAtEnd(help, 13, "Opens the tweet in browser (only from /tweet)\n");
+            help.Add(num, 2,"/open");
+            DrawAtEnd(help, num, "Opens the tweet in browser (only from /tweet)\n");
+            num++;
 
-            help.Add("/friend");
-            DrawAtEnd(help, 14, "Adds/removes a friend\n");
+            help.Add(num, 2,"/friend");
+            DrawAtEnd(help, num, "Adds/removes a friend\n");
+            num++;
 
-            help.Add("/accounts");
-            DrawAtEnd(help, 15, "Actions regarding twitter accounts\n");
+            help.Add(num, 2,"/accounts");
+            DrawAtEnd(help, num, "Actions regarding twitter accounts\n");
+            num++;
 
-            help.Add("/follow");
-            DrawAtEnd(help, 16, "Follows or unfollows the selected user\n");
+            help.Add(num, 2,"/follow");
+            DrawAtEnd(help, num, "Follows or unfollows the selected user\n");
+            num++;
 
-            help.Add("/block");
-            DrawAtEnd(help, 17, "Blocks or unblocks the selected user\n");
+            help.Add(num, 2,"/block");
+            DrawAtEnd(help, num, "Blocks or unblocks the selected user\n");
+            num++;
 
+            help.Color = 11;
             string enter = "Press ENTER to close this dialog";
-            help.Add(18, (ScreenInfo.WindowWidth / 2) - (enter.Length / 2), enter);
+            help.Add(num, (ScreenInfo.WindowWidth / 2) - (enter.Length / 2), enter);
+
+            help.Color = Colors.WHITE;
+            help.Box((int)'|', (int)'-');
 
             Curses.Echo = false;
 
