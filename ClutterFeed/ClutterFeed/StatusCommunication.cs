@@ -13,12 +13,6 @@
  *    You should have received a copy of the GNU General Public License
  *    along with ClutterFeed. If not, see <http://www.gnu.org/licenses/>.
  */
-
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TweetSharp;
 
 namespace ClutterFeed
