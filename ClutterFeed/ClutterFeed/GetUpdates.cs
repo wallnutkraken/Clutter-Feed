@@ -268,16 +268,27 @@ namespace ClutterFeed
             InteractiveTweet formedTweet = new InteractiveTweet();
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            if (tweet.Entities.Urls.Count == 0 || Settings.ShortLinks)
+            if (Settings.ShortLinks)
             {
                 formedTweet.Contents = EscapeChars(tweet.Text);
             }
             else
             {
                 formedTweet.Contents = tweet.Text;
-                foreach (var link in tweet.Entities.Urls)
+                if (tweet.Entities.Urls.Count != 0)
                 {
-                    formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                    foreach (var link in tweet.Entities.Urls)
+                    {
+                        formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                        formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                    }
+                }
+                if (tweet.Entities.Media.Count != 0)
+                {
+                    foreach (var image in tweet.Entities.Media)
+                    {
+                        formedTweet.Contents = formedTweet.Contents.Replace(image.Url, image.DisplayUrl);
+                    }
                 }
                 formedTweet.Contents = EscapeChars(formedTweet.Contents);
             }
@@ -290,8 +301,6 @@ namespace ClutterFeed
             formedTweet.FavoriteCount = tweet.FavoriteCount;
             formedTweet.RetweetCount = tweet.RetweetCount;
             formedTweet.TimePosted = tweet.CreatedDate;
-
-            var shit = tweet.Entities.Urls;
 
 
             if (formedTweet.Contents.Contains("@" + userScreenName))
@@ -322,16 +331,28 @@ namespace ClutterFeed
                 /* Big block of filling the InteractiveTweet properties */
                 formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
                 formedTweet.AuthorDisplayName = tweet.User.Name;
-                if (tweet.Entities.Urls.Count == 0 || Settings.ShortLinks)
+                formedTweet.AuthorDisplayName = tweet.User.Name;
+                if (Settings.ShortLinks)
                 {
                     formedTweet.Contents = EscapeChars(tweet.Text);
                 }
                 else
                 {
                     formedTweet.Contents = tweet.Text;
-                    foreach (var link in tweet.Entities.Urls)
+                    if (tweet.Entities.Urls.Count != 0)
                     {
-                        formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                        foreach (var link in tweet.Entities.Urls)
+                        {
+                            formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                            formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                        }
+                    }
+                    if (tweet.Entities.Media.Count != 0)
+                    {
+                        foreach (var image in tweet.Entities.Media)
+                        {
+                            formedTweet.Contents = formedTweet.Contents.Replace(image.Url, image.DisplayUrl);
+                        }
                     }
                     formedTweet.Contents = EscapeChars(formedTweet.Contents);
                 }
