@@ -47,7 +47,7 @@ namespace ClutterFeed
         {
             CleanTweets();
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
-            bool continueMethod = true;
+            updateOpts.Count = 25;
             var numUpdates = User.Account.ListTweetsOnHomeTimeline(updateOpts);
             List<TwitterStatus> unformattedTweets = new List<TwitterStatus>();
             try
@@ -57,7 +57,7 @@ namespace ClutterFeed
             catch (ArgumentNullException)
             {
                 TwitterResponse resp = User.Account.Response;
-                
+
                 if (resp.RateLimitStatus.RemainingHits == 0)
                 {
                     ScreenDraw.ShowMessage("You have hit the API Limit. Please try again in a few minutes");
@@ -72,7 +72,7 @@ namespace ClutterFeed
                     Curses.EndWin();
                     Environment.Exit(1);
                 }
-                continueMethod = false;
+                return;
             }
             int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
             if (newTweetStartIndex == -1)
@@ -81,32 +81,30 @@ namespace ClutterFeed
             }
             if (newTweetStartIndex == 0 && fullUpdate == false)
             {
-                continueMethod = false;
+                return;
             }
 
-            if (continueMethod)
+            if (fullUpdate == false)
             {
-                if (fullUpdate == false)
+                for (int index = newTweetStartIndex - 1; index >= 0; index--)
                 {
-                    for (int index = newTweetStartIndex - 1; index >= 0; index--)
-                    {
-                        InteractiveTweet formattedTweet = new InteractiveTweet();
-                        formattedTweet = ConvertTweet(unformattedTweets[index]);
-                        localTweetList.Insert(0, formattedTweet);
-                        System.Threading.Thread.Sleep(25);
-                    }
+                    InteractiveTweet formattedTweet = new InteractiveTweet();
+                    formattedTweet = ConvertTweet(unformattedTweets[index]);
+                    localTweetList.Insert(0, formattedTweet);
+                    System.Threading.Thread.Sleep(25);
                 }
-                else
+            }
+            else
+            {
+                localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
+                for (int index = 0; index < unformattedTweets.Count; index++)
                 {
-                    localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
-                    for (int index = 0; index < unformattedTweets.Count; index++)
-                    {
-                        InteractiveTweet formattedTweet = new InteractiveTweet();
-                        formattedTweet = ConvertTweet(unformattedTweets[index]);
-                        localTweetList.Add(formattedTweet);
-                        System.Threading.Thread.Sleep(25);
-                    }
+                    InteractiveTweet formattedTweet = new InteractiveTweet();
+                    formattedTweet = ConvertTweet(unformattedTweets[index]);
+                    localTweetList.Add(formattedTweet);
+                    System.Threading.Thread.Sleep(25);
                 }
+
             }
         }
 
