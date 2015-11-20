@@ -61,12 +61,12 @@ namespace ClutterFeed
                     StatusCommunication newTweet = new StatusCommunication();
                     if ((command.ToLower().CompareTo("/fullupdate") == 0 || command.ToLower().CompareTo("/fu") == 0) && mentions == false)
                     {
-                        commandMetadata = Update(command, true);
+                        commandMetadata = Update( true);
                     }
 
                     else if ((command.Command("/update") || command.Command("/u")) && mentions == false)
                     {
-                        commandMetadata = Update(command);
+                        commandMetadata = Update();
                     }
 
                     else if (command.Command("/accounts") && mentions == false)
@@ -202,13 +202,22 @@ namespace ClutterFeed
             } while (command.Command("/q") == false);
         }
 
-        public static void DealWithShortcuts(int ch)
+        public bool DealWithShortcuts(int ch)
         {
             if (ch == 3) /* ^C */
             {
                 Curses.EndWin();
                 Environment.Exit(0);
+                return true;
             }
+            if (ch == 21) /* Ctrl-U */
+            {
+                Update();
+                drawing.ShowTimeline();
+                User.CounterConsoleWin.Refresh();
+                return true;
+            }
+            return false;
         }
 
         /// <summary>
@@ -1019,12 +1028,12 @@ namespace ClutterFeed
             }
         }
 
-        public ActionValue Update(string command)
+        public ActionValue Update()
         {
             newTweet.ShowUpdates(User.Account, showUpdates, false);
             return new ActionValue();
         }
-        public ActionValue Update(string command, bool fullUpdate)
+        public ActionValue Update(bool fullUpdate)
         {
             newTweet.ShowUpdates(User.Account, showUpdates, fullUpdate);
             return new ActionValue();

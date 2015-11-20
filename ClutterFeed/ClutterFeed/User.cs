@@ -511,7 +511,9 @@ namespace ClutterFeed
         public static string CounterConsole()
         {
             CounterConsoleWin = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
+            Actions act = new Actions();
             CounterConsoleWin.Keypad = true;
+            Curses.Echo = false;
 
             int splitCount = 3;
             string command = "";
@@ -548,7 +550,10 @@ namespace ClutterFeed
                 buttonPress = CounterConsoleWin.GetChar();
                 if (Settings.NoShortcuts == false)
                 {
-                    Actions.DealWithShortcuts(buttonPress);
+                    if (act.DealWithShortcuts(buttonPress))
+                    {
+                        buttonPress = 57344; /* So it's ignored */
+                    }
                 }
 
                 if (buttonPress == 8) /* 8 is backspace */
