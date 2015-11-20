@@ -37,6 +37,44 @@ namespace ClutterFeed
             for (var i = 0; i < s.Length; i += partLength)
                 yield return s.Substring(i, Math.Min(partLength, s.Length - i));
         }
+
+        /// <summary>
+        /// Splits a string into parts so that seperate words are not longer than partLength
+        /// </summary>
+        /// <param name="partLength">length of the split</param>
+        public static List<string> SplitWords(this String origin, int partLength)
+        {
+            if (origin == null)
+            {
+                throw new ArgumentNullException("The string used is null");
+            }
+            if (partLength <= 0)
+            {
+                throw new ArgumentException("partLength has to be a positive integer");
+            }
+            char[] splitters = { ' ' };
+            string[] words = origin.Split(' ');
+            List<string> lines = new List<string>();
+            int splitCount = 0;
+            for (int index = 0; index < words.Length; index++)
+            {
+                if (index == 0)
+                {
+                    lines.Add(words[index]);
+                }
+                else if (lines[splitCount].Length + words[index].Length >= partLength)
+                {
+                    splitCount++;
+                    lines.Add(words[index]);
+                }
+                else
+                {
+                    lines[splitCount] = lines[splitCount] + " " + words[index];
+                }
+            }
+
+            return lines;
+        }
         public static bool Command(this String command, string wantedCommand)
         {
             return command.ToLower().Split(' ')[0].CompareTo(wantedCommand) == 0;
@@ -67,16 +105,11 @@ namespace ClutterFeed
             {
                 if (lines[index].Length > split)
                 {
-                    IEnumerable<string> temp = lines[index].SplitInParts(split);
-                    IEnumerator<string> enumerate = temp.GetEnumerator();
-                    enumerate.MoveNext();
-                    splittedList.Add(enumerate.Current);
-                    bool end = false;
-                    do
+                    List<string> temp = lines[index].SplitWords(split);
+                    foreach (string line in temp)
                     {
-                        end = enumerate.MoveNext();
-                        splittedList.Add(enumerate.Current);
-                    } while (end == false);
+                        splittedList.Add(line);
+                    }
                 }
                 else
                 {
