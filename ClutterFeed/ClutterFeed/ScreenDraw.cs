@@ -229,7 +229,7 @@ namespace ClutterFeed
                 int maxX, maxY;
                 Tweets.GetMaxYX(out maxY, out maxX);
 
-                int splitter = maxX - 13;
+                int splitter = maxX - 8;
 
                 //longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
@@ -523,7 +523,7 @@ namespace ClutterFeed
             {
                 string longUpdate = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
 
-                int splitter = ScreenInfo.WindowWidth - 13;
+                int splitter = ScreenInfo.WindowWidth - 8;
                 
                 List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
 
