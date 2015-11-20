@@ -89,8 +89,9 @@ namespace ClutterFeed
         /// <summary>
         /// Removes mentions from the list
         /// </summary>
-        private List<InteractiveTweet> RemoveMentions(List<InteractiveTweet> allTweets)
+        private List<InteractiveTweet> GetOnlyTweets()
         {
+            List<InteractiveTweet> allTweets = GetUpdates.localTweetList;
             List<InteractiveTweet> returnList = new List<InteractiveTweet>();
 
             for (int index = 0; index < allTweets.Count; index++)
@@ -102,6 +103,19 @@ namespace ClutterFeed
             }
 
             return returnList;
+        }
+
+        private List<InteractiveTweet> GetOnlyMentions()
+        {
+            List<InteractiveTweet> mens = new List<InteractiveTweet>();
+            foreach (InteractiveTweet tweet in GetUpdates.localTweetList)
+            {
+                if (tweet.IsMention)
+                {
+                    mens.Add(tweet);
+                }
+            }
+            return mens;
         }
 
         private void ShowInteractions(InteractiveTweet update)
@@ -206,7 +220,7 @@ namespace ClutterFeed
         {
             Tweets.Clear();
             Tweets.EnableScroll = true;
-            List<InteractiveTweet> updates = RemoveMentions(GetUpdates.localTweetList);
+            List<InteractiveTweet> updates = GetOnlyTweets();
             for (int index = updates.Count - 1; index >= 0; index--)
             {
                 string longUpdate = updates[index].AuthorScreenName + ": " + updates[index].Contents;
@@ -495,11 +509,74 @@ namespace ClutterFeed
 
         public void ShowMentions()
         {
-           /* Remember to rewrite this! */
+            List<InteractiveTweet> mentions = GetOnlyMentions();
+            Tweets.EnableScroll = true;
+            Tweets.Clear();
+            for (int index = mentions.Count - 1; index >= 0; index--)
+            {
+                string longUpdate = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
+
+                int splitter = ScreenInfo.WindowWidth - 13;
+                
+                List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
+
+                string cleanUserName = mentions[index].AuthorScreenName.Remove(0, 1).ToLower();
+
+                if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
+                {
+                    Tweets.Color = 13; /* The color of friendship */
+                }
+                else
+                {
+                    Tweets.Color = 11; /* Regular identifier color */
+                }
+
+                Tweets.Add(mentions[index].TweetIdentification + "    ");
+                Tweets.Color = Colors.WHITE;
+                bool identificationWritten = true;
+
+                ShowInteractions(mentions[index]);
+
+                if (mentions[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
+                {
+                    Tweets.AttrOn(Attrs.BOLD);
+                    Tweets.Color = 14;
+                }
+                if (mentions[index].Contents.Contains("@" + GetUpdates.userScreenName))
+                {
+                    Tweets.Color = 15;
+                }
+
+                for (int updateIndex = 0; updateIndex < shortenedUpdate.Count; updateIndex++)
+                {
+                    if (identificationWritten)
+                    {
+                        char[] splitChar = { ' ' };
+                        string[] tweetParts = shortenedUpdate[updateIndex].Split(splitChar, 2);
+                        Tweets.AttrOn(Attrs.BOLD);
+                        Tweets.Add(tweetParts[0] + " ");
+                        Tweets.AttrOff(Attrs.BOLD);
+                        Tweets.Add(tweetParts[1] + "\n");
+                        identificationWritten = false;
+                    }
+                    else
+                    {
+                        Tweets.Add("      " + shortenedUpdate[updateIndex] + "\n");
+                    }
+                }
+                Tweets.Color = Colors.WHITE;
+                Tweets.AttrOff(Attrs.BOLD);
+                if (Settings.NoSquash == true)
+                {
+                    Tweets.Add("\n");
+                }
+            }
+            Tweets.Refresh();
         }
 
         public static void ShowMessage(string message)
         {
+            TimerMan.Pause();
             Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
             Curses.Echo = false;
             errorMessage.Color = 11;
@@ -507,6 +584,7 @@ namespace ClutterFeed
             errorMessage.Color = Colors.WHITE;
             errorMessage.GetChar();
             errorMessage.Dispose();
+            TimerMan.Resume();
             ScreenDraw drawer = new ScreenDraw();
             drawer.ShowTimeline();
         }
@@ -515,6 +593,7 @@ namespace ClutterFeed
         {
             if (noRefresh)
             {
+                TimerMan.Pause();
                 Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
                 Curses.Echo = false;
                 errorMessage.Color = 11;
@@ -522,6 +601,7 @@ namespace ClutterFeed
                 errorMessage.Color = Colors.WHITE;
                 errorMessage.GetChar();
                 errorMessage.Dispose();
+                TimerMan.Resume();
             }
             else
             {

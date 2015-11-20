@@ -42,26 +42,34 @@ namespace ClutterFeed
 
         public void ActionStart()
         {
-            string command = "/fullupdate";
+            ActionStart(false, "/fullupdate");
+        }
+        public void ActionStart(bool mentions, string command)
+        {
             do
             {
                 ActionValue commandMetadata = new ActionValue();
+                if (command == null)
+                {
+                    commandMetadata = new ActionValue();
+                    command = "/";
+                }
 
-                if (command.StartsWith("/"))
+                else if (command.StartsWith("/"))
                 {
 
                     StatusCommunication newTweet = new StatusCommunication();
-                    if ((command.ToLower().CompareTo("/fullupdate") == 0) || (command.ToLower().CompareTo("/fu") == 0))
+                    if ((command.ToLower().CompareTo("/fullupdate") == 0 || command.ToLower().CompareTo("/fu") == 0) && mentions == false)
                     {
                         commandMetadata = Update(command, true);
                     }
 
-                    else if (command.Command("/update") || command.Command("/u"))
+                    else if ((command.Command("/update") || command.Command("/u")) && mentions == false)
                     {
                         commandMetadata = Update(command);
                     }
 
-                    else if (command.Command("/accounts"))
+                    else if (command.Command("/accounts") && mentions == false)
                     {
                         commandMetadata = ProfileSelection();
                     }
@@ -116,12 +124,12 @@ namespace ClutterFeed
                         commandMetadata = FavoriteTweet(command);
                     }
 
-                    else if (command.Command("/del")|| command.Command("/d"))
+                    else if (command.Command("/del") || command.Command("/d"))
                     {
                         commandMetadata = RemoveTweet(command);
                     }
 
-                    else if (command.Command("/profile"))
+                    else if (command.Command("/profile") && mentions == false)
                     {
                         try
                         {
@@ -139,12 +147,12 @@ namespace ClutterFeed
                         commandMetadata = ShowTweet(command);
                     }
 
-                    else if (command.Command("/me"))
+                    else if (command.Command("/me") && mentions == false)
                     {
-                        commandMetadata = Mentions(command);
+                        commandMetadata = Mentions();
                     }
 
-                    else if (command.Command("/help") || command.Command("/h"))
+                    else if ((command.Command("/help") || command.Command("/h")) && mentions == false)
                     {
                         commandMetadata = Help();
                     }
@@ -187,7 +195,11 @@ namespace ClutterFeed
                     commandMetadata.AskForCommand = true;
                     Thread.Sleep(200);
                 }
-            } while ((!command.ToLower().StartsWith("/q")));
+                if (mentions && command == "/b")
+                {
+                    command = "/q";
+                }
+            } while (command.Command("/q") == false);
         }
         /// <summary>
         /// Initializes all the important objects and the API
@@ -743,7 +755,7 @@ namespace ClutterFeed
                 {
                     ScreenDraw.ShowMessage(result.Error.Code + ": " + result.Error.Message);
                 }
-                
+
             }
             return returnInfo;
         }
@@ -1026,11 +1038,20 @@ namespace ClutterFeed
         }
 
 
-        public ActionValue Mentions(string command)
+        public ActionValue Mentions()
         {
-            ActionValue returnInfo = new ActionValue();
-            ScreenDraw.ShowMessage("Currently disabled");
-            return returnInfo;
+            GetUpdates getMentions = new GetUpdates();
+            ScreenDraw draw = new ScreenDraw();
+            getMentions.GetMentions();
+            TimerMan.Pause();
+
+            draw.ShowMentions();
+            Actions twitterMethods = new Actions();
+            twitterMethods.ActionStart(true, null);
+
+            TimerMan.Resume();
+            draw.ShowTimeline();
+            return new ActionValue();
         }
 
         public ActionValue Help()

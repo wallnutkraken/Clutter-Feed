@@ -29,26 +29,6 @@ namespace ClutterFeed
         public static string userScreenName;
         public static List<InteractiveTweet> localTweetList;
 
-        /// <summary>
-        /// Checks if a specifc update exists in a list
-        /// </summary>
-        /// <param name="where">List to check</param>
-        /// <param name="what">Update to find</param>
-        /// <returns></returns>
-        private bool UpdateExists(List<InteractiveTweet> where, InteractiveTweet what)
-        {
-            bool doesIt = false;
-            for (int index = 0; index < where.Count; index++)
-            {
-                if (where[index].ID == what.ID)
-                {
-                    doesIt = true;
-                }
-            }
-
-            return doesIt;
-        }
-
         private void CleanTweets()
         {
             try
@@ -138,21 +118,22 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="twitter"></param>
         /// <returns></returns>
-        public List<InteractiveTweet> GetMentions()
+        public void GetMentions()
         {
             ListTweetsMentioningMeOptions mentionOpts = new ListTweetsMentioningMeOptions();
             mentionOpts.IncludeEntities = true;
             mentionOpts.Count = 15;
 
             List<TwitterStatus> mentions = User.Account.ListTweetsMentioningMe(mentionOpts).ToList();
-            List<InteractiveTweet> taggedMentions = new List<InteractiveTweet>();
             for (int index = 0; index < mentions.Count; index++)
             {
-                localTweetList.Add(ConvertTweet(mentions[index], true));
-                System.Threading.Thread.Sleep(25);
+                InteractiveTweet tempTweet = ConvertTweet(mentions[index], true);
+                if (localTweetList.Contains(tempTweet) == false)
+                {
+                    localTweetList.Add(tempTweet);
+                    System.Threading.Thread.Sleep(25);
+                }
             }
-
-            return taggedMentions;
         }
 
         /// <summary>
@@ -327,38 +308,45 @@ namespace ClutterFeed
         /// </summary>
         public InteractiveTweet ConvertTweet(TwitterStatus tweet, bool isMention)
         {
-            InteractiveTweet formedTweet = new InteractiveTweet();
-            /* Big block of filling the InteractiveTweet properties */
-            formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
-            formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = EscapeChars(tweet.Text);
-            formedTweet.ID = tweet.Id;
-            TweetIdentification generateID = new TweetIdentification();
-            formedTweet.TweetIdentification = generateID.GenerateIdentification();
-            formedTweet.IsFavorited = tweet.IsFavorited;
-            formedTweet.IsRetweeted = tweet.IsRetweeted;
-            formedTweet.IsMention = true;
-            formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
-            formedTweet.FavoriteCount = tweet.FavoriteCount;
-            formedTweet.RetweetCount = tweet.RetweetCount;
-            formedTweet.TimePosted = tweet.CreatedDate;
-
-
-            if (formedTweet.Contents.Contains("@" + userScreenName))
+            if (isMention)
             {
-                try
-                {
-                    SoundPlayer notification = new SoundPlayer();
+                InteractiveTweet formedTweet = new InteractiveTweet();
+                /* Big block of filling the InteractiveTweet properties */
+                formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
+                formedTweet.AuthorDisplayName = tweet.User.Name;
+                formedTweet.Contents = EscapeChars(tweet.Text);
+                formedTweet.ID = tweet.Id;
+                TweetIdentification generateID = new TweetIdentification();
+                formedTweet.TweetIdentification = generateID.GenerateIdentification();
+                formedTweet.IsFavorited = tweet.IsFavorited;
+                formedTweet.IsRetweeted = tweet.IsRetweeted;
+                formedTweet.IsMention = true;
+                formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
+                formedTweet.FavoriteCount = tweet.FavoriteCount;
+                formedTweet.RetweetCount = tweet.RetweetCount;
+                formedTweet.TimePosted = tweet.CreatedDate;
 
-                    notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
-                    notification.Play();
-                }
-                catch (Exception)
+
+                if (formedTweet.Contents.Contains("@" + userScreenName) && formedTweet.IsMention == false)
                 {
+                    try
+                    {
+                        SoundPlayer notification = new SoundPlayer();
+
+                        notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
+                        notification.Play();
+                    }
+                    catch (Exception)
+                    {
+                    }
                 }
+
+                return formedTweet;
             }
-
-            return formedTweet;
+            else
+            {
+                return ConvertTweet(tweet);
+            }
         }
 
         /// <summary>

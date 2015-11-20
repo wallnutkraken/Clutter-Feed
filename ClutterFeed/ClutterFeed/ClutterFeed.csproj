@@ -98,6 +98,7 @@
     <Compile Include="Settings.cs" />
     <Compile Include="StatusCommunication.cs" />
     <Compile Include="StringExtensions.cs" />
+    <Compile Include="TimerMan.cs" />
     <Compile Include="TweetIdentification.cs" />
     <Compile Include="User.cs" />
   </ItemGroup>

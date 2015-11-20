@@ -23,6 +23,7 @@ using TweetSharp;
 
 namespace ClutterFeed
 {
+    /* This seems like a very pointless class actually */
     class StatusCommunication
     {
         /// <summary>
