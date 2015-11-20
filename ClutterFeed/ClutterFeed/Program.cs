@@ -51,7 +51,7 @@ namespace ClutterFeed
             else
             {
                 User config = new User();
-                config.GetConsts();
+                config.GetConfigs();
                 config.FindColors();
             }
             TimeLeft = Settings.RefreshSeconds;

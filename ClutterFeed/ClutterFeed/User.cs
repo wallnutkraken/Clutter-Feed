@@ -36,7 +36,7 @@ namespace ClutterFeed
         public static Window CounterConsoleWin;
         private const string CONFIG = "clutterfeed.conf";
 
-        public void GetConsts()
+        public void GetConfigs()
         {
             ReadConfig();
             foreach (string line in ConfigFile)
@@ -50,6 +50,13 @@ namespace ClutterFeed
                     if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
                     {
                         Settings.NoSquash = true;
+                    }
+                }
+                if (line.ToLower().Contains("noshortcuts") && line.StartsWith("#") == false)
+                {
+                    if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
+                    {
+                        Settings.NoShortcuts = true;
                     }
                 }
             }
@@ -512,9 +519,8 @@ namespace ClutterFeed
             int charCount = 0;
             int buttonPress = 0;
             int bufferPosition = 0;
-            char[] splitter = new char[1];
+            char[] splitter = { ' ' };
 
-            splitter[0] = ' '; /* A little awkward of an approach */
             do
             {
                 CounterConsoleWin.Clear();
@@ -540,6 +546,11 @@ namespace ClutterFeed
                 CounterConsoleWin.Refresh();
 
                 buttonPress = CounterConsoleWin.GetChar();
+                if (Settings.NoShortcuts == false)
+                {
+                    Actions.DealWithShortcuts(buttonPress);
+                }
+
                 if (buttonPress == 8) /* 8 is backspace */
                 {
                     if (charCount != 0)

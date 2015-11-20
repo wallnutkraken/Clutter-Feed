@@ -26,3 +26,7 @@ REFRESH=300
 #Nosquash decides whether tweets will have an empty line
 #inbetween them
 NOSQUASH=FALSE
+
+#Setting this to false (or anything but true) disables the
+#parsing of keyboard shortcuts like ctrl-c
+NOSHORTCUTS=FALSE

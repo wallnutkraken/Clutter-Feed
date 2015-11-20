@@ -201,6 +201,16 @@ namespace ClutterFeed
                 }
             } while (command.Command("/q") == false);
         }
+
+        public static void DealWithShortcuts(int ch)
+        {
+            if (ch == 3) /* ^C */
+            {
+                Curses.EndWin();
+                Environment.Exit(0);
+            }
+        }
+
         /// <summary>
         /// Initializes all the important objects and the API
         /// </summary>
