@@ -312,7 +312,7 @@ namespace ClutterFeed
             if (profile.Description.Length >= ScreenInfo.WindowWidth - 8)
             {
                 int splitter = ScreenInfo.WindowWidth - 8; /* Dictates how many characters to wait until splitting the bio */
-                List<string> splitBio = profile.Description.SplitInParts(splitter).ToList();
+                List<string> splitBio = profile.Description.SplitWords(splitter).ToList();
                 for (int index = 0; index < splitBio.Count; index++) /* Writes the bio of the user */
                 {
                     showProfile.Add(bioStartLine, 4, splitBio[index]);
@@ -384,7 +384,7 @@ namespace ClutterFeed
 
             tweetShow.Color = 14;
             longUpdate = longUpdate.Replace("\n", " ");
-            List<string> shortenedUpdate = longUpdate.SplitInParts(splitter).ToList();
+            List<string> shortenedUpdate = longUpdate.SplitWords(splitter).ToList();
 
             tweetShow.Add(tweet.AuthorScreenName + "\n");
             string atName = "( " + tweet.AuthorDisplayName + " )\n";
@@ -495,47 +495,7 @@ namespace ClutterFeed
 
         public void ShowMentions()
         {
-            List<InteractiveTweet> allTweets = GetUpdates.localTweetList;
-            List<InteractiveTweet> mentions = new List<InteractiveTweet>();
-            for (int index = 0; index < allTweets.Count; index++) /* Creates a mention-only tweet */
-            {
-                if (allTweets[index].IsMention)
-                {
-                    mentions.Add(allTweets[index]);
-                }
-            }
-
-            int numberToDisplay = 14;
-            if (mentions.Count < 15)
-            {
-                numberToDisplay = mentions.Count - 1;
-            }
-            int splitter = Console.WindowWidth - 12;
-
-
-
-            for (int index = numberToDisplay; index >= 0; index--)
-            {
-                string tweetText = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
-                tweetText = tweetText.Replace("\n", "\n      ");
-                List<string> shortenedUpdate = tweetText.SplitInParts(splitter).ToList();
-
-                Console.ForegroundColor = ConsoleColor.DarkMagenta;
-                Console.Write(mentions[index].TweetIdentification + "    ");
-                Console.ForegroundColor = ConsoleColor.White;
-
-                ShowInteractions(mentions[index]);
-
-                for (int shorterTweetIndex = 0; shorterTweetIndex < shortenedUpdate.Count; shorterTweetIndex++)
-                {
-                    if (shorterTweetIndex > 0)
-                    {
-                        Console.Write("      ");
-                    }
-                    Console.WriteLine(shortenedUpdate[shorterTweetIndex]);
-                }
-                Console.WriteLine();
-            }
+           /* Remember to rewrite this! */
         }
 
         public static void ShowMessage(string message)
