@@ -253,10 +253,33 @@ namespace ClutterFeed
             ScreenDraw.HeadLine.Refresh();
         }
 
-        private string FixSigns(string message)
+        private string EscapeChars(string message)
         {
             message = message.Replace("&lt;", "<");
             message = message.Replace("&gt;", ">");
+            message = message.Replace("&quot;", "\"");
+            message = message.Replace("&amp;", "&");
+            message = message.Replace("&OElig;", "Œ");
+            message = message.Replace("&oelig;", "œ");
+            message = message.Replace("&Scaron;", "Š");
+            message = message.Replace("&scaron;", "š");
+            message = message.Replace("&Yuml;", "Ÿ");
+            message = message.Replace("&circ;", "^");
+            message = message.Replace("&tilde;", "~");
+            message = message.Replace("&ndash;", "–");
+            message = message.Replace("&mdash;", "—");
+            message = message.Replace("&lsquo;", "‘");
+            message = message.Replace("&rsquo;", "’");
+            message = message.Replace("&sbquo;", "‚");
+            message = message.Replace("&ldquo;", "“");
+            message = message.Replace("&rdquo;", "”");
+            message = message.Replace("&bdquo;", "„");
+            message = message.Replace("&dagger;", "†");
+            message = message.Replace("&Dagger;", "‡");
+            message = message.Replace("&permil;", "‰");
+            message = message.Replace("&lsaquo;", "‹");
+            message = message.Replace("&rsaquo;", "›");
+            message = message.Replace("&euro;", "€");
             return message;
         }
 
@@ -270,7 +293,7 @@ namespace ClutterFeed
             InteractiveTweet formedTweet = new InteractiveTweet();
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = FixSigns(tweet.Text);
+            formedTweet.Contents = EscapeChars(tweet.Text);
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
@@ -308,7 +331,7 @@ namespace ClutterFeed
             /* Big block of filling the InteractiveTweet properties */
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = FixSigns(tweet.Text);
+            formedTweet.Contents = EscapeChars(tweet.Text);
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
