@@ -406,27 +406,31 @@ namespace ClutterFeed
             tweetShow.Box((int)'|', (int)'-');
             string longUpdate = tweet.Contents;
             int splitter = 120;
+            int line = 1;
 
-            tweetShow.Color = 14;
+            tweetShow.Color = (int)Color.Pairs.Self;
             longUpdate = longUpdate.Replace("\n", " ");
             List<string> shortenedUpdate = longUpdate.SplitWords(splitter).ToList();
 
-            tweetShow.Add(tweet.AuthorScreenName + "\n");
-            string atName = "( " + tweet.AuthorDisplayName + " )\n";
+            tweetShow.Add(line, 2, tweet.AuthorScreenName);
+            line++;
+            string atName = "( " + tweet.AuthorDisplayName + " )";
             tweetShow.Color = (int)Color.Pairs.Identifier;
-            tweetShow.Add(atName);
+            tweetShow.Add(line, 2, atName);
+            line++;
             tweetShow.Color = (int)Color.Pairs.Self;
 
             for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
             {
-                tweetShow.Add(shortenedUpdate[index] + "\n");
+                tweetShow.Add(line, 2, shortenedUpdate[index]);
+                line++;
             }
 
             if (tweet.IsFavorited)
             {
                 tweetShow.Color = Colors.YELLOW;
             }
-            tweetShow.Add("Favorites: " + tweet.FavoriteCount + " ");
+            tweetShow.Add(line, 2, "Favorites: " + tweet.FavoriteCount + " ");
             tweetShow.Color = (int)Color.Pairs.Self;
 
             if (tweet.IsRetweeted)
@@ -434,6 +438,7 @@ namespace ClutterFeed
                 tweetShow.Color = Colors.GREEN;
             }
             tweetShow.Add("Retweets: " + tweet.RetweetCount + " ");
+            line++;
             tweetShow.Color = (int)Color.Pairs.Self;
 
             tweetShow.Refresh();
