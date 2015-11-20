@@ -91,7 +91,6 @@ namespace ClutterFeed
                     InteractiveTweet formattedTweet = new InteractiveTweet();
                     formattedTweet = ConvertTweet(unformattedTweets[index]);
                     localTweetList.Insert(0, formattedTweet);
-                    System.Threading.Thread.Sleep(25);
                 }
             }
             else
@@ -102,7 +101,6 @@ namespace ClutterFeed
                     InteractiveTweet formattedTweet = new InteractiveTweet();
                     formattedTweet = ConvertTweet(unformattedTweets[index]);
                     localTweetList.Add(formattedTweet);
-                    System.Threading.Thread.Sleep(25);
                 }
 
             }
@@ -128,7 +126,6 @@ namespace ClutterFeed
                 if (localTweetList.Contains(tempTweet) == false)
                 {
                     localTweetList.Add(tempTweet);
-                    System.Threading.Thread.Sleep(25);
                 }
             }
         }

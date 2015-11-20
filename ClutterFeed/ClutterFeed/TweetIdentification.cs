@@ -55,11 +55,10 @@ namespace ClutterFeed
         public string GenerateIdentification()
         {
             const string chars = "abcdefghijklmnopqrstuvwxyz0123456789";
-            Random random = new Random();
             string randomIdentifier = "";
             do
             {
-                randomIdentifier = new string(Enumerable.Repeat(chars, 2).Select(s => s[random.Next(s.Length)]).ToArray());
+                randomIdentifier = new string(Enumerable.Repeat(chars, 2).Select(s => s[RandomGenerator.GetRandomNumber(0, s.Length)]).ToArray());
             } while (IdentificationExists(randomIdentifier) == true);
             return randomIdentifier;
         }

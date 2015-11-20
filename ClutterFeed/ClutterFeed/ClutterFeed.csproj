@@ -93,6 +93,7 @@
     <Compile Include="Profile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RandomGenerator.cs" />
     <Compile Include="ScreenDraw.cs" />
     <Compile Include="SetScreenColor.cs" />
     <Compile Include="Settings.cs" />
