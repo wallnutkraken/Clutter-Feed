@@ -122,7 +122,6 @@ namespace ClutterFeed
         {
             ListTweetsMentioningMeOptions mentionOpts = new ListTweetsMentioningMeOptions();
             mentionOpts.IncludeEntities = true;
-            mentionOpts.Count = 15;
 
             List<TwitterStatus> mentions = User.Account.ListTweetsMentioningMe(mentionOpts).ToList();
             for (int index = 0; index < mentions.Count; index++)
