@@ -217,6 +217,11 @@ namespace ClutterFeed
                 User.CounterConsoleWin.Refresh();
                 return true;
             }
+            if (ch == 4) /* Ctrl-D */
+            {
+                Mentions();
+                return true;
+            }
             return false;
         }
 
