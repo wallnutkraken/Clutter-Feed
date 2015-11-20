@@ -453,7 +453,7 @@ namespace ClutterFeed
         public void ShowHelp()
         {
             TimerMan.Pause();
-            Window help = new Window(22, ScreenInfo.WindowWidth, 4, 0);
+            Window help = new Window(23, ScreenInfo.WindowWidth, 4, 0);
             help.Color = (int)Color.Pairs.Self;
 
             int num = 2;
@@ -527,6 +527,10 @@ namespace ClutterFeed
 
             help.Add(num, 2,"/block");
             DrawAtEnd(help, num, "Blocks or unblocks the selected user\n");
+            num++;
+
+            help.Add(num, 2, "/afk");
+            DrawAtEnd(help, num, "Toggles the auto-update timer on and off\n");
             num++;
 
             help.Color = 11;
