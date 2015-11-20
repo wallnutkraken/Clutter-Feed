@@ -40,7 +40,155 @@ namespace ClutterFeed
         private GetUpdates showUpdates = new GetUpdates();
         private OAuthAccessToken key = new OAuthAccessToken();
 
+        public void ActionStart()
+        {
+            string command = "/fullupdate";
+            do
+            {
+                ActionValue commandMetadata = new ActionValue();
 
+                if (command.StartsWith("/"))
+                {
+
+                    StatusCommunication newTweet = new StatusCommunication();
+                    if ((command.ToLower().CompareTo("/fullupdate") == 0) || (command.ToLower().CompareTo("/fu") == 0))
+                    {
+                        commandMetadata = Update(command, true);
+                    }
+
+                    else if (command.Command("/update") || command.Command("/u"))
+                    {
+                        commandMetadata = Update(command);
+                    }
+
+                    else if (command.Command("/accounts"))
+                    {
+                        commandMetadata = ProfileSelection();
+                    }
+
+                    else if (command.Command("/r"))
+                    {
+                        commandMetadata = ReplyGeneric(command);
+                    }
+
+                    else if (command.Command("/block"))
+                    {
+                        commandMetadata = BlockUser(command);
+                    }
+
+                    else if (command.Command("/follow"))
+                    {
+                        commandMetadata = FollowUser(command);
+                    }
+
+                    else if (command.Command("/id"))
+                    {
+                        commandMetadata = GetID(command);
+                    }
+
+                    else if (command.Command("/friend"))
+                    {
+                        commandMetadata = AddFriend(command);
+                    }
+
+                    else if (command.Command("/link"))
+                    {
+                        commandMetadata = TweetLink(command);
+                    }
+
+                    else if (command.Command("/rn"))
+                    {
+                        commandMetadata = ReplyQuiet(command);
+                    }
+
+                    else if (command.Command("/rc"))
+                    {
+                        commandMetadata = ReplyClean(command);
+                    }
+
+                    else if (command.Command("/rt"))
+                    {
+                        commandMetadata = Retweet(command);
+                    }
+
+                    else if (command.Command("/fav") || command.Command("/f"))
+                    {
+                        commandMetadata = FavoriteTweet(command);
+                    }
+
+                    else if (command.Command("/del")|| command.Command("/d"))
+                    {
+                        commandMetadata = RemoveTweet(command);
+                    }
+
+                    else if (command.Command("/profile"))
+                    {
+                        try
+                        {
+                            commandMetadata = ShowProfile(command);
+                        }
+                        catch (NullReferenceException exceptionInfo)
+                        {
+                            ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
+                            commandMetadata = new ActionValue();
+                        }
+                    }
+
+                    else if (command.Command("/tweet"))
+                    {
+                        commandMetadata = ShowTweet(command);
+                    }
+
+                    else if (command.Command("/me"))
+                    {
+                        commandMetadata = Mentions(command);
+                    }
+
+                    else if (command.Command("/help") || command.Command("/h"))
+                    {
+                        commandMetadata = Help();
+                    }
+
+                    else if (command.Command("/api"))
+                    {
+                        commandMetadata = ApiInfo();
+                    }
+
+                    else
+                    {
+                        ScreenDraw.ShowMessage("Such a command does not exist");
+                    }
+
+                }
+                /* End of commands */
+
+                if (command.ToLower().StartsWith("/") == false) /* EXCEPT for this one */
+                {
+                    commandMetadata = NewTweet(command);
+                    if (User.Account.Response.Error != null)
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error);
+                    }
+                }
+                if (commandMetadata.AskForCommand)
+                {
+                    command = User.CounterConsole();
+                }
+                else
+                {
+                    if (commandMetadata.OverrideCommand)
+                    {
+                        command = commandMetadata.OverrideCommandString;
+                    }
+                    else
+                    {
+                        command = "/u";
+                    }
+                    commandMetadata.AskForCommand = true;
+                    Thread.Sleep(200);
+                }
+            } while ((!command.ToLower().StartsWith("/q")));
+        }
         /// <summary>
         /// Initializes all the important objects and the API
         /// </summary>
