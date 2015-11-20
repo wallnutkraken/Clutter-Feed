@@ -641,6 +641,10 @@ namespace ClutterFeed
                     {
                         buttonPress = int.MinValue;
                     }
+                    else if (buttonPress == 9) /* TAB key */
+                    {
+                        buttonPress = 57344;
+                    }
                     else if (charCount < 146)
                     {
                         if (buttonPress < 57344)
