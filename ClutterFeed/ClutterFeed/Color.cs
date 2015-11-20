@@ -30,5 +30,14 @@ namespace ClutterFeed
         public static Color LinkColor { get; set; } = null;
         public static Color SelfColor { get; set; } = null;
         public static Color MentionColor { get; set; } = null;
+
+        public enum Pairs
+        {
+            Identifier = 11,
+            Link,
+            Friend,
+            Self,
+            Mention
+        }
     }
 }

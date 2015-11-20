@@ -231,18 +231,17 @@ namespace ClutterFeed
 
                 int splitter = maxX - 8;
 
-                //longUpdate = longUpdate.Replace("\n", "\n      ");
                 List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
 
                 string cleanUserName = updates[index].AuthorScreenName.Remove(0, 1).ToLower();
 
                 if (Friend.FriendsList != null && Friend.FriendsList.Contains(cleanUserName))
                 {
-                    Tweets.Color = 13; /* The color of friendship */
+                    Tweets.Color = (int)Color.Pairs.Friend; /* The color of friendship */
                 }
                 else
                 {
-                    Tweets.Color = 11; /* Regular identifier color */
+                    Tweets.Color = (int)Color.Pairs.Identifier; /* Regular identifier color */
                 }
 
                 Tweets.Add(updates[index].TweetIdentification + "    ");
@@ -254,11 +253,11 @@ namespace ClutterFeed
                 if (updates[index].AuthorScreenName.CompareTo("@" + GetUpdates.userScreenName) == 0)
                 {
                     Tweets.AttrOn(Attrs.BOLD);
-                    Tweets.Color = 14;
+                    Tweets.Color = (int)Color.Pairs.Self;
                 }
                 if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
                 {
-                    Tweets.Color = 15;
+                    Tweets.Color = (int)Color.Pairs.Mention;
                 }
 
                 for (int updateIndex = 0; updateIndex < shortenedUpdate.Count; updateIndex++)
@@ -408,9 +407,9 @@ namespace ClutterFeed
 
             tweetShow.Add(tweet.AuthorScreenName + "\n");
             string atName = "( " + tweet.AuthorDisplayName + " )\n";
-            tweetShow.Color = 11;
+            tweetShow.Color = (int)Color.Pairs.Identifier;
             tweetShow.Add(atName);
-            tweetShow.Color = 14;
+            tweetShow.Color = (int)Color.Pairs.Self;
 
             for (int index = 0; index < shortenedUpdate.Count; index++) /* Draws the tweet nicely */
             {
@@ -422,14 +421,14 @@ namespace ClutterFeed
                 tweetShow.Color = Colors.YELLOW;
             }
             tweetShow.Add("Favorites: " + tweet.FavoriteCount + " ");
-            tweetShow.Color = 14;
+            tweetShow.Color = (int)Color.Pairs.Self;
 
             if (tweet.IsRetweeted)
             {
                 tweetShow.Color = Colors.GREEN;
             }
             tweetShow.Add("Retweets: " + tweet.RetweetCount + " ");
-            tweetShow.Color = 14;
+            tweetShow.Color = (int)Color.Pairs.Self;
 
             tweetShow.Refresh();
             tweetShow.GetChar();
@@ -446,7 +445,7 @@ namespace ClutterFeed
         {
             TimerMan.Pause();
             Window help = new Window(22, ScreenInfo.WindowWidth, 4, 0);
-            help.Color = 14;
+            help.Color = (int)Color.Pairs.Self;
 
             int num = 2;
             help.Add(num, 2,"/h, /help");
