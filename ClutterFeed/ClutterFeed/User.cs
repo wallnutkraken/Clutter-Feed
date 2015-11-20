@@ -59,6 +59,13 @@ namespace ClutterFeed
                         Settings.NoShortcuts = true;
                     }
                 }
+                if (line.ToLower().Contains("shortlinks") && line.StartsWith("#") == false)
+                {
+                    if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
+                    {
+                        Settings.ShortLinks = true;
+                    }
+                }
             }
             if (Settings.RefreshSeconds == 0)
             {

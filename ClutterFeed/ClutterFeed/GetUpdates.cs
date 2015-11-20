@@ -268,7 +268,19 @@ namespace ClutterFeed
             InteractiveTweet formedTweet = new InteractiveTweet();
             formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
             formedTweet.AuthorDisplayName = tweet.User.Name;
-            formedTweet.Contents = EscapeChars(tweet.Text);
+            if (tweet.Entities.Urls.Count == 0 || Settings.ShortLinks)
+            {
+                formedTweet.Contents = EscapeChars(tweet.Text);
+            }
+            else
+            {
+                formedTweet.Contents = tweet.Text;
+                foreach (var link in tweet.Entities.Urls)
+                {
+                    formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                }
+                formedTweet.Contents = EscapeChars(formedTweet.Contents);
+            }
             formedTweet.ID = tweet.Id;
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
@@ -278,6 +290,8 @@ namespace ClutterFeed
             formedTweet.FavoriteCount = tweet.FavoriteCount;
             formedTweet.RetweetCount = tweet.RetweetCount;
             formedTweet.TimePosted = tweet.CreatedDate;
+
+            var shit = tweet.Entities.Urls;
 
 
             if (formedTweet.Contents.Contains("@" + userScreenName))
@@ -308,7 +322,19 @@ namespace ClutterFeed
                 /* Big block of filling the InteractiveTweet properties */
                 formedTweet.AuthorScreenName = "@" + tweet.Author.ScreenName;
                 formedTweet.AuthorDisplayName = tweet.User.Name;
-                formedTweet.Contents = EscapeChars(tweet.Text);
+                if (tweet.Entities.Urls.Count == 0 || Settings.ShortLinks)
+                {
+                    formedTweet.Contents = EscapeChars(tweet.Text);
+                }
+                else
+                {
+                    formedTweet.Contents = tweet.Text;
+                    foreach (var link in tweet.Entities.Urls)
+                    {
+                        formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                    }
+                    formedTweet.Contents = EscapeChars(formedTweet.Contents);
+                }
                 formedTweet.ID = tweet.Id;
                 TweetIdentification generateID = new TweetIdentification();
                 formedTweet.TweetIdentification = generateID.GenerateIdentification();

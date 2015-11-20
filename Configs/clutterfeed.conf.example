@@ -30,3 +30,7 @@ NOSQUASH=FALSE
 #Setting this to false (or anything but true) disables the
 #parsing of keyboard shortcuts like ctrl-c
 NOSHORTCUTS=FALSE
+
+#Setting this to true will make all links in tweets be shown
+#as their t.co versions, instead of the expanded ones
+SHORTLINKS=FALSE
