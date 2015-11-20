@@ -88,7 +88,14 @@ namespace ClutterFeed
             twitterDo.SetUpTwitter();
 
             TimerCallback call = twitterDo.RefreshTweets;
-            UpdateTimer = new Timer(call, null, 0, 1000);
+            if (Settings.AFK)
+            {
+                UpdateTimer = new Timer(call, null, Timeout.Infinite, Timeout.Infinite);
+            }
+            else
+            {
+                UpdateTimer = new Timer(call, null, 0, 1000);
+            }
             twitterDo.ActionStart();
             UpdateTimer.Dispose();
 

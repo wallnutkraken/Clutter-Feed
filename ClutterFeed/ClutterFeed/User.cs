@@ -66,6 +66,14 @@ namespace ClutterFeed
                         Settings.ShortLinks = true;
                     }
                 }
+
+                if (line.ToLower().Contains("startafk") && line.StartsWith("#") == false)
+                {
+                    if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
+                    {
+                        Settings.AFK = true;
+                    }
+                }
             }
             if (Settings.RefreshSeconds == 0)
             {

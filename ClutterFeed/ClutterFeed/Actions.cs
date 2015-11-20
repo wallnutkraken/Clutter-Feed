@@ -69,6 +69,22 @@ namespace ClutterFeed
                         commandMetadata = Update();
                     }
 
+                    else if (command.Command("/afk") && mentions == false)
+                    {
+                        if (Settings.AFK)
+                        {
+                            ScreenDraw.ShowMessage("AFK Mode set to OFF.");
+                            Settings.AFK = false;
+                            TimerMan.Resume();
+                        }
+                        else
+                        {
+                            Settings.AFK = true;
+                            ScreenDraw.ShowMessage("AFK Mode set to ON.");
+                            TimerMan.Pause();
+                        }
+                    } 
+
                     else if (command.Command("/accounts") && mentions == false)
                     {
                         commandMetadata = ProfileSelection();
@@ -1073,7 +1089,10 @@ namespace ClutterFeed
             Actions twitterMethods = new Actions();
             twitterMethods.ActionStart(true, null);
 
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
             draw.ShowTimeline();
             return new ActionValue();
         }

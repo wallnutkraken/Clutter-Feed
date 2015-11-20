@@ -12,5 +12,6 @@ namespace ClutterFeed
         public static int RefreshSeconds { get; set; }
         public static bool NoShortcuts { get; set; }
         public static bool ShortLinks { get; set; }
+        public static bool AFK { get; set; }
     }
 }

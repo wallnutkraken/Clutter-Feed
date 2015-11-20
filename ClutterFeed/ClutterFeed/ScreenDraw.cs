@@ -214,7 +214,10 @@ namespace ClutterFeed
             menu.Clear();
             menu.Refresh();
             menu.Dispose();
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
             return User.profiles[selected];
         }
 
@@ -376,7 +379,10 @@ namespace ClutterFeed
             showProfile.Refresh();
             showProfile.GetChar();
             showProfile.Dispose();
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
 
             ScreenDraw draw = new ScreenDraw();
             draw.ShowTimeline();
@@ -434,7 +440,10 @@ namespace ClutterFeed
             tweetShow.GetChar();
             tweetShow.Dispose();
             ShowTimeline();
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
         }
 
         private void DrawAtEnd(Window where, int line, string message)
@@ -534,7 +543,10 @@ namespace ClutterFeed
             {
                 keypress = help.GetChar();
             } while (keypress != 10);
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
         }
 
         public void ShowMentions()
@@ -615,7 +627,10 @@ namespace ClutterFeed
             errorMessage.Color = Colors.WHITE;
             errorMessage.GetChar();
             errorMessage.Dispose();
-            TimerMan.Resume();
+            if (Settings.AFK == false)
+            {
+                TimerMan.Resume();
+            }
             ScreenDraw drawer = new ScreenDraw();
             drawer.ShowTimeline();
         }
@@ -633,7 +648,10 @@ namespace ClutterFeed
                 errorMessage.Color = Colors.WHITE;
                 errorMessage.GetChar();
                 errorMessage.Dispose();
-                TimerMan.Resume();
+                if (Settings.AFK == false)
+                {
+                    TimerMan.Resume();
+                }
             }
             else
             {

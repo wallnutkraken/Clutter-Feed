@@ -34,3 +34,8 @@ NOSHORTCUTS=FALSE
 #Setting this to true will make all links in tweets be shown
 #as their t.co versions, instead of the expanded ones
 SHORTLINKS=FALSE
+
+#Setting this to true will start ClutterFeed in AFK mode, this
+#means that the auto-update timer will be frozen until AFK mode
+#is turned off using the /afk command
+STARTAFK=TRUE
