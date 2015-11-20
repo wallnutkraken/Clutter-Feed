@@ -18,4 +18,4 @@ I need it
 
 ### A --debug launch option
 
-### Shortcuts
+### /shortcuts help thing
