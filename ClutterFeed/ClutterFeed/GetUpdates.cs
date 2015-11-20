@@ -279,8 +279,11 @@ namespace ClutterFeed
                 {
                     foreach (var link in tweet.Entities.Urls)
                     {
-                        formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
-                        formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                        if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WindowWidth - 8)
+                        {
+                            formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                            formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                        }
                     }
                 }
                 if (tweet.Entities.Media.Count != 0)
@@ -343,8 +346,11 @@ namespace ClutterFeed
                     {
                         foreach (var link in tweet.Entities.Urls)
                         {
-                            formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
-                            formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                            if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WindowWidth - 8)
+                            {
+                                formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
+                                formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
+                            }
                         }
                     }
                     if (tweet.Entities.Media.Count != 0)
