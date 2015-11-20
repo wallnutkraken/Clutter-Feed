@@ -159,6 +159,7 @@ namespace ClutterFeed
         }
         public Profile SelectUser()
         {
+            TimerMan.Pause();
             menu = new Window(User.profiles.Count + 1, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - (User.profiles.Count + 1) / 2, 0);
             int selected = 0;
             menu.Keypad = true;
@@ -213,6 +214,7 @@ namespace ClutterFeed
             menu.Clear();
             menu.Refresh();
             menu.Dispose();
+            TimerMan.Resume();
             return User.profiles[selected];
         }
 
@@ -288,6 +290,7 @@ namespace ClutterFeed
 
         public void ShowUserProfile(TweetSharp.TwitterUser profile)
         {
+            TimerMan.Pause();
             if (profile == null)
             {
                 ScreenDraw.ShowMessage("Such a user does not exist");
@@ -374,6 +377,7 @@ namespace ClutterFeed
             showProfile.Refresh();
             showProfile.GetChar();
             showProfile.Dispose();
+            TimerMan.Resume();
 
             ScreenDraw draw = new ScreenDraw();
             draw.ShowTimeline();
@@ -391,6 +395,7 @@ namespace ClutterFeed
         /// <param name="tweet">tweet to draw</param>
         public void DrawTweet(InteractiveTweet tweet)
         {
+            TimerMan.Pause();
             Curses.Echo = false;
             Window tweetShow = new Window(8, ScreenInfo.WindowWidth, 11, 0);
             string longUpdate = tweet.Contents;
@@ -429,6 +434,7 @@ namespace ClutterFeed
             tweetShow.GetChar();
             tweetShow.Dispose();
             ShowTimeline();
+            TimerMan.Resume();
         }
 
         private void DrawAtEnd(Window where, int line, string message)
@@ -437,7 +443,7 @@ namespace ClutterFeed
         }
         public void ShowHelp()
         {
-
+            TimerMan.Pause();
             Window help = new Window(20, ScreenInfo.WindowWidth, 5, 0);
             help.Color = 14;
 
@@ -505,6 +511,7 @@ namespace ClutterFeed
             {
                 keypress = help.GetChar();
             } while (keypress != 10);
+            TimerMan.Resume();
         }
 
         public void ShowMentions()
