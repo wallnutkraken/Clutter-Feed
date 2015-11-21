@@ -258,7 +258,8 @@ namespace ClutterFeed
                     Tweets.AttrOn(Attrs.BOLD);
                     Tweets.Color = (int)Color.Pairs.Self;
                 }
-                if (updates[index].Contents.Contains("@" + GetUpdates.userScreenName))
+                char[] splitInTwo = { ':' };
+                if (longUpdate.Split(splitInTwo, 2)[1].Contains("@" + GetUpdates.userScreenName))
                 {
                     Tweets.Color = (int)Color.Pairs.Mention;
                 }

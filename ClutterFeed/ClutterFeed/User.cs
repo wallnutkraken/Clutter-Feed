@@ -262,11 +262,11 @@ namespace ClutterFeed
             }
             if (Color.SelfColor == null)
             {
-                Color.SelfColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
+                Color.SelfColor = SetScreenColor.CursifyColor(new Color(7, 192, 96));
             }
             if (Color.MentionColor == null)
             {
-                Color.MentionColor = SetScreenColor.CursifyColor(new Color(236, 183, 9));
+                Color.MentionColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
             }
         }
 
