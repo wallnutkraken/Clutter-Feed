@@ -1,5 +1,20 @@
 # **Release change log**
 
+### Changes in Version 1.5.1:
+- Timer now pauses when you're not on the timeline
+- Raised the limit of how many tweets are initially shown on the timeline
+- Added keyboard shortcuts:
+	- Ctrl - C Closes ClutterFeed
+	- Ctrl - U Updates
+	- Ctrl - D Goes to mentions
+- Changed the design of profiles and other popups
+- More links now shown as intended
+- Added an /afk command to pause/resume the timer along with a config file line to enable AFK mode on startup
+- Fixed the mention and self colors being pretty much the same
+-  Fixed some html special characters not escaping properly
+- Fixed tweets getting cut off mid word
+
+
 ### Changes in Version 1.5:
 - Added a configuration file
 - Added support for custom colors with the config file
