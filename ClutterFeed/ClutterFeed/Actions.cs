@@ -69,7 +69,7 @@ namespace ClutterFeed
                         commandMetadata = Update();
                     }
 
-                    else if (command.Command("/afk") && mentions == false)
+                    else if (command.Command("/afk"))
                     {
                         if (Settings.AFK)
                         {
@@ -90,57 +90,57 @@ namespace ClutterFeed
                         commandMetadata = ProfileSelection();
                     }
 
-                    else if (command.Command("/r"))
+                    else if (command.Command("/r") && mentions == false)
                     {
                         commandMetadata = ReplyGeneric(command);
                     }
 
-                    else if (command.Command("/block"))
+                    else if (command.Command("/block") && mentions == false)
                     {
                         commandMetadata = BlockUser(command);
                     }
 
-                    else if (command.Command("/follow"))
+                    else if (command.Command("/follow") && mentions == false)
                     {
                         commandMetadata = FollowUser(command);
                     }
 
-                    else if (command.Command("/id"))
+                    else if (command.Command("/id") && mentions == false)
                     {
                         commandMetadata = GetID(command);
                     }
 
-                    else if (command.Command("/friend"))
+                    else if (command.Command("/friend") && mentions == false)
                     {
                         commandMetadata = AddFriend(command);
                     }
 
-                    else if (command.Command("/link"))
+                    else if (command.Command("/link") && mentions == false)
                     {
                         commandMetadata = TweetLink(command);
                     }
 
-                    else if (command.Command("/rn"))
+                    else if (command.Command("/rn") && mentions == false)
                     {
                         commandMetadata = ReplyQuiet(command);
                     }
 
-                    else if (command.Command("/rc"))
+                    else if (command.Command("/rc") && mentions == false)
                     {
                         commandMetadata = ReplyClean(command);
                     }
 
-                    else if (command.Command("/rt"))
+                    else if (command.Command("/rt") && mentions == false)
                     {
                         commandMetadata = Retweet(command);
                     }
 
-                    else if (command.Command("/fav") || command.Command("/f"))
+                    else if ((command.Command("/fav") || command.Command("/f")) && mentions == false)
                     {
                         commandMetadata = FavoriteTweet(command);
                     }
 
-                    else if (command.Command("/del") || command.Command("/d"))
+                    else if ((command.Command("/del") || command.Command("/d")) && mentions == false)
                     {
                         commandMetadata = RemoveTweet(command);
                     }
@@ -158,7 +158,7 @@ namespace ClutterFeed
                         }
                     }
 
-                    else if (command.Command("/tweet"))
+                    else if (command.Command("/tweet") && mentions == false)
                     {
                         commandMetadata = ShowTweet(command);
                     }
@@ -173,14 +173,21 @@ namespace ClutterFeed
                         commandMetadata = Help();
                     }
 
-                    else if (command.Command("/api"))
+                    else if (command.Command("/api") && mentions == false)
                     {
                         commandMetadata = ApiInfo();
                     }
 
                     else
                     {
-                        ScreenDraw.ShowMessage("Such a command does not exist");
+                        if (mentions)
+                        {
+                            command = "/b";
+                        }
+                        else
+                        {
+                            ScreenDraw.ShowMessage("Such a command does not exist");
+                        }
                     }
 
                 }
