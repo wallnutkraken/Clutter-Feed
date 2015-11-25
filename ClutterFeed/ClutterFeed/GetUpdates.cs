@@ -107,7 +107,7 @@ namespace ClutterFeed
             }
         }
 
-        public static void Stream()
+        public void Stream()
         {
             const int maxStreamEvents = 5;
             ScreenDraw draw = new ScreenDraw();
