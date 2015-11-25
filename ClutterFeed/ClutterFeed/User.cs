@@ -237,6 +237,14 @@ namespace ClutterFeed
                             short blue = short.Parse(colorSetting[2]);
                             Color.MentionColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
                         }
+                        else if (splitLine[0].InsensitiveCompare("backgroundcolor") && ConfigFile[index].StartsWith("#") == false)
+                        {
+                            string[] colorSetting = splitLine[1].Split(',');
+                            short red = short.Parse(colorSetting[0]);
+                            short green = short.Parse(colorSetting[1]);
+                            short blue = short.Parse(colorSetting[2]);
+                            Color.BackgroundColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
+                        }
                         index++;
                     }
                 }
@@ -268,6 +276,10 @@ namespace ClutterFeed
             if (Color.MentionColor == null)
             {
                 Color.MentionColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
+            }
+            if (Color.BackgroundColor == null)
+            {
+                Color.BackgroundColor = SetScreenColor.CursifyColor(new Color(25, 25, 25));
             }
         }
 

@@ -25,11 +25,12 @@ namespace ClutterFeed
 
         }
 
-        public static Color IdentifierColor { get; set; } = null;
-        public static Color FriendColor { get; set; } = null;
-        public static Color LinkColor { get; set; } = null;
-        public static Color SelfColor { get; set; } = null;
-        public static Color MentionColor { get; set; } = null;
+        public static Color IdentifierColor { get; set; }
+        public static Color FriendColor { get; set; }
+        public static Color LinkColor { get; set; }
+        public static Color SelfColor { get; set; }
+        public static Color MentionColor { get; set; }
+        public static Color BackgroundColor { get; set; }
 
         public enum Pairs
         {

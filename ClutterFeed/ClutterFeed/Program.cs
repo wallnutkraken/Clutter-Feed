@@ -61,6 +61,7 @@ namespace ClutterFeed
             Curses.InitColor(103, Color.FriendColor.Red, Color.FriendColor.Green, Color.FriendColor.Blue);
             Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
             Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
+            Curses.InitColor(Colors.BLACK, Color.BackgroundColor.Red, Color.BackgroundColor.Green, Color.BackgroundColor.Blue);
 
 
             if (Curses.HasColors)
