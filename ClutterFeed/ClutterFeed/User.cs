@@ -72,6 +72,7 @@ namespace ClutterFeed
                     if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
                     {
                         Settings.AFK = true;
+                        TimerMan.Paused = true;
                     }
                 }
             }

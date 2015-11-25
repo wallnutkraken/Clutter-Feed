@@ -30,7 +30,7 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        public static string Version = "1.5.1";
+        public static string Version = "1.6-devel";
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
@@ -630,19 +630,23 @@ namespace ClutterFeed
         {
             TimerMan.Pause();
             Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+            Panel errorPanel = new Panel(errorMessage);
+            errorPanel.Window = errorMessage;
             errorMessage.Box((int)'|', (int)'-');
             Curses.Echo = false;
             errorMessage.Color = 11;
             errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
             errorMessage.Color = Colors.WHITE;
             errorMessage.GetChar();
-            errorMessage.Dispose();
+            Curses.DoUpdate();
             if (Settings.AFK == false)
             {
                 TimerMan.Resume();
             }
-            ScreenDraw drawer = new ScreenDraw();
-            drawer.ShowTimeline();
+            errorPanel.Hide();
+            errorPanel.Dispose();
+            //ScreenDraw drawer = new ScreenDraw();
+            //drawer.ShowTimeline();
         }
 
         public static void ShowMessage(string message, bool noRefresh)

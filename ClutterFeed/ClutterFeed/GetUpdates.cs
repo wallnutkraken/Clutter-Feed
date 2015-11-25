@@ -16,10 +16,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Threading;
 using CursesSharp;
 using TweetSharp;
 using System.Media;
+using System.Diagnostics;
 
 
 namespace ClutterFeed
@@ -106,7 +107,80 @@ namespace ClutterFeed
             }
         }
 
+        public static void Stream()
+        {
+            const int maxStreamEvents = 5;
+            ScreenDraw draw = new ScreenDraw();
 
+            var block = new AutoResetEvent(false);
+            var count = 0;
+
+            User.Account.StreamUser((streamEvent, response) =>
+            {
+                if (TimerMan.Paused == false)
+                {
+                    if (streamEvent is TwitterUserStreamEnd)
+                    {
+                        block.Set();
+                        ScreenDraw.ShowMessage("Streaming is over");
+                    }
+
+                    if (response.StatusCode == 0)
+                    {
+                        if (streamEvent is TwitterUserStreamFriends)
+                        {
+                            var friends = (TwitterUserStreamFriends)streamEvent;
+                            /* No idea what this one even is */
+                        }
+
+                        if (streamEvent is TwitterUserStreamEvent)
+                        {
+                            var @event = (TwitterUserStreamEvent)streamEvent;
+                        }
+
+                        if (streamEvent is TwitterUserStreamStatus)
+                        {
+                            var tweet = ((TwitterUserStreamStatus)streamEvent).Status;
+                            InteractiveTweet newStatus = ConvertTweet(tweet);
+                            if (localTweetList.Contains(newStatus) == false)
+                            {
+                                localTweetList.Insert(0, newStatus);
+                                draw.ShowTimeline();
+                                User.CounterConsoleWin.Refresh();
+                            }
+                        }
+
+                        if (streamEvent is TwitterUserStreamDirectMessage)
+                        {
+                            var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
+                            /* I have no code for DMs... yet! */
+                        }
+
+                        if (streamEvent is TwitterUserStreamDeleteStatus)
+                        {
+                            var deleted = (TwitterUserStreamDeleteStatus)streamEvent;
+                            localTweetList.Remove(TweetIdentification.FindTweet(deleted.StatusId));
+                            draw.ShowTimeline();
+                        }
+
+                        if (streamEvent is TwitterUserStreamDeleteDirectMessage)
+                        {
+                            var deleted = (TwitterUserStreamDeleteDirectMessage)streamEvent;
+                            /* No cooooooooode yet */
+                        }
+                        count++;
+                        if (count == maxStreamEvents)
+                        {
+                            block.Set();
+                        }
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage("Could not start stream");
+                    }
+                }
+            });
+        }
 
 
         /// <summary>
