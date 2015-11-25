@@ -630,8 +630,6 @@ namespace ClutterFeed
         {
             TimerMan.Pause();
             Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
-            Panel errorPanel = new Panel(errorMessage);
-            errorPanel.Window = errorMessage;
             errorMessage.Box((int)'|', (int)'-');
             Curses.Echo = false;
             errorMessage.Color = 11;
@@ -643,10 +641,8 @@ namespace ClutterFeed
             {
                 TimerMan.Resume();
             }
-            errorPanel.Hide();
-            errorPanel.Dispose();
-            //ScreenDraw drawer = new ScreenDraw();
-            //drawer.ShowTimeline();
+            ScreenDraw drawer = new ScreenDraw();
+            drawer.ShowTimeline();
         }
 
         public static void ShowMessage(string message, bool noRefresh)
