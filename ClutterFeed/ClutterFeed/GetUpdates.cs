@@ -130,7 +130,7 @@ namespace ClutterFeed
                         if (streamEvent is TwitterUserStreamFriends)
                         {
                             var friends = (TwitterUserStreamFriends)streamEvent;
-                            /* No idea what this one even is */
+                            ScreenDraw.ShowMessage("Something with friends happened");
                         }
 
                         if (streamEvent is TwitterUserStreamEvent)

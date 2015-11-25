@@ -90,7 +90,7 @@ namespace ClutterFeed
             TimerCallback call = twitterDo.RefreshTweets;
             if (Settings.AFK)
             {
-                UpdateTimer = new Timer(call, null, Timeout.Infinite, Timeout.Infinite);
+                UpdateTimer = new Timer(call, null, 0, 1000);//new Timer(call, null, Timeout.Infinite, Timeout.Infinite);
                 TimerMan.Paused = true;
             }
             else
