@@ -91,12 +91,13 @@ namespace ClutterFeed
             if (Settings.AFK)
             {
                 UpdateTimer = new Timer(call, null, Timeout.Infinite, Timeout.Infinite);
+                TimerMan.Paused = true;
             }
             else
             {
                 UpdateTimer = new Timer(call, null, 0, 1000);
             }
-            twitterDo.ActionStart();
+            twitterDo.TimelineConsole();
             UpdateTimer.Dispose();
 
             ScreenDraw.HeadLine.Dispose();

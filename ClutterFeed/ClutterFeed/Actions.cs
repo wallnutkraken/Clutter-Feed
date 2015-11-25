@@ -34,18 +34,21 @@ namespace ClutterFeed
     }
     class Actions
     {
+        public static Thread StreamingThread { get; set; }
         private User getUser = new User();
         private StatusCommunication newTweet = new StatusCommunication();
         private ScreenDraw drawing = new ScreenDraw();
         private GetUpdates showUpdates = new GetUpdates();
         private OAuthAccessToken key = new OAuthAccessToken();
 
-        public void ActionStart()
+        public void TimelineConsole()
         {
-            ActionStart(false, "/fullupdate");
+            TimelineConsole("/fullupdate");
         }
-        public void ActionStart(bool mentions, string command)
+        public void TimelineConsole(string command)
         {
+            StreamingThread = new Thread(new ThreadStart(showUpdates.Stream));
+            StreamingThread.Start();
             do
             {
                 ActionValue commandMetadata = new ActionValue();
@@ -59,12 +62,12 @@ namespace ClutterFeed
                 {
 
                     StatusCommunication newTweet = new StatusCommunication();
-                    if ((command.ToLower().CompareTo("/fullupdate") == 0 || command.ToLower().CompareTo("/fu") == 0) && mentions == false)
+                    if ((command.ToLower().CompareTo("/fullupdate") == 0 || command.ToLower().CompareTo("/fu") == 0))
                     {
-                        commandMetadata = Update( true);
+                        commandMetadata = Update(true);
                     }
 
-                    else if ((command.Command("/update") || command.Command("/u")) && mentions == false)
+                    else if ((command.Command("/update") || command.Command("/u")))
                     {
                         commandMetadata = Update();
                     }
@@ -83,69 +86,69 @@ namespace ClutterFeed
                             ScreenDraw.ShowMessage("AFK Mode set to ON.");
                             TimerMan.Pause();
                         }
-                    } 
+                    }
 
-                    else if (command.Command("/accounts") && mentions == false)
+                    else if (command.Command("/accounts"))
                     {
                         commandMetadata = ProfileSelection();
                     }
 
-                    else if (command.Command("/r") && mentions == false)
+                    else if (command.Command("/r"))
                     {
                         commandMetadata = ReplyGeneric(command);
                     }
 
-                    else if (command.Command("/block") && mentions == false)
+                    else if (command.Command("/block"))
                     {
                         commandMetadata = BlockUser(command);
                     }
 
-                    else if (command.Command("/follow") && mentions == false)
+                    else if (command.Command("/follow"))
                     {
                         commandMetadata = FollowUser(command);
                     }
 
-                    else if (command.Command("/id") && mentions == false)
+                    else if (command.Command("/id"))
                     {
                         commandMetadata = GetID(command);
                     }
 
-                    else if (command.Command("/friend") && mentions == false)
+                    else if (command.Command("/friend"))
                     {
                         commandMetadata = AddFriend(command);
                     }
 
-                    else if (command.Command("/link") && mentions == false)
+                    else if (command.Command("/link"))
                     {
                         commandMetadata = TweetLink(command);
                     }
 
-                    else if (command.Command("/rn") && mentions == false)
+                    else if (command.Command("/rn"))
                     {
                         commandMetadata = ReplyQuiet(command);
                     }
 
-                    else if (command.Command("/rc") && mentions == false)
+                    else if (command.Command("/rc"))
                     {
                         commandMetadata = ReplyClean(command);
                     }
 
-                    else if (command.Command("/rt") && mentions == false)
+                    else if (command.Command("/rt"))
                     {
                         commandMetadata = Retweet(command);
                     }
 
-                    else if ((command.Command("/fav") || command.Command("/f")) && mentions == false)
+                    else if ((command.Command("/fav") || command.Command("/f")))
                     {
                         commandMetadata = FavoriteTweet(command);
                     }
 
-                    else if ((command.Command("/del") || command.Command("/d")) && mentions == false)
+                    else if ((command.Command("/del") || command.Command("/d")))
                     {
                         commandMetadata = RemoveTweet(command);
                     }
 
-                    else if (command.Command("/profile") && mentions == false)
+                    else if (command.Command("/profile"))
                     {
                         try
                         {
@@ -158,37 +161,31 @@ namespace ClutterFeed
                         }
                     }
 
-                    else if (command.Command("/tweet") && mentions == false)
+                    else if (command.Command("/tweet"))
                     {
                         commandMetadata = ShowTweet(command);
                     }
 
-                    else if (command.Command("/me") && mentions == false)
+                    else if (command.Command("/me"))
                     {
                         commandMetadata = Mentions();
                     }
 
-                    else if ((command.Command("/help") || command.Command("/h")) && mentions == false)
+                    else if ((command.Command("/help") || command.Command("/h")))
                     {
                         commandMetadata = Help();
                     }
 
-                    else if (command.Command("/api") && mentions == false)
+                    else if (command.Command("/api"))
                     {
                         commandMetadata = ApiInfo();
                     }
 
                     else
                     {
-                        if (mentions)
-                        {
-                            command = "/b";
-                        }
-                        else
-                        {
-                            ScreenDraw.ShowMessage("Such a command does not exist");
-                        }
+                        ScreenDraw.ShowMessage("Such a command does not exist");
                     }
+
 
                 }
                 /* End of commands */
@@ -216,11 +213,7 @@ namespace ClutterFeed
                         command = "/u";
                     }
                     commandMetadata.AskForCommand = true;
-                    Thread.Sleep(200);
-                }
-                if (mentions && command == "/b")
-                {
-                    command = "/q";
+                    Thread.Sleep(200); /* Why is this here? */
                 }
             } while (command.Command("/q") == false);
         }
@@ -1094,7 +1087,7 @@ namespace ClutterFeed
 
             draw.ShowMentions();
             Actions twitterMethods = new Actions();
-            twitterMethods.ActionStart(true, null);
+            /* Put a new console here */
 
             if (Settings.AFK == false)
             {
