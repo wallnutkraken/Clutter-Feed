@@ -35,16 +35,16 @@ namespace ClutterFeed
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
-        /// <summary>
-        /// Turns a number of seconds into a digital clock string
-        /// </summary>
-        /// <param name="time">The time to change (in seconds)</param>
         public static void UpdateHeader()
         {
             HeadLine.Clear();
             HeadLine.AttrOn(Attrs.BOLD);
             HeadLine.Add("ClutterFeed | " + VersionName + " (" + Version + ")");
             string signOn = "Signed on as: @" + GetUpdates.userScreenName;
+            if (Settings.AFK)
+            {
+                signOn = "(AFK) | " + signOn;
+            }
             HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             HeadLine.Refresh();
             if (User.CounterConsoleWin != null)

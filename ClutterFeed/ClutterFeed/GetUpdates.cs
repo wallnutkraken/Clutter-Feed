@@ -272,6 +272,10 @@ namespace ClutterFeed
             ScreenDraw.HeadLine.Clear();
             ScreenDraw.HeadLine.Add("ClutterFeed | " + ScreenDraw.VersionName + " (" + ScreenDraw.Version + ")");
             string signOn = "Signed on as: @" + userScreenName;
+            if (Settings.AFK)
+            {
+                signOn = "(AFK) | " + signOn;
+            }
             ScreenDraw.HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             ScreenDraw.HeadLine.Refresh();
         }

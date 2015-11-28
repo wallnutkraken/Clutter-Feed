@@ -6,10 +6,12 @@
         public static void Pause()
         {
             Paused = true;
+            ScreenDraw.UpdateHeader();
         }
         public static void Resume()
         {
             Paused = false;
+            ScreenDraw.UpdateHeader();
         }
     }
 }
