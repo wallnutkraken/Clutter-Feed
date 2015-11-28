@@ -17,11 +17,8 @@ linkColor=66,140,187
 friendColor=249,129,245
 selfColor=225,165,0
 mentionColor=236,183,0
+backgroundColor=16,16,16
 }
-#Refresh sets how often ClutterFeed automatically recieves
-#new updates from the Twitter API. This value is in seconds.
-#Setting it to 0 will NOT disable auto-updating.
-REFRESH=300
 
 #Nosquash decides whether tweets will have an empty line
 #inbetween them
