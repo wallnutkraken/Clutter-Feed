@@ -41,10 +41,6 @@ namespace ClutterFeed
             ReadConfig();
             foreach (string line in ConfigFile)
             {
-                if (line.ToLower().Contains("refresh") && line.StartsWith("#") == false)
-                {
-                    Settings.RefreshSeconds = int.Parse(line.Split('=')[1]);
-                }
                 if (line.ToLower().Contains("nosquash") && line.StartsWith("#") == false)
                 {
                     if (line.Split('=')[1].ToLower().CompareTo("true") == 0)
@@ -75,10 +71,6 @@ namespace ClutterFeed
                         TimerMan.Paused = true;
                     }
                 }
-            }
-            if (Settings.RefreshSeconds == 0)
-            {
-                Settings.RefreshSeconds = 300;
             }
         }
 

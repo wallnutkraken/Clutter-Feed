@@ -65,7 +65,7 @@ namespace ClutterFeed
                 }
                 else if (resp.RateLimitStatus.RemainingHits < 0)
                 {
-                    Program.UpdateTimer.Dispose();
+                    /* This shouldn't happen ever anymore, but keeping it here JUUUST in case */
                     ScreenDraw.ShowMessage("An error occured when retrieving tweets from Twitter. Please restart ClutterFeed");
                     System.Threading.Thread.Sleep(1000);
                     ScreenDraw.Tweets.Dispose();

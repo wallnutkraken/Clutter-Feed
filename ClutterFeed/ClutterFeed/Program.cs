@@ -35,9 +35,6 @@ namespace ClutterFeed
             Colors.RED, Colors.BLUE, Colors.GREEN, Colors.CYAN,
             Colors.RED, Colors.MAGENTA, Colors.YELLOW, Colors.WHITE
         };
-
-        public static int TimeLeft { get; set; }
-        public static Timer UpdateTimer { get; set; }
         static void Main(string[] args)
         {
             Curses.InitScr();
@@ -46,7 +43,6 @@ namespace ClutterFeed
             if (User.ConfigExists() == false)
             {
                 User.SetUnsetColorsToDefaults();
-                Settings.RefreshSeconds = 300;
             }
             else
             {
@@ -54,7 +50,6 @@ namespace ClutterFeed
                 config.GetConfigs();
                 config.FindColors();
             }
-            TimeLeft = Settings.RefreshSeconds;
 
             Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
             Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);
@@ -88,18 +83,12 @@ namespace ClutterFeed
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
 
-            TimerCallback call = twitterDo.RefreshTweets;
             if (Settings.AFK)
             {
-                UpdateTimer = new Timer(call, null, 0, 1000);//new Timer(call, null, Timeout.Infinite, Timeout.Infinite);
                 TimerMan.Paused = true;
             }
-            else
-            {
-                UpdateTimer = new Timer(call, null, 0, 1000);
-            }
+
             twitterDo.TimelineConsole();
-            UpdateTimer.Dispose();
 
             ScreenDraw.HeadLine.Dispose();
             ScreenDraw.Tweets.Dispose();

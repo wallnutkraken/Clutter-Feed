@@ -67,11 +67,10 @@ namespace ClutterFeed
         }
         public static void UpdateHeader()
         {
-            string clock = ClockifyTime(Program.TimeLeft);
             HeadLine.Clear();
             HeadLine.AttrOn(Attrs.BOLD);
             HeadLine.Add("ClutterFeed version " + Version);
-            string signOn = "Next update in: " + clock +  ". Signed on as: @" + GetUpdates.userScreenName;
+            string signOn = "Signed on as: @" + GetUpdates.userScreenName;
             HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             HeadLine.Refresh();
             if (User.CounterConsoleWin != null)
