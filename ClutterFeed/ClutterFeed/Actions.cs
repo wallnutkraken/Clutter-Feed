@@ -727,6 +727,7 @@ namespace ClutterFeed
                     ScreenDraw.ShowMessage("Deleted");
                     ScreenDraw draw = new ScreenDraw();
                     draw.ShowTimeline();
+                    User.CounterConsoleWin.Refresh();
                 }
                 else
                 {
