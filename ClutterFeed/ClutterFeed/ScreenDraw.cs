@@ -30,7 +30,8 @@ namespace ClutterFeed
         public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
         public static bool IsBlocked { get; set; } = false;
 
-        public static string Version = "1.6-devel";
+        public const string Version = "1.6-devel";
+        public const string VersionName = "Leaping Bomb";
         public static Window HeadLine { get; set; }
         public static Window Tweets { get; set; }
 
@@ -38,38 +39,11 @@ namespace ClutterFeed
         /// Turns a number of seconds into a digital clock string
         /// </summary>
         /// <param name="time">The time to change (in seconds)</param>
-        private static string ClockifyTime(int time)
-        {
-            if (time < 60)
-            {
-                if (time < 10)
-                {
-                    return "0:0" + time;
-                }
-                else
-                {
-                    return "0:" + time;
-                }
-            }
-            else
-            {
-                int minutes = time / 60;
-                int seconds = time - (minutes * 60);
-                if (seconds < 10)
-                {
-                    return minutes + ":0" + seconds;
-                }
-                else
-                {
-                    return minutes + ":" + seconds;
-                }
-            }
-        }
         public static void UpdateHeader()
         {
             HeadLine.Clear();
             HeadLine.AttrOn(Attrs.BOLD);
-            HeadLine.Add("ClutterFeed version " + Version);
+            HeadLine.Add("ClutterFeed | " + VersionName + " (" + Version + ")");
             string signOn = "Signed on as: @" + GetUpdates.userScreenName;
             HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
             HeadLine.Refresh();
