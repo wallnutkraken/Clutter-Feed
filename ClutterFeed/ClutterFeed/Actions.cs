@@ -25,13 +25,6 @@ using CursesSharp;
 
 namespace ClutterFeed
 {
-    class ActionValue
-    {
-        public bool AskForCommand { get; set; } = true;
-        public bool OverrideCommand { get; set; } = false;
-        public string OverrideCommandString { get; set; }
-
-    }
     class Actions
     {
         public static Thread StreamingThread { get; set; }
@@ -43,179 +36,167 @@ namespace ClutterFeed
 
         public void TimelineConsole()
         {
-            TimelineConsole("/fullupdate");
-        }
-        public void TimelineConsole(string command)
-        {
             StreamingThread = new Thread(new ThreadStart(showUpdates.Stream));
             StreamingThread.Start();
+            string command = null;
+
             do
             {
-                ActionValue commandMetadata = new ActionValue();
-                if (command == null)
+                if (command != null)
                 {
-                    commandMetadata = new ActionValue();
-                    command = "/";
-                }
-
-                else if (command.StartsWith("/"))
-                {
-
-                    StatusCommunication newTweet = new StatusCommunication();
-                    if ((command.ToLower().CompareTo("/fullupdate") == 0 || command.ToLower().CompareTo("/fu") == 0))
+                    if (command.StartsWith("/"))
                     {
-                        commandMetadata = Update(true);
-                    }
-
-                    else if ((command.Command("/update") || command.Command("/u")))
-                    {
-                        commandMetadata = Update();
-                    }
-
-                    else if (command.Command("/afk"))
-                    {
-                        if (Settings.AFK)
+                        if (command.Command("/r"))
                         {
-                            ScreenDraw.ShowMessage("AFK Mode set to OFF.");
-                            Settings.AFK = false;
-                            TimerMan.Resume();
+                            ReplyGeneric(command);
                         }
+
+                        else if (command.Command("/rc"))
+                        {
+                            ReplyClean(command);
+                        }
+
+                        else if (command.Command("/rn"))
+                        {
+                            ReplyQuiet(command);
+                        }
+
+                        else if (command.Command("/rt"))
+                        {
+                            Retweet(command);
+                        }
+
+                        else if (command.Command("/fav") || command.Command("/f"))
+                        {
+                            FavoriteTweet(command);
+                        }
+
+                        else if (command.Command("/unfav") || command.Command("/uf"))
+                        {
+                            FavoriteTweet(command); /* This also unfavs tweets */
+                        }
+
+                        else if (command.Command("/h") || command.Command("/help"))
+                        {
+                            Help();
+                        }
+
+                        else if (command.Command("/api"))
+                        {
+                            /* Shouldn't use with streaming, but keeping it here for now */
+                            /* for debugging purposes, better safe than sorry */
+                            ApiInfo();
+                        }
+
+                        else if (command.Command("/profile"))
+                        {
+                            ShowProfile(command);
+                        }
+
+                        else if (command.Command("/me"))
+                        {
+                            Mentions();
+                        }
+
+                        else if (command.Command("/link"))
+                        {
+                            TweetLink(command);
+                        }
+
+                        else if (command.Command("/tweet"))
+                        {
+                            ShowTweet(command);
+                        }
+
+                        else if (command.Command("/friend"))
+                        {
+                            ToggleFriend(command);
+                        }
+
+                        else if (command.Command("/accounts"))
+                        {
+                            try
+                            {
+                                ShowProfile(command);
+                            }
+                            catch (NullReferenceException exceptionInfo)
+                            {
+                                ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
+                            }
+                        }
+
+                        else if (command.Command("/follow"))
+                        {
+                            FollowUser(command);
+                        }
+
+                        else if (command.Command("/block"))
+                        {
+                            BlockUser(command);
+                        }
+
+                        else if (command.Command("/del"))
+                        {
+                            RemoveTweet(command);
+                        }
+
+                        else if (command.Command("/afk"))
+                        {
+                            AfkToggle();
+                        }
+
                         else
                         {
-                            Settings.AFK = true;
-                            ScreenDraw.ShowMessage("AFK Mode set to ON.");
-                            TimerMan.Pause();
+                            ScreenDraw.ShowMessage("Such a command does not exist");
                         }
                     }
 
-                    else if (command.Command("/accounts"))
+                    else if (command.Length <= 140)
                     {
-                        commandMetadata = ProfileSelection();
-                    }
-
-                    else if (command.Command("/r"))
-                    {
-                        commandMetadata = ReplyGeneric(command);
-                    }
-
-                    else if (command.Command("/block"))
-                    {
-                        commandMetadata = BlockUser(command);
-                    }
-
-                    else if (command.Command("/follow"))
-                    {
-                        commandMetadata = FollowUser(command);
-                    }
-
-                    else if (command.Command("/id"))
-                    {
-                        commandMetadata = GetID(command);
-                    }
-
-                    else if (command.Command("/friend"))
-                    {
-                        commandMetadata = AddFriend(command);
-                    }
-
-                    else if (command.Command("/link"))
-                    {
-                        commandMetadata = TweetLink(command);
-                    }
-
-                    else if (command.Command("/rn"))
-                    {
-                        commandMetadata = ReplyQuiet(command);
-                    }
-
-                    else if (command.Command("/rc"))
-                    {
-                        commandMetadata = ReplyClean(command);
-                    }
-
-                    else if (command.Command("/rt"))
-                    {
-                        commandMetadata = Retweet(command);
-                    }
-
-                    else if ((command.Command("/fav") || command.Command("/f")))
-                    {
-                        commandMetadata = FavoriteTweet(command);
-                    }
-
-                    else if ((command.Command("/del") || command.Command("/d")))
-                    {
-                        commandMetadata = RemoveTweet(command);
-                    }
-
-                    else if (command.Command("/profile"))
-                    {
-                        try
+                        NewTweet(command);
+                        if (User.Account.Response.Error != null)
                         {
-                            commandMetadata = ShowProfile(command);
-                        }
-                        catch (NullReferenceException exceptionInfo)
-                        {
-                            ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
-                            commandMetadata = new ActionValue();
+                            ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
                         }
                     }
-
-                    else if (command.Command("/tweet"))
-                    {
-                        commandMetadata = ShowTweet(command);
-                    }
-
-                    else if (command.Command("/me"))
-                    {
-                        commandMetadata = Mentions();
-                    }
-
-                    else if ((command.Command("/help") || command.Command("/h")))
-                    {
-                        commandMetadata = Help();
-                    }
-
-                    else if (command.Command("/api"))
-                    {
-                        commandMetadata = ApiInfo();
-                    }
-
-                    else
-                    {
-                        ScreenDraw.ShowMessage("Such a command does not exist");
-                    }
-
-
                 }
-                /* End of commands */
 
-                if (command.ToLower().StartsWith("/") == false) /* EXCEPT for this one */
-                {
-                    commandMetadata = NewTweet(command);
-                    if (User.Account.Response.Error != null)
-                    {
-                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error);
-                    }
-                }
-                if (commandMetadata.AskForCommand)
-                {
-                    command = User.CounterConsole();
-                }
-                else
-                {
-                    if (commandMetadata.OverrideCommand)
-                    {
-                        command = commandMetadata.OverrideCommandString;
-                    }
-                    else
-                    {
-                        command = "/u";
-                    }
-                    commandMetadata.AskForCommand = true;
-                    Thread.Sleep(200); /* Why is this here? */
-                }
+                command = User.CounterConsole();
             } while (command.Command("/q") == false);
+
+        }
+
+        /// <summary>
+        /// Toggles AFK mode on and off
+        /// </summary>
+        private static void AfkToggle()
+        {
+            if (Settings.AFK)
+            {
+                ScreenDraw.ShowMessage("AFK Mode set to OFF.");
+                Settings.AFK = false;
+            }
+            else
+            {
+                Settings.AFK = true;
+                ScreenDraw.ShowMessage("AFK Mode set to ON.");
+            }
+        }
+        public void MentionsConsole()
+        {
+            string command = "";
+            do
+            {
+                if (command != "")
+                {
+                    if (command.Command("/r"))
+                    {
+                        ReplyGeneric(command);
+                    }
+                }
+                command = User.CounterConsole();
+            }
+            while (command.Command("/b") == false);
         }
 
         public bool DealWithShortcuts(int ch)
@@ -280,7 +261,7 @@ namespace ClutterFeed
         {
             menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
         }
-        public ActionValue ProfileSelection()
+        private void ProfileSelection()
         {
             int pressedKey;
             int selection = 0;
@@ -440,39 +421,23 @@ namespace ClutterFeed
             }
             else if (selection == 4)
             {
-                ActionValue back = new ActionValue();
-                back.AskForCommand = false;
-                return back;
+                return;
             }
-
-            ActionValue returnInfo = new ActionValue();
-            returnInfo.AskForCommand = false;
-            returnInfo.OverrideCommand = true;
-            returnInfo.OverrideCommandString = "/fu";
-            return returnInfo;
         }
 
-        public ActionValue NewTweet(string command)
+        private void NewTweet(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (command.Length > 140)
             {
                 ScreenDraw.ShowMessage("Tweet is too long.");
-                return new ActionValue();
+                return;
             }
 
             newTweet.PostTweet(User.Account, command);
-            Thread.Sleep(200);
-
-            returnInfo.AskForCommand = false;
-            return returnInfo;
         }
 
-        public ActionValue AddFriend(string command)
+        private void ToggleFriend(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             string screenName = "";
             try
             {
@@ -480,11 +445,11 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                return returnInfo;
+                return;
             }
             if (command.Split(' ')[1].Length != 2)
             {
-                return returnInfo;
+                return;
             }
             else
             {
@@ -494,9 +459,7 @@ namespace ClutterFeed
 
             Friend luckyFriend = new Friend();
             luckyFriend.FriendToggle(screenName);
-            returnInfo.AskForCommand = false;
-
-            return returnInfo;
+            ScreenDraw.ShowMessage(screenName + "'s friend switch has been toggled ( ͡° ͜ʖ ͡°)");
         }
 
         /// <summary>
@@ -504,9 +467,8 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="command">the full command used</param>
         /// <returns>should the program ask for more input from the user?</returns>
-        public ActionValue ReplyGeneric(string command)
+        private void ReplyGeneric(string command)
         {
-            bool askForCommand = true;
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
             {
                 if (command.Split(' ')[1].Length != 2)
@@ -515,9 +477,17 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    char[] splitter = new char[1];
-                    splitter[0] = ' '; /* FUCK C# honestly */
-                    string message = command.Split(splitter, 3)[2];
+                    char[] splitter = { ' ' };
+                    string message = "";
+                    try
+                    {
+                        message = command.Split(splitter, 3)[2];
+                    }
+                    catch (Exception)
+                    {
+                        ScreenDraw.ShowMessage("The command was missing arguments");
+                        return;
+                    }
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
 
                     replyOpts.Status = replyOpts.Status + " ";
@@ -530,7 +500,7 @@ namespace ClutterFeed
                     catch (KeyNotFoundException exIn)
                     {
                         ScreenDraw.ShowMessage(exIn.Message);
-                        return new ActionValue();
+                        return;
                     }
                     string[] words = tweetReplyingTo.Contents.Split(' ');
                     string userScreenName = GetUpdates.userScreenName.ToLower();
@@ -548,21 +518,15 @@ namespace ClutterFeed
 
                     replyOpts.Status = replyOpts.Status + message;
                     User.Account.BeginSendTweet(replyOpts);
-                    askForCommand = false;
-                    Thread.Sleep(200);
                 }
             }
-            ActionValue returnInfo = new ActionValue();
-            returnInfo.AskForCommand = askForCommand;
-            return returnInfo;
         }
 
         /// <summary>
         /// Replies only to the tweet author, not mentioning everyone else the author mentioned
         /// </summary>
-        public ActionValue ReplyClean(string command)
+        private void ReplyClean(string command)
         {
-            bool askForCommand = true;
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
             {
                 if (command.Split(' ')[1].Length != 2)
@@ -571,27 +535,20 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    char[] splitter = new char[1];
-                    splitter[0] = ' '; /* FUCK C# honestly */
+                    char[] splitter = { ' ' }; /* Because why not? */
                     string message = command.Split(splitter, 3)[2];
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
 
                     replyOpts.Status = replyOpts.Status + " ";
                     replyOpts.Status = replyOpts.Status + message;
                     User.Account.BeginSendTweet(replyOpts);
-                    askForCommand = false;
-                    Thread.Sleep(200);
                 }
             }
-            ActionValue returnInfo = new ActionValue();
-            returnInfo.AskForCommand = askForCommand;
-            return returnInfo;
         }
 
 
-        public ActionValue ReplyQuiet(string command)
+        private void ReplyQuiet(string command)
         {
-            bool askForCommand = true;
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
             {
                 if (command.Split(' ')[1].Length != 2)
@@ -606,20 +563,13 @@ namespace ClutterFeed
                     SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
                     replyOpts.Status = message;
                     User.Account.BeginSendTweet(replyOpts);
-                    askForCommand = false;
-                    Thread.Sleep(200);
                 }
             }
-            ActionValue returnInfo = new ActionValue();
-            returnInfo.AskForCommand = askForCommand;
-            return returnInfo;
         }
 
 
-        public ActionValue TweetLink(string command)
+        private void TweetLink(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (command.Split(' ')[1].Length != 2)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /link [id]");
@@ -638,13 +588,10 @@ namespace ClutterFeed
                     ScreenDraw.ShowMessage(exIn.Message);
                 }
             }
-            return returnInfo;
         }
 
-        public ActionValue Retweet(string command)
+        private void Retweet(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
             {
                 if (command.Split(' ')[1].Length != 2)
@@ -659,7 +606,6 @@ namespace ClutterFeed
                     long tweetID = Convert.ToInt64(replyOpts.InReplyToStatusId);
                     retweetOpts.Id = tweetID;
                     InteractiveTweet tweet = new InteractiveTweet();
-                    bool finishBlock = true;
 
                     try
                     {
@@ -668,42 +614,36 @@ namespace ClutterFeed
                     catch (KeyNotFoundException exceptionInfo)
                     {
                         ScreenDraw.ShowMessage(exceptionInfo.Message);
-                        finishBlock = false;
+                        return;
                     }
-                    if (finishBlock)
+                    if (tweet.IsRetweeted)
                     {
-                        if (tweet.IsRetweeted)
-                        {
-                            User.Account.Retweet(retweetOpts);
-                            if (User.Account.Response.Error != null)
-                            {
-                                ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
-                            }
-                            return new ActionValue();
-                        }
-
                         User.Account.Retweet(retweetOpts);
-                        if (User.Account.Response.Error == null)
-                        {
-                            GetUpdates retweetInvert = new GetUpdates();
-                            retweetInvert.InvertRetweetStatus(tweetID);
-
-                            ScreenDraw.ShowMessage("Retweeted");
-
-                            ScreenDraw redraw = new ScreenDraw();
-                            redraw.ShowTimeline();
-                        }
-                        else
+                        if (User.Account.Response.Error != null)
                         {
                             ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
                         }
-
-                        returnInfo.AskForCommand = false;
+                        return;
                     }
+
+                    User.Account.Retweet(retweetOpts);
+                    if (User.Account.Response.Error == null)
+                    {
+                        GetUpdates retweetInvert = new GetUpdates();
+                        retweetInvert.InvertRetweetStatus(tweetID);
+
+                        ScreenDraw.ShowMessage("Retweeted");
+
+                        ScreenDraw redraw = new ScreenDraw();
+                        redraw.ShowTimeline();
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
+                    }
+
                 }
             }
-            return returnInfo;
-
         }
 
 
@@ -713,10 +653,8 @@ namespace ClutterFeed
         /// </summary>
         /// <param name="command">The entire command string</param>
         /// <returns></returns>
-        public ActionValue FavoriteTweet(string command)
+        private void FavoriteTweet(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
             {
                 if (command.Split(' ')[1].Length != 2)
@@ -739,7 +677,7 @@ namespace ClutterFeed
                     catch (KeyNotFoundException exIn)
                     {
                         ScreenDraw.ShowMessage(exIn.Message);
-                        return returnInfo;
+                        return;
                     }
 
                     if (tweet.IsFavorited)
@@ -759,19 +697,13 @@ namespace ClutterFeed
                         favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
 
                     }
-                    returnInfo.OverrideCommand = true;
-                    returnInfo.OverrideCommandString = "/fu";
-                    returnInfo.AskForCommand = false;
                 }
             }
-            return returnInfo;
         }
 
 
-        public ActionValue RemoveTweet(string command)
+        private void RemoveTweet(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (command.Split(' ')[1].Length != 2)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /del [id]");
@@ -797,13 +729,10 @@ namespace ClutterFeed
                 }
 
             }
-            return returnInfo;
         }
 
-        public ActionValue BlockUser(string command)
+        private void BlockUser(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /block [id] or /block @[name]");
@@ -858,13 +787,10 @@ namespace ClutterFeed
                     }
                 }
             }
-            return returnInfo;
         }
 
-        public ActionValue FollowUser(string command)
+        private void FollowUser(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /follow [id] or /follow @[name]");
@@ -919,16 +845,14 @@ namespace ClutterFeed
                     }
                 }
             }
-            return returnInfo;
         }
         /// <summary>
         /// Accesses the profile of a user
         /// </summary>
         /// <param name="command">The entire command string</param>
         /// <returns></returns>
-        public ActionValue ShowProfile(string command)
+        private void ShowProfile(string command)
         {
-            ActionValue returnInfo = new ActionValue();
 
             GetUserProfileForOptions profileOpts = new GetUserProfileForOptions();
             string screenName = "";
@@ -939,7 +863,7 @@ namespace ClutterFeed
             catch (IndexOutOfRangeException)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /profile [id] or /profile @[name]");
-                return returnInfo;
+                return;
             }
             if (command.Split(' ')[1].StartsWith("@"))
             {
@@ -948,7 +872,7 @@ namespace ClutterFeed
             else if (command.Split(' ')[1].Length != 2)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /profile [id] or /profile @[name]");
-                return returnInfo;
+                return;
             }
             else
             {
@@ -983,14 +907,11 @@ namespace ClutterFeed
             {
                 ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
             }
-            returnInfo.AskForCommand = false;
-            return returnInfo;
+            return;
         }
 
-        public ActionValue ShowTweet(string command)
+        private void ShowTweet(string command)
         {
-            ActionValue returnInfo = new ActionValue();
-
             try /* Checks if the command was valid */
             {
                 bool exceptionTest = command.Split(' ')[1].StartsWith("@");
@@ -998,12 +919,12 @@ namespace ClutterFeed
             catch (IndexOutOfRangeException)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /tweet [id]");
-                return new ActionValue(); /* Exits method with default opts */
+                return;
             }
             if (command.Split(' ')[1].Length != 2)
             {
                 ScreenDraw.ShowMessage("Wrong syntax. Use /tweet [id]");
-                return new ActionValue(); /* Exits method with default opts */
+                return;
             }
             else
             {
@@ -1016,7 +937,7 @@ namespace ClutterFeed
                 catch (KeyNotFoundException exIn)
                 {
                     ScreenDraw.ShowMessage(exIn.Message);
-                    return returnInfo;
+                    return;
                 }
                 if (User.Account.Response.Error == null)
                 {
@@ -1027,9 +948,6 @@ namespace ClutterFeed
                 {
                     ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
                 }
-
-
-                return returnInfo;
             }
         }
 
@@ -1049,18 +967,16 @@ namespace ClutterFeed
             }
         }
 
-        public ActionValue Update()
+        public void Update()
         {
             newTweet.ShowUpdates(User.Account, showUpdates, false);
-            return new ActionValue();
         }
-        public ActionValue Update(bool fullUpdate)
+        public void Update(bool fullUpdate)
         {
             newTweet.ShowUpdates(User.Account, showUpdates, fullUpdate);
-            return new ActionValue();
         }
 
-        public ActionValue GetID(string command)
+        public void GetID(string command)
         {
             if (User.IsMissingArgs(command) == false)
             {
@@ -1074,11 +990,10 @@ namespace ClutterFeed
                     ScreenDraw.ShowMessage("Tweet ID: " + id);
                 }
             }
-            return new ActionValue();
         }
 
 
-        public ActionValue Mentions()
+        private void Mentions()
         {
             GetUpdates getMentions = new GetUpdates();
             ScreenDraw draw = new ScreenDraw();
@@ -1087,28 +1002,23 @@ namespace ClutterFeed
 
             draw.ShowMentions();
             Actions twitterMethods = new Actions();
-            /* Put a new console here */
+            MentionsConsole();
 
             if (Settings.AFK == false)
             {
                 TimerMan.Resume();
             }
             draw.ShowTimeline();
-            return new ActionValue();
         }
 
-        public ActionValue Help()
+        private void Help()
         {
-            ActionValue returnInfo = new ActionValue();
             ScreenDraw drawHelp = new ScreenDraw();
             drawHelp.ShowHelp();
             drawHelp.ShowTimeline();
-            returnInfo.AskForCommand = false;
-
-            return returnInfo;
         }
 
-        public ActionValue ApiInfo()
+        private void ApiInfo()
         {
             TwitterRateLimitStatus rate = User.Account.Response.RateLimitStatus;
             if (User.Account.Response.Error == null)
@@ -1119,7 +1029,6 @@ namespace ClutterFeed
             {
                 ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
             }
-            return new ActionValue(); /* Returns default values */
         }
 
     }
