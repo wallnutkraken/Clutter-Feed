@@ -38,6 +38,10 @@ namespace ClutterFeed
         {
             StreamingThread = new Thread(new ThreadStart(showUpdates.Stream));
             StreamingThread.Start();
+
+            showUpdates.GetTweets(true);
+            drawing.ShowTimeline(); /* Show the initial Timeline */
+
             string command = null;
 
             do
