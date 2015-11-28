@@ -44,7 +44,7 @@ namespace ClutterFeed
         /// <summary>
         /// Updates the list of tweets one has
         /// </summary>
-        public void GetTweets(bool fullUpdate)
+        public void GetTweets()
         {
             CleanTweets();
             ListTweetsOnHomeTimelineOptions updateOpts = new ListTweetsOnHomeTimelineOptions();
@@ -75,35 +75,12 @@ namespace ClutterFeed
                 }
                 return;
             }
-            int newTweetStartIndex = TweetIdentification.NewTweetStart(unformattedTweets);
-            if (newTweetStartIndex == -1)
+            localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
+            for (int index = 0; index < unformattedTweets.Count; index++)
             {
-                fullUpdate = true;
-            }
-            if (newTweetStartIndex == 0 && fullUpdate == false)
-            {
-                return;
-            }
-
-            if (fullUpdate == false)
-            {
-                for (int index = newTweetStartIndex - 1; index >= 0; index--)
-                {
-                    InteractiveTweet formattedTweet = new InteractiveTweet();
-                    formattedTweet = ConvertTweet(unformattedTweets[index]);
-                    localTweetList.Insert(0, formattedTweet);
-                }
-            }
-            else
-            {
-                localTweetList = new List<InteractiveTweet>(); /* Resets the full list */
-                for (int index = 0; index < unformattedTweets.Count; index++)
-                {
-                    InteractiveTweet formattedTweet = new InteractiveTweet();
-                    formattedTweet = ConvertTweet(unformattedTweets[index]);
-                    localTweetList.Add(formattedTweet);
-                }
-
+                InteractiveTweet formattedTweet = new InteractiveTweet();
+                formattedTweet = ConvertTweet(unformattedTweets[index]);
+                localTweetList.Add(formattedTweet);
             }
         }
 
@@ -117,68 +94,65 @@ namespace ClutterFeed
 
             User.Account.StreamUser((streamEvent, response) =>
             {
-                if (TimerMan.Paused == false)
+                if (streamEvent is TwitterUserStreamEnd)
                 {
-                    if (streamEvent is TwitterUserStreamEnd)
+                    block.Set();
+                    ScreenDraw.ShowMessage("Streaming is over");
+                }
+
+                if (response.StatusCode == 0)
+                {
+
+                    if (streamEvent is TwitterUserStreamEvent)
                     {
-                        block.Set();
-                        ScreenDraw.ShowMessage("Streaming is over");
+                        var @event = (TwitterUserStreamEvent)streamEvent;
                     }
 
-                    if (response.StatusCode == 0)
+                    if (streamEvent is TwitterUserStreamStatus)
                     {
-                        if (streamEvent is TwitterUserStreamFriends)
+                        CleanTweets();
+                        var tweet = ((TwitterUserStreamStatus)streamEvent).Status;
+                        InteractiveTweet newStatus = ConvertTweet(tweet);
+                        if (localTweetList.Contains(newStatus) == false)
                         {
-                            var friends = (TwitterUserStreamFriends)streamEvent;
-                            ScreenDraw.ShowMessage("Something with friends happened");
-                        }
-
-                        if (streamEvent is TwitterUserStreamEvent)
-                        {
-                            var @event = (TwitterUserStreamEvent)streamEvent;
-                        }
-
-                        if (streamEvent is TwitterUserStreamStatus)
-                        {
-                            var tweet = ((TwitterUserStreamStatus)streamEvent).Status;
-                            InteractiveTweet newStatus = ConvertTweet(tweet);
-                            if (localTweetList.Contains(newStatus) == false)
+                            localTweetList.Insert(0, newStatus);
+                            if (TimerMan.Paused == false)
                             {
-                                localTweetList.Insert(0, newStatus);
                                 draw.ShowTimeline();
                                 User.CounterConsoleWin.Refresh();
                             }
                         }
-
-                        if (streamEvent is TwitterUserStreamDirectMessage)
-                        {
-                            var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
-                            /* I have no code for DMs... yet! */
-                        }
-
-                        if (streamEvent is TwitterUserStreamDeleteStatus)
-                        {
-                            var deleted = (TwitterUserStreamDeleteStatus)streamEvent;
-                            localTweetList.Remove(TweetIdentification.FindTweet(deleted.StatusId));
-                            draw.ShowTimeline();
-                        }
-
-                        if (streamEvent is TwitterUserStreamDeleteDirectMessage)
-                        {
-                            var deleted = (TwitterUserStreamDeleteDirectMessage)streamEvent;
-                            /* No cooooooooode yet */
-                        }
-                        count++;
-                        if (count == maxStreamEvents)
-                        {
-                            block.Set();
-                        }
                     }
-                    else
+
+                    if (streamEvent is TwitterUserStreamDirectMessage)
                     {
-                        ScreenDraw.ShowMessage("Could not start stream");
+                        var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
+                        /* I have no code for DMs... yet! */
+                    }
+
+                    if (streamEvent is TwitterUserStreamDeleteStatus)
+                    {
+                        var deleted = (TwitterUserStreamDeleteStatus)streamEvent;
+                        localTweetList.Remove(TweetIdentification.FindTweet(deleted.StatusId));
+                        draw.ShowTimeline();
+                    }
+
+                    if (streamEvent is TwitterUserStreamDeleteDirectMessage)
+                    {
+                        var deleted = (TwitterUserStreamDeleteDirectMessage)streamEvent;
+                        /* No cooooooooode yet */
+                    }
+                    count++;
+                    if (count == maxStreamEvents)
+                    {
+                        block.Set();
                     }
                 }
+                else
+                {
+                    ScreenDraw.ShowMessage("Could not start stream");
+                }
+
             });
         }
 

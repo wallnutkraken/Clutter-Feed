@@ -29,11 +29,13 @@ namespace ClutterFeed
     {
         public static Thread StreamingThread { get; set; }
         private User getUser = new User();
-        private StatusCommunication newTweet = new StatusCommunication();
         private ScreenDraw drawing = new ScreenDraw();
         private GetUpdates showUpdates = new GetUpdates();
         private OAuthAccessToken key = new OAuthAccessToken();
 
+        /// <summary>
+        /// Shows the timeline and parses commands as long as the user has not typed in /q
+        /// </summary>
         public void TimelineConsole()
         {
             StreamingThread = new Thread(new ThreadStart(showUpdates.Stream));
@@ -94,7 +96,14 @@ namespace ClutterFeed
 
                         else if (command.Command("/profile"))
                         {
-                            ShowProfile(command);
+                            try
+                            {
+                                ShowProfile(command);
+                            }
+                            catch (NullReferenceException exceptionInfo)
+                            {
+                                ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
+                            }
                         }
 
                         else if (command.Command("/me"))
@@ -119,14 +128,7 @@ namespace ClutterFeed
 
                         else if (command.Command("/accounts"))
                         {
-                            try
-                            {
-                                ShowProfile(command);
-                            }
-                            catch (NullReferenceException exceptionInfo)
-                            {
-                                ScreenDraw.ShowMessage(exceptionInfo.Message + "\n");
-                            }
+                            ProfileSelection();
                         }
 
                         else if (command.Command("/follow"))
@@ -188,34 +190,19 @@ namespace ClutterFeed
         }
         public void MentionsConsole()
         {
-            string command = "";
-            do
-            {
-                if (command != "")
-                {
-                    if (command.Command("/r"))
-                    {
-                        ReplyGeneric(command);
-                    }
-                }
-                command = User.CounterConsole();
-            }
-            while (command.Command("/b") == false);
+            throw new NotImplementedException("Todo");
         }
 
+        /// <summary>
+        /// Deals with input shortcuts accordingly
+        /// </summary>
+        /// <returns>Returns true if the input was a shortcut</returns>
         public bool DealWithShortcuts(int ch)
         {
             if (ch == 3) /* ^C */
             {
                 Curses.EndWin();
                 Environment.Exit(0);
-                return true;
-            }
-            if (ch == 21) /* Ctrl-U */
-            {
-                Update();
-                drawing.ShowTimeline();
-                User.CounterConsoleWin.Refresh();
                 return true;
             }
             if (ch == 4) /* Ctrl-D */
@@ -242,18 +229,11 @@ namespace ClutterFeed
             drawing.StartScreen();
         }
 
-        public static void CenterWrite(string text)
-        {
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (text.Length / 2), Console.CursorTop);
-            Console.Write(text);
-        }
-        public static void CenterWriteLine(string text)
-        {
-            Console.SetCursorPosition((Console.WindowWidth / 2) - (text.Length / 2), Console.CursorTop);
-            Console.WriteLine(text);
-        }
-
         private Window menu { get; set; }
+
+        /// <summary>
+        /// Draws a message in the middle of the menu
+        /// </summary>
         private void MenuDrawInMiddle(string message)
         {
             int line = 0;
@@ -261,10 +241,18 @@ namespace ClutterFeed
             menu.GetCursorYX(out line, out notNessecary);
             menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
         }
+
+        /// <summary>
+        /// Draws a message in the middle of the menu, on a specific line
+        /// </summary>
         private void MenuDrawInMiddle(string message, int line)
         {
             menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
         }
+
+        /// <summary>
+        /// A menu and logic to select/add/remove profiles
+        /// </summary>
         private void ProfileSelection()
         {
             int pressedKey;
@@ -429,17 +417,21 @@ namespace ClutterFeed
             }
         }
 
+        /// <summary>
+        /// Posts a new status to Twitter
+        /// </summary>
+        /// <param name="command"></param>
         private void NewTweet(string command)
         {
-            if (command.Length > 140)
-            {
-                ScreenDraw.ShowMessage("Tweet is too long.");
-                return;
-            }
-
-            newTweet.PostTweet(User.Account, command);
+            SendTweetOptions opts = new SendTweetOptions();
+            opts.Status = command;
+            User.Account.SendTweet(opts);
         }
 
+
+        /// <summary>
+        /// Toggles the friend switch ( ͡° ͜ʖ ͡°)
+        /// </summary>
         private void ToggleFriend(string command)
         {
             string screenName = "";
@@ -550,7 +542,9 @@ namespace ClutterFeed
             }
         }
 
-
+        /// <summary>
+        /// Replies to a tweet without mentioning the other participants
+        /// </summary>
         private void ReplyQuiet(string command)
         {
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
@@ -571,7 +565,9 @@ namespace ClutterFeed
             }
         }
 
-
+        /// <summary>
+        /// Gives the user a link to a tweet to copy and also opens it in browser
+        /// </summary>
         private void TweetLink(string command)
         {
             if (command.Split(' ')[1].Length != 2)
@@ -594,6 +590,9 @@ namespace ClutterFeed
             }
         }
 
+        /// <summary>
+        /// Retweets a specified tweet
+        /// </summary>
         private void Retweet(string command)
         {
             if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
@@ -705,7 +704,9 @@ namespace ClutterFeed
             }
         }
 
-
+        /// <summary>
+        /// Deletes a specified tweet
+        /// </summary>
         private void RemoveTweet(string command)
         {
             if (command.Split(' ')[1].Length != 2)
@@ -735,6 +736,9 @@ namespace ClutterFeed
             }
         }
 
+        /// <summary>
+        /// Blocks/unblocks a twitter user
+        /// </summary>
         private void BlockUser(string command)
         {
             if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
@@ -792,7 +796,10 @@ namespace ClutterFeed
                 }
             }
         }
-
+        
+        /// <summary>
+        /// Follows/unfollows a twitter user
+        /// </summary>
         private void FollowUser(string command)
         {
             if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
@@ -914,8 +921,13 @@ namespace ClutterFeed
             return;
         }
 
+        /// <summary>
+        /// Draws a tweet all fancy like in a box
+        /// </summary>
         private void ShowTweet(string command)
         {
+            /* This is still missing stuff, TODO! */
+
             try /* Checks if the command was valid */
             {
                 bool exceptionTest = command.Split(' ')[1].StartsWith("@");
@@ -953,31 +965,6 @@ namespace ClutterFeed
                     ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
                 }
             }
-        }
-
-        public void RefreshTweets(object stateInfo)
-        {
-            if (Program.TimeLeft == 0)
-            {
-                showUpdates.GetTweets(false);
-                ScreenDraw.UpdateHeader();
-                drawing.ShowTimeline();
-                Program.TimeLeft = Settings.RefreshSeconds;
-            }
-            else
-            {
-                Program.TimeLeft--;
-                ScreenDraw.UpdateHeader();
-            }
-        }
-
-        public void Update()
-        {
-            newTweet.ShowUpdates(User.Account, showUpdates, false);
-        }
-        public void Update(bool fullUpdate)
-        {
-            newTweet.ShowUpdates(User.Account, showUpdates, fullUpdate);
         }
 
         public void GetID(string command)
