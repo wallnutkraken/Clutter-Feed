@@ -30,7 +30,6 @@ namespace ClutterFeed
         public long ID { get; set; } /* Tweet ID, backend use only */
         public string TweetIdentification { get; set; } /* The identifier for the end user */
         public bool IsFavorited { get; set; } /* Has the user favorited this? */
-        public bool IsRetweeted { get; set; } /* Has the user retweeted this? */
         public string LinkToTweet { get; set; }
         public bool IsMention { get; set; } = false;
         public int FavoriteCount { get; set; }

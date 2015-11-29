@@ -195,7 +195,29 @@ namespace ClutterFeed
         }
         public void MentionsConsole()
         {
-            throw new NotImplementedException("Todo");
+            string command = null;
+            do
+            {
+                if (command != null)
+                {
+                    if (command.StartsWith("/"))
+                    {
+                        if (command.Command("/r"))
+                        {
+                            ReplyGeneric(command);
+                        }
+                        else
+                        {
+                            ScreenDraw.ShowMessage("Such a command does not exist");
+                        }
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage("You cannot create regular tweets from the mentions screen");
+                    }
+                }
+                command = User.CounterConsole();
+            } while (command.Command("/b") == false);
         }
 
         /// <summary>
@@ -766,22 +788,9 @@ namespace ClutterFeed
                         return;
                     }
 
-                    if (tweet.IsRetweeted)
-                    {
-                        User.Account.Retweet(retweetOpts);
-                        if (User.Account.Response.Error != null)
-                        {
-                            ScreenDraw.ShowMessage(User.Account.Response.Error.Code + ": " + User.Account.Response.Error.Message);
-                        }
-                        return;
-                    }
-
                     User.Account.Retweet(retweetOpts);
                     if (User.Account.Response.Error == null)
                     {
-                        GetUpdates retweetInvert = new GetUpdates();
-                        retweetInvert.InvertRetweetStatus(tweetID);
-
                         ScreenDraw.ShowMessage("Retweeted");
 
                         ScreenDraw redraw = new ScreenDraw();

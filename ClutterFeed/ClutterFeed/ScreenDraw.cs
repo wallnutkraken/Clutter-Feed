@@ -96,26 +96,10 @@ namespace ClutterFeed
         {
             int curx, cury;
             Tweets.GetCursorYX(out cury, out curx);
-            if (update.IsFavorited && update.IsRetweeted) /* Adds a neat little symbol for rts/favs */
-            {
-                Tweets.Color = Colors.YELLOW;
-                Tweets.Add(cury, 3, "★");
-                Tweets.Color = Colors.GREEN;
-                Tweets.Add(cury, 4, "➥ ");
-                Tweets.Color = Colors.WHITE;
-            }
-            else if (update.IsFavorited)
+            if (update.IsFavorited)
             {
                 Tweets.Color = Colors.YELLOW;
                 Tweets.Add(cury, 3, "★  ");
-                Tweets.Color = Colors.WHITE;
-            }
-            else if (update.IsRetweeted)
-            {
-                Tweets.AttrOn(Attrs.BOLD);
-                Tweets.Color = Colors.GREEN;
-                Tweets.Add(cury, 3, "➥  ");
-                Tweets.AttrOff(Attrs.BOLD);
                 Tweets.Color = Colors.WHITE;
             }
         }
@@ -417,10 +401,6 @@ namespace ClutterFeed
             tweetShow.Add(line, 2, "Favorites: " + tweet.FavoriteCount + " ");
             tweetShow.Color = (int)Color.Pairs.Self;
 
-            if (tweet.IsRetweeted)
-            {
-                tweetShow.Color = Colors.GREEN;
-            }
             tweetShow.Add("Retweets: " + tweet.RetweetCount + " ");
             line++;
             tweetShow.Color = (int)Color.Pairs.Self;
@@ -468,7 +448,7 @@ namespace ClutterFeed
             help.Color = (int)Color.Pairs.Self;
 
             int num = 2;
-            help.Add(num, 2,"/h, /help");
+            help.Add(num, 2, "/h, /help");
             DrawAtEnd(help, num, "Shows this dialog\n");
             num++;
 
@@ -476,55 +456,55 @@ namespace ClutterFeed
             DrawAtEnd(help, num, "Retweets/undos a retweet on a selected tweet\n");
             num++;
 
-            help.Add(num, 2,"/fav, /f");
+            help.Add(num, 2, "/fav, /f");
             DrawAtEnd(help, num, "Favourites a selected tweet\n");
             num++;
 
-            help.Add(num, 2,"/unfav, /uf");
+            help.Add(num, 2, "/unfav, /uf");
             DrawAtEnd(help, num, "Unfavourites a selected tweet\n");
             num++;
 
-            help.Add(num, 2,"/r");
+            help.Add(num, 2, "/r");
             DrawAtEnd(help, num, "Replies to everyone in the selected tweet/DM\n");
             num++;
 
-            help.Add(num, 2,"/rc");
+            help.Add(num, 2, "/rc");
             DrawAtEnd(help, num, "Replies only to the author of the tweet\n");
             num++;
 
-            help.Add(num, 2,"/rn");
+            help.Add(num, 2, "/rn");
             DrawAtEnd(help, num, "Replies without using @ at all\n");
             num++;
 
-            help.Add(num, 2,"/profile");
+            help.Add(num, 2, "/profile");
             DrawAtEnd(help, num, "Shows the profile of the selected user\n");
             num++;
 
-            help.Add(num, 2,"/me");
+            help.Add(num, 2, "/me");
             DrawAtEnd(help, num, "Shows your mentions\n");
             num++;
 
-            help.Add(num, 2,"/link");
+            help.Add(num, 2, "/link");
             DrawAtEnd(help, num, "Links you to a tweet\n");
             num++;
 
-            help.Add(num, 2,"/tweet");
+            help.Add(num, 2, "/tweet");
             DrawAtEnd(help, num, "Shows you details of a tweet\n");
             num++;
 
-            help.Add(num, 2,"/friend");
+            help.Add(num, 2, "/friend");
             DrawAtEnd(help, num, "Adds/removes a friend\n");
             num++;
 
-            help.Add(num, 2,"/accounts");
+            help.Add(num, 2, "/accounts");
             DrawAtEnd(help, num, "Actions regarding twitter accounts\n");
             num++;
 
-            help.Add(num, 2,"/follow");
+            help.Add(num, 2, "/follow");
             DrawAtEnd(help, num, "Follows or unfollows the selected user\n");
             num++;
 
-            help.Add(num, 2,"/block");
+            help.Add(num, 2, "/block");
             DrawAtEnd(help, num, "Blocks or unblocks the selected user\n");
             num++;
 
@@ -566,7 +546,7 @@ namespace ClutterFeed
                 string longUpdate = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
 
                 int splitter = ScreenInfo.WindowWidth - 8;
-                
+
                 List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
 
                 string cleanUserName = mentions[index].AuthorScreenName.Remove(0, 1).ToLower();

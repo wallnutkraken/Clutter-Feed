@@ -128,24 +128,33 @@ namespace ClutterFeed
                     {
                         var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
                         localTweetList.Insert(0, ConvertDM(dm));
-                        draw.ShowTimeline();
-                        User.CounterConsoleWin.Refresh();
+                        if (TimerMan.Paused == false)
+                        {
+                            draw.ShowTimeline();
+                            User.CounterConsoleWin.Refresh();
+                        }
                     }
 
                     if (streamEvent is TwitterUserStreamDeleteStatus)
                     {
                         var deleted = (TwitterUserStreamDeleteStatus)streamEvent;
                         localTweetList.Remove(TweetIdentification.FindTweet(deleted.StatusId));
-                        draw.ShowTimeline();
-                        User.CounterConsoleWin.Refresh();
+                        if (TimerMan.Paused == false)
+                        {
+                            draw.ShowTimeline();
+                            User.CounterConsoleWin.Refresh();
+                        }
                     }
 
                     if (streamEvent is TwitterUserStreamDeleteDirectMessage)
                     {
                         var deleted = (TwitterUserStreamDeleteDirectMessage)streamEvent;
                         localTweetList.Remove(TweetIdentification.FindTweet(deleted.DirectMessageId));
-                        draw.ShowTimeline();
-                        User.CounterConsoleWin.Refresh();
+                        if (TimerMan.Paused == false)
+                        {
+                            draw.ShowTimeline();
+                            User.CounterConsoleWin.Refresh();
+                        }
                     }
                     count++;
                     if (count == maxStreamEvents)
@@ -358,7 +367,6 @@ namespace ClutterFeed
             TweetIdentification generateID = new TweetIdentification();
             formedTweet.TweetIdentification = generateID.GenerateIdentification();
             formedTweet.IsFavorited = tweet.IsFavorited;
-            formedTweet.IsRetweeted = tweet.IsRetweeted;
             formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
             formedTweet.FavoriteCount = tweet.FavoriteCount;
             formedTweet.RetweetCount = tweet.RetweetCount;
@@ -425,7 +433,6 @@ namespace ClutterFeed
                 TweetIdentification generateID = new TweetIdentification();
                 formedTweet.TweetIdentification = generateID.GenerateIdentification();
                 formedTweet.IsFavorited = tweet.IsFavorited;
-                formedTweet.IsRetweeted = tweet.IsRetweeted;
                 formedTweet.IsMention = true;
                 formedTweet.LinkToTweet = @"https://twitter.com/" + tweet.Author.ScreenName + @"/status/" + tweet.Id;
                 formedTweet.FavoriteCount = tweet.FavoriteCount;
@@ -500,21 +507,5 @@ namespace ClutterFeed
                 }
             }
         }
-
-        /// <summary>
-        /// Inverts the retweet status of a tweet (by ID)
-        /// </summary>
-        /// <param name="tweetID">the long tweet ID</param>
-        public void InvertRetweetStatus(long tweetID)
-        {
-            for (int index = 0; index < localTweetList.Count; index++)
-            {
-                if (localTweetList[index].ID == tweetID)
-                {
-                    localTweetList[index].IsRetweeted = !localTweetList[index].IsRetweeted;
-                }
-            }
-        }
-
     }
 }
