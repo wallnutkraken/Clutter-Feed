@@ -12,12 +12,12 @@ COLORS
 #color=red,green,blue
 #Note: you cannot make up your own colors and have
 #to use the names that are provided here.
-identifierColor=171,240,8
+identifierColor=0,126,199
 linkColor=66,140,187
 friendColor=249,129,245
-selfColor=225,165,0
-mentionColor=236,183,0
-backgroundColor=16,16,16
+selfColor=7,192,96
+mentionColor=225,165,0
+backgroundColor=25,25,25
 }
 
 #Nosquash decides whether tweets will have an empty line

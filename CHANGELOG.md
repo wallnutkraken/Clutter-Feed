@@ -1,5 +1,14 @@
 # **Release change log**
 
+### Leaping Bomb (1.6.0):
+- Replaced the old updating and auto-updating with Twitter Streaming!
+- Re-enabled Mentions properly
+- Added support for direct messages
+- Retweet removal works now (by showing the retweet as a new tweet, so you can delete it separately)
+- Fixed some crashes with arguments not being written fully
+- Fixed user profiles being drawn in an ugly manner
+- Fixed ClutterFeed crashing when you don't have internet access
+
 ### Changes in Version 1.5.1:
 - Timer now pauses when you're not on the timeline
 - Raised the limit of how many tweets are initially shown on the timeline
