@@ -266,13 +266,13 @@ namespace ClutterFeed
                 ScreenDraw.ShowMessage("Such a user does not exist");
                 return;
             }
-            Window showProfile = new Window(12, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
-            showProfile.Box((int)'|', (int)'-');
+            Window showProfile = new Window(16, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
+            
             if (IsFollowing)
             {
                 string follow = "You are following";
                 showProfile.Color = Colors.GREEN;
-                showProfile.Add(0, (ScreenInfo.WindowWidth / 2) - (follow.Length / 2), follow);
+                showProfile.Add(1, (ScreenInfo.WindowWidth / 2) - (follow.Length / 2), follow);
                 showProfile.Color = Colors.WHITE;
             }
             else if (IsBlocked)
@@ -324,9 +324,9 @@ namespace ClutterFeed
             /* Tweets */
 
             showProfile.Color = 11;
-            showProfile.Add(infoBeltNameLine, 0, "Tweets:\n");
+            showProfile.Add(infoBeltNameLine, 2, "Tweets:\n");
             showProfile.Color = Colors.WHITE;
-            showProfile.Add(profile.StatusesCount + "");
+            showProfile.Add(infoBeltNameLine + 1, 2, profile.StatusesCount + "");
 
             /* Following */
 
@@ -340,9 +340,11 @@ namespace ClutterFeed
 
             string followers = "Followers:";
             showProfile.Color = 11;
-            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth - followers.Length - 1), followers);
+            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth - followers.Length - 2), followers);
             showProfile.Color = Colors.WHITE;
-            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth - followers.Length - 1), profile.FollowersCount + "");
+            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth - followers.Length - 2), profile.FollowersCount + "");
+
+            showProfile.Box((int)'|', (int)'-');
 
             showProfile.Refresh();
             showProfile.GetChar();
