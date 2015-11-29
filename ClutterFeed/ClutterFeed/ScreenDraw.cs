@@ -416,6 +416,28 @@ namespace ClutterFeed
             line++;
             tweetShow.Color = (int)Color.Pairs.Self;
 
+            tweetShow.Add("\t");
+            if (DateTime.UtcNow.Subtract(tweet.TimePosted).Days > 1)
+            {
+                tweetShow.Add(tweet.TimePosted.ToShortDateString() + " | ");
+            }
+            tweetShow.Add(tweet.TimePosted.ToShortTimeString() + " | ");
+            TimeSpan postedAgo = DateTime.UtcNow.Subtract(tweet.TimePosted);
+            string ago = "";
+            if (postedAgo.TotalSeconds < 60.0)
+            {
+                ago = postedAgo.Seconds + "s ago";
+            }
+            else if (postedAgo.TotalMinutes < 60.0)
+            {
+                ago = postedAgo.Minutes + "m ago";
+            }
+            else if (postedAgo.TotalHours < 24.0)
+            {
+                ago = postedAgo.Hours + "h ago";
+            }
+            tweetShow.Add(ago);
+
             tweetShow.Refresh();
             tweetShow.GetChar();
             tweetShow.Dispose();
