@@ -141,6 +141,11 @@ namespace ClutterFeed
                             BlockUser(command);
                         }
 
+                        else if (command.Command("/dm"))
+                        {
+                            DirectMessage(command);
+                        }
+
                         else if (command.Command("/del"))
                         {
                             RemoveTweet(command);
@@ -597,9 +602,50 @@ namespace ClutterFeed
             }
         }
 
+        /// <summary>
+        /// Sends a direct message to someone
+        /// </summary>
+        /// <param name="command">The entire command to pass on</param>
         private void DirectMessage(string command)
         {
-            throw new NotImplementedException("Todo");
+            char[] splitter = { ' ' };
+            if (User.IsMissingArgs(command) == false) /* Checks if arguments are missing from the command */
+            {
+                if (command.Split(' ')[1].Length != 2 && command.Split(' ')[1].StartsWith("@") == false)
+                {
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /dm [id] or /dm @[name]");
+                    return;
+                }
+                string screenName = "";
+                if (command.Split(' ')[1].StartsWith("@"))
+                {
+                    screenName = command.Split(' ')[1].Remove(0, 1);
+                }
+                else
+                {
+                    try
+                    {
+                        long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
+                        InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                        screenName = tweet.AuthorScreenName;
+                    }
+                    catch (KeyNotFoundException exIn)
+                    {
+                        ScreenDraw.ShowMessage(exIn.Message);
+                    }
+                }
+
+                SendDirectMessageOptions dmOpts = new SendDirectMessageOptions();
+                dmOpts.ScreenName = screenName;
+                dmOpts.Text = command.Split(splitter, 3)[2];
+
+                User.Account.SendDirectMessage(dmOpts);
+                if (User.Account.Response.Error != null)
+                {
+                    TwitterError error = User.Account.Response.Error;
+                    ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
+                }
+            }
         }
 
         /// <summary>
@@ -607,7 +653,7 @@ namespace ClutterFeed
         /// </summary>
         private void ReplyQuiet(string command)
         {
-            if (User.IsMissingArgs(command) == false) /* It's just an exception catching method, don't mind it */
+            if (User.IsMissingArgs(command) == false) /* Checks if arguments are missing from the command */
             {
                 if (command.Split(' ')[1].Length != 2)
                 {
