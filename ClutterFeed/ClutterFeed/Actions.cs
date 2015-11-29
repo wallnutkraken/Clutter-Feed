@@ -667,8 +667,15 @@ namespace ClutterFeed
                 {
                     long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
                     InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
-                    ScreenDraw.ShowMessage(tweet.LinkToTweet);
-                    Process.Start(tweet.LinkToTweet);
+                    if (tweet.IsDirectMessage)
+                    {
+                        ScreenDraw.ShowMessage("DMs cannot have links");
+                    }
+                    else
+                    {
+                        ScreenDraw.ShowMessage(tweet.LinkToTweet);
+                        Process.Start(tweet.LinkToTweet);
+                    }
                 }
                 catch (KeyNotFoundException exIn)
                 {
@@ -706,6 +713,13 @@ namespace ClutterFeed
                         ScreenDraw.ShowMessage(exceptionInfo.Message);
                         return;
                     }
+
+                    if (tweet.IsDirectMessage)
+                    {
+                        ScreenDraw.ShowMessage("You can't retweet DMs, silly");
+                        return;
+                    }
+
                     if (tweet.IsRetweeted)
                     {
                         User.Account.Retweet(retweetOpts);
@@ -770,22 +784,30 @@ namespace ClutterFeed
                         return;
                     }
 
-                    if (tweet.IsFavorited)
+                    if (tweet.IsDirectMessage == false)
                     {
-                        ScreenDraw.ShowMessage("Unfavoriting");
-                        UnfavoriteTweetOptions unfavOpts = new UnfavoriteTweetOptions();
-                        unfavOpts.Id = favOpts.Id;
-                        User.Account.BeginUnfavoriteTweet(unfavOpts);
 
-                        favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
+                        if (tweet.IsFavorited)
+                        {
+                            ScreenDraw.ShowMessage("Unfavoriting");
+                            UnfavoriteTweetOptions unfavOpts = new UnfavoriteTweetOptions();
+                            unfavOpts.Id = favOpts.Id;
+                            User.Account.BeginUnfavoriteTweet(unfavOpts);
+
+                            favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
+                        }
+                        else
+                        {
+                            User.Account.BeginFavoriteTweet(favOpts);
+                            ScreenDraw.ShowMessage("Favoriting");
+
+                            favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
+
+                        }
                     }
                     else
                     {
-                        User.Account.BeginFavoriteTweet(favOpts);
-                        ScreenDraw.ShowMessage("Favoriting");
-
-                        favoriteInvert.InvertFavoriteStatus(tweetID); /* Changes whether the tweet is counted as favorited */
-
+                        ScreenDraw.ShowMessage("You can't favorite DMs, silly");
                     }
                 }
             }
@@ -802,11 +824,20 @@ namespace ClutterFeed
             }
             else
             {
-                long tweetID = Convert.ToInt64(TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId);
-                DeleteTweetOptions delOpts = new DeleteTweetOptions();
-                delOpts.Id = tweetID;
+                long tweetID = (Int64)TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId;
+                InteractiveTweet tweet = TweetIdentification.FindTweet(tweetID);
+                if (tweet.IsDirectMessage)
+                {
+                    DeleteDirectMessageOptions delOpts = new DeleteDirectMessageOptions();
+                    delOpts.Id = tweetID;
+                }
+                else
+                {
+                    DeleteTweetOptions delOpts = new DeleteTweetOptions();
+                    delOpts.Id = tweetID;
 
-                User.Account.DeleteTweet(delOpts);
+                    User.Account.DeleteTweet(delOpts);
+                }
                 TwitterResponse result = User.Account.Response;
                 if (result.Error == null)
                 {
