@@ -224,12 +224,14 @@ namespace ClutterFeed
                         }
                         else
                         {
-                            ScreenDraw.ShowMessage("Such a command does not exist in the current context");
+                            ScreenDraw.ShowMessage("Such a command does not exist in the current context", true);
+                            drawing.ShowMentions();
                         }
                     }
                     else
                     {
-                        ScreenDraw.ShowMessage("You cannot create regular tweets from the mentions screen");
+                        ScreenDraw.ShowMessage("You cannot create regular tweets from the mentions screen", true);
+                        drawing.ShowMentions();
                     }
                 }
                 command = User.CounterConsole();
