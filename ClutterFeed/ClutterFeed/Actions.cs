@@ -489,36 +489,52 @@ namespace ClutterFeed
                         ScreenDraw.ShowMessage("The command was missing arguments");
                         return;
                     }
-                    SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-
-                    replyOpts.Status = replyOpts.Status + " ";
-
-                    InteractiveTweet tweetReplyingTo;
+                    SendTweetOptions replyOpts = new SendTweetOptions();
+                    Int64 tweetID = 0;
                     try
                     {
-                        tweetReplyingTo = TweetIdentification.FindTweet(Convert.ToInt64(replyOpts.InReplyToStatusId));
+                        tweetID = (Int64)TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId;
                     }
-                    catch (KeyNotFoundException exIn)
+                    catch (InvalidOperationException)
                     {
-                        ScreenDraw.ShowMessage(exIn.Message);
+                        ScreenDraw.ShowMessage("Such an update does not exist");
                         return;
                     }
-                    string[] words = tweetReplyingTo.Contents.Split(' ');
-                    string userScreenName = GetUpdates.userScreenName.ToLower();
-
-                    for (int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
+                    InteractiveTweet tweetReplyingTo = TweetIdentification.FindTweet(tweetID);
+                    if (tweetReplyingTo.IsDirectMessage)
                     {
-                        if (words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
+                        SendDirectMessageOptions dmOpts = new SendDirectMessageOptions();
+                        dmOpts.Text = message;
+                        dmOpts.ScreenName = tweetReplyingTo.AuthorScreenName;
+
+                        User.Account.SendDirectMessage(dmOpts);
+
+                        if (User.Account.Response.Error != null)
                         {
-                            if (words[index].ToLower().CompareTo("@" + userScreenName) != 0)
-                            {
-                                replyOpts.Status = replyOpts.Status + words[index] + " ";
-                            }
+                            TwitterError error = User.Account.Response.Error;
+                            ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
                         }
                     }
+                    else
+                    {
+                        string[] words = tweetReplyingTo.Contents.Split(' ');
+                        string userScreenName = GetUpdates.userScreenName.ToLower();
 
-                    replyOpts.Status = replyOpts.Status + message;
-                    User.Account.BeginSendTweet(replyOpts);
+                        for (int index = 0; index < words.Length; index++) /* This checks for extra people mentioned in the tweet */
+                        {
+                            if (words[index].StartsWith("@") && words[index].CompareTo("@") != 0)
+                            {
+                                if (words[index].ToLower().CompareTo("@" + userScreenName) != 0)
+                                {
+                                    replyOpts.Status = replyOpts.Status + words[index] + " ";
+                                }
+                            }
+                        }
+
+                        replyOpts.InReplyToStatusId = tweetID;
+                        replyOpts.Status = replyOpts.Status + message;
+                        User.Account.BeginSendTweet(replyOpts);
+                    }
                 }
             }
         }
@@ -537,14 +553,53 @@ namespace ClutterFeed
                 else
                 {
                     char[] splitter = { ' ' }; /* Because why not? */
-                    string message = command.Split(splitter, 3)[2];
-                    SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
+                    string message = "";
+                    try
+                    {
+                        message = command.Split(splitter, 3)[2];
+                    }
+                    catch (Exception)
+                    {
+                        ScreenDraw.ShowMessage("Wrong syntax. Use /r [id] [reply]");
+                        return;
+                    }
+                    SendTweetOptions replyOpts = new SendTweetOptions();
+                    Int64 tweetID = (Int64)TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId;
+                    InteractiveTweet twit = TweetIdentification.FindTweet(tweetID);
+                    if (twit.IsDirectMessage)
+                    {
+                        SendDirectMessageOptions dmOpts = new SendDirectMessageOptions();
+                        dmOpts.Text = message;
+                        dmOpts.ScreenName = twit.AuthorScreenName;
 
-                    replyOpts.Status = replyOpts.Status + " ";
-                    replyOpts.Status = replyOpts.Status + message;
-                    User.Account.BeginSendTweet(replyOpts);
+                        User.Account.SendDirectMessage(dmOpts);
+
+                        if (User.Account.Response.Error != null)
+                        {
+                            TwitterError error = User.Account.Response.Error;
+                            ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
+                        }
+                    }
+                    else
+                    {
+                        replyOpts.InReplyToStatusId = tweetID;
+                        replyOpts.Status = replyOpts.Status + " ";
+                        replyOpts.Status = replyOpts.Status + message;
+                        User.Account.BeginSendTweet(replyOpts);
+
+                        if (User.Account.Response.Error != null)
+                        {
+                            TwitterError error = User.Account.Response.Error;
+                            ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
+                        }
+                    }
                 }
             }
+        }
+
+        private void DirectMessage(string command)
+        {
+            throw new NotImplementedException("Todo");
         }
 
         /// <summary>
@@ -560,12 +615,39 @@ namespace ClutterFeed
                 }
                 else
                 {
-                    char[] splitter = new char[1];
-                    splitter[0] = ' '; /* FUCK C# honestly */
+                    char[] splitter = { ' ' };
                     string message = command.Split(splitter, 3)[2];
-                    SendTweetOptions replyOpts = TweetIdentification.GetTweetID(command.Split(' ')[1]);
-                    replyOpts.Status = message;
-                    User.Account.BeginSendTweet(replyOpts);
+
+                    SendTweetOptions replyOpts = new SendTweetOptions();
+                    Int64 tweetID = (Int64)TweetIdentification.GetTweetID(command.Split(' ')[1]).InReplyToStatusId;
+                    InteractiveTweet twit = TweetIdentification.FindTweet(tweetID);
+                    if (twit.IsDirectMessage)
+                    {
+                        SendDirectMessageOptions dmOpts = new SendDirectMessageOptions();
+                        dmOpts.Text = message;
+                        dmOpts.ScreenName = twit.AuthorScreenName;
+
+                        User.Account.SendDirectMessage(dmOpts);
+
+                        if (User.Account.Response.Error != null)
+                        {
+                            TwitterError error = User.Account.Response.Error;
+                            ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
+                        }
+                    }
+                    else
+                    {
+                        replyOpts.InReplyToStatusId = tweetID;
+                        replyOpts.Status = message;
+                        User.Account.BeginSendTweet(replyOpts);
+
+                        if (User.Account.Response.Error != null)
+                        {
+                            TwitterError error = User.Account.Response.Error;
+                            ScreenDraw.ShowMessage(error.Code + ": " + error.Message);
+                        }
+                    }
+
                 }
             }
         }
@@ -802,7 +884,7 @@ namespace ClutterFeed
                 }
             }
         }
-        
+
         /// <summary>
         /// Follows/unfollows a twitter user
         /// </summary>
