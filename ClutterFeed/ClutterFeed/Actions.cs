@@ -214,9 +214,17 @@ namespace ClutterFeed
                         {
                             ReplyGeneric(command);
                         }
+                        else if (command.Command("/rc"))
+                        {
+                            ReplyClean(command);
+                        }
+                        else if (command.Command("/rn"))
+                        {
+                            ReplyQuiet(command);
+                        }
                         else
                         {
-                            ScreenDraw.ShowMessage("Such a command does not exist");
+                            ScreenDraw.ShowMessage("Such a command does not exist in the current context");
                         }
                     }
                     else
