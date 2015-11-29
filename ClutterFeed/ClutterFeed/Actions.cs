@@ -397,22 +397,27 @@ namespace ClutterFeed
                 if (minorSelection == 0)
                 {
                     getUser.RemoveProfile(deletingProfile);
+                    drawing.ShowTimeline();
                 }
             }
             else if (selection == 2)
             {
                 Profile selectUser = drawing.SelectUser();
                 getUser.SelectUser(selectUser.Name);
-
+                showUpdates.GetTweets();
+                drawing.ShowTimeline();
             }
             else if (selection == 3)
             {
                 Profile selectUser = drawing.SelectUser();
                 getUser.SetDefault(selectUser);
                 GetUpdates.ReauthenticateTwitter();
+                showUpdates.GetTweets();
+                drawing.ShowTimeline();
             }
             else if (selection == 4)
             {
+                drawing.ShowTimeline();
                 return;
             }
         }
