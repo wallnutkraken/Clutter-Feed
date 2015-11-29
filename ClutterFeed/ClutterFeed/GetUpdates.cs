@@ -127,7 +127,7 @@ namespace ClutterFeed
                     if (streamEvent is TwitterUserStreamDirectMessage)
                     {
                         var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
-                        GetUpdates.localTweetList.Insert(0, ConvertDM(dm));
+                        localTweetList.Insert(0, ConvertDM(dm));
                         draw.ShowTimeline();
                         User.CounterConsoleWin.Refresh();
                     }
@@ -462,15 +462,18 @@ namespace ClutterFeed
         {
             TweetIdentification create = new TweetIdentification();
 
-            try
+            if (message.Author.ScreenName != GetUpdates.userScreenName)
             {
-                SoundPlayer notification = new SoundPlayer();
+                try
+                {
+                    SoundPlayer notification = new SoundPlayer();
 
-                notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
-                notification.Play();
-            }
-            catch (Exception)
-            {
+                    notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
+                    notification.Play();
+                }
+                catch (Exception)
+                {
+                }
             }
             InteractiveTweet dm = new InteractiveTweet();
             dm.AuthorScreenName = message.Author.ScreenName;
