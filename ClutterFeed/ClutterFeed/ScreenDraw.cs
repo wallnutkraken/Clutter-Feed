@@ -484,12 +484,8 @@ namespace ClutterFeed
             DrawAtEnd(help, num, "Unfavourites a selected tweet\n");
             num++;
 
-            help.Add(num, 2,"/api");
-            DrawAtEnd(help, num, "Shows the remaining API hits\n");
-            num++;
-
             help.Add(num, 2,"/r");
-            DrawAtEnd(help, num, "Replies to everyone in the selected tweet\n");
+            DrawAtEnd(help, num, "Replies to everyone in the selected tweet/DM\n");
             num++;
 
             help.Add(num, 2,"/rc");
@@ -498,10 +494,6 @@ namespace ClutterFeed
 
             help.Add(num, 2,"/rn");
             DrawAtEnd(help, num, "Replies without using @ at all\n");
-            num++;
-
-            help.Add(num, 2,"/id");
-            DrawAtEnd(help, num, "Shows the ID of the tweet\n");
             num++;
 
             help.Add(num, 2,"/profile");
@@ -518,10 +510,6 @@ namespace ClutterFeed
 
             help.Add(num, 2,"/tweet");
             DrawAtEnd(help, num, "Shows you details of a tweet\n");
-            num++;
-
-            help.Add(num, 2,"/open");
-            DrawAtEnd(help, num, "Opens the tweet in browser (only from /tweet)\n");
             num++;
 
             help.Add(num, 2,"/friend");
@@ -542,6 +530,10 @@ namespace ClutterFeed
 
             help.Add(num, 2, "/afk");
             DrawAtEnd(help, num, "Toggles the auto-update timer on and off\n");
+            num++;
+
+            help.Add(num, 2, "/dm");
+            DrawAtEnd(help, num, "Sends a Direct Message to someone\n");
             num++;
 
             help.Color = 11;
