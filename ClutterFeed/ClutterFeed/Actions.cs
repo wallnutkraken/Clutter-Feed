@@ -72,6 +72,12 @@ namespace ClutterFeed
                             Retweet(command);
                         }
 
+                        else if (command.Command("/u"))
+                        {
+                            showUpdates.GetTweets();
+                            drawing.ShowTimeline();
+                        }
+
                         else if (command.Command("/fav") || command.Command("/f"))
                         {
                             FavoriteTweet(command);
@@ -184,12 +190,14 @@ namespace ClutterFeed
         {
             if (Settings.AFK)
             {
-                ScreenDraw.ShowMessage("AFK Mode set to OFF.");
                 Settings.AFK = false;
+                TimerMan.Resume();
+                ScreenDraw.ShowMessage("AFK Mode set to OFF.");
             }
             else
             {
                 Settings.AFK = true;
+                TimerMan.Pause();
                 ScreenDraw.ShowMessage("AFK Mode set to ON.");
             }
         }
@@ -1174,6 +1182,7 @@ namespace ClutterFeed
                 TimerMan.Resume();
             }
             draw.ShowTimeline();
+            User.CounterConsoleWin.Refresh();
         }
 
         private void Help()
