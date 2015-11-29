@@ -36,6 +36,7 @@ namespace ClutterFeed
         public int FavoriteCount { get; set; }
         public int RetweetCount { get; set; }
         public DateTime TimePosted { get; set; }
+        public bool IsDirectMessage { get; set; }
     }
 
 }

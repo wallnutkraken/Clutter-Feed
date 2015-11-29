@@ -127,7 +127,9 @@ namespace ClutterFeed
                     if (streamEvent is TwitterUserStreamDirectMessage)
                     {
                         var dm = ((TwitterUserStreamDirectMessage)streamEvent).DirectMessage;
-                        /* I have no code for DMs... yet! */
+                        GetUpdates.localTweetList.Insert(0, ConvertDM(dm));
+                        draw.ShowTimeline();
+                        User.CounterConsoleWin.Refresh();
                     }
 
                     if (streamEvent is TwitterUserStreamDeleteStatus)
@@ -135,12 +137,15 @@ namespace ClutterFeed
                         var deleted = (TwitterUserStreamDeleteStatus)streamEvent;
                         localTweetList.Remove(TweetIdentification.FindTweet(deleted.StatusId));
                         draw.ShowTimeline();
+                        User.CounterConsoleWin.Refresh();
                     }
 
                     if (streamEvent is TwitterUserStreamDeleteDirectMessage)
                     {
                         var deleted = (TwitterUserStreamDeleteDirectMessage)streamEvent;
-                        /* No cooooooooode yet */
+                        localTweetList.Remove(TweetIdentification.FindTweet(deleted.DirectMessageId));
+                        draw.ShowTimeline();
+                        User.CounterConsoleWin.Refresh();
                     }
                     count++;
                     if (count == maxStreamEvents)
@@ -448,6 +453,34 @@ namespace ClutterFeed
             {
                 return ConvertTweet(tweet);
             }
+        }
+
+        /// <summary>
+        /// Converts a raw DM into an InteractiveTweet object
+        /// </summary>
+        private InteractiveTweet ConvertDM(TwitterDirectMessage message)
+        {
+            TweetIdentification create = new TweetIdentification();
+
+            try
+            {
+                SoundPlayer notification = new SoundPlayer();
+
+                notification.SoundLocation = Environment.CurrentDirectory + "/notification.wav";
+                notification.Play();
+            }
+            catch (Exception)
+            {
+            }
+            InteractiveTweet dm = new InteractiveTweet();
+            dm.AuthorScreenName = message.Author.ScreenName;
+            dm.Contents = message.Text;
+            dm.ID = message.Id;
+            dm.IsDirectMessage = true;
+            dm.TimePosted = message.CreatedDate;
+            dm.TweetIdentification = create.GenerateIdentification();
+
+            return dm;
         }
 
         /// <summary>

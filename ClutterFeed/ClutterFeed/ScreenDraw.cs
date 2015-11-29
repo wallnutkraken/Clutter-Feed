@@ -223,6 +223,15 @@ namespace ClutterFeed
 
                 Tweets.Add(updates[index].TweetIdentification + "    ");
                 Tweets.Color = Colors.WHITE;
+                if (updates[index].IsDirectMessage)
+                {
+                    int x, y;
+                    Tweets.GetCursorYX(out y, out x);
+                    Tweets.AttrOn(Attrs.BOLD);
+                    Tweets.Color = (int)Color.Pairs.Self;
+                    Tweets.Add(y, 3, "DM ");
+                    Tweets.AttrOff(Attrs.BOLD);
+                }
                 bool identificationWritten = true;
 
                 ShowInteractions(updates[index]);
