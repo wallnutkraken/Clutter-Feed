@@ -667,7 +667,15 @@ namespace ClutterFeed
 
                 SendDirectMessageOptions dmOpts = new SendDirectMessageOptions();
                 dmOpts.ScreenName = screenName;
-                dmOpts.Text = command.Split(splitter, 3)[2];
+                try
+                {
+                    dmOpts.Text = command.Split(splitter, 3)[2];
+                }
+                catch (Exception)
+                {
+                    ScreenDraw.ShowMessage("Wrong syntax. Use /dm [id] or /dm @[name]");
+                    return;
+                }
 
                 User.Account.SendDirectMessage(dmOpts);
                 if (User.Account.Response.Error != null)
