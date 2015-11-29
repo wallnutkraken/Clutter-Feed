@@ -80,6 +80,8 @@ namespace ClutterFeed
 
             Curses.InitPair(21, Colors.BLACK, 101);
 
+            ScreenDraw.HeadLine = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();
 

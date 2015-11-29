@@ -54,7 +54,8 @@ namespace ClutterFeed
         }
         public void StartScreen()
         {
-            HeadLine = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            /* Headline initalization moved to Program.cs because there is a null reference exception */
+            /* that happens if you don't have internet access when starting ClutterFeed */
             UpdateHeader();
 
             Tweets = new Window(ScreenInfo.WindowHeight - 3, ScreenInfo.WindowWidth, 1, 0);

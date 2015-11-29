@@ -151,6 +151,8 @@ namespace ClutterFeed
                 else
                 {
                     ScreenDraw.ShowMessage("Could not start stream");
+                    Environment.Exit(1);
+                    /* If it can't stream, that's it man */
                 }
 
             });
