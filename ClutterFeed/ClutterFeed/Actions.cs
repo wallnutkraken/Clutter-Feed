@@ -15,9 +15,6 @@
  */
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TweetSharp;
 using System.Threading;
 using System.Diagnostics;
