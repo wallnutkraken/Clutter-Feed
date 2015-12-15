@@ -30,24 +30,12 @@ namespace ClutterFeed
             Curses.InitScr();
             Curses.Newlines = true;
             Curses.ResizeTerm(ScreenInfo.WINDOWHEIGHT, ScreenInfo.WINDOWWIDTH);
-            if (User.ConfigExists() == false)
-            {
-                User.SetUnsetColorsToDefaults();
-            }
-            else
+            if (User.ConfigExists())
             {
                 User config = new User();
                 config.GetConfigs();
-                config.FindColors();
             }
-
-            Curses.InitColor(101, Color.IdentifierColor.Red, Color.IdentifierColor.Green, Color.IdentifierColor.Blue);
-            Curses.InitColor(102, Color.LinkColor.Red, Color.LinkColor.Green, Color.LinkColor.Blue);
-            Curses.InitColor(103, Color.FriendColor.Red, Color.FriendColor.Green, Color.FriendColor.Blue);
-            Curses.InitColor(104, Color.SelfColor.Red, Color.SelfColor.Green, Color.SelfColor.Blue);
-            Curses.InitColor(105, Color.MentionColor.Red, Color.MentionColor.Green, Color.MentionColor.Blue);
-            Curses.InitColor(Colors.BLACK, Color.BackgroundColor.Red, Color.BackgroundColor.Green, Color.BackgroundColor.Blue);
-
+            Color.SetColors();
 
             if (Curses.HasColors)
             {
