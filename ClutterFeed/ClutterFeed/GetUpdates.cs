@@ -86,11 +86,9 @@ namespace ClutterFeed
 
         public void Stream()
         {
-            const int maxStreamEvents = 5;
             ScreenDraw draw = new ScreenDraw();
 
             var block = new AutoResetEvent(false);
-            var count = 0;
 
             User.Account.StreamUser((streamEvent, response) =>
             {
@@ -155,11 +153,6 @@ namespace ClutterFeed
                             draw.ShowTimeline();
                             User.CounterConsoleWin.Refresh();
                         }
-                    }
-                    count++;
-                    if (count == maxStreamEvents)
-                    {
-                        block.Set();
                     }
                 }
                 else
