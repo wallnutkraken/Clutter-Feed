@@ -166,114 +166,6 @@ namespace ClutterFeed
         {
             return File.Exists(CONFIG);
         }
-        public bool ColorsDefined()
-        {
-            ReadConfig();
-            foreach (string line in ConfigFile)
-            {
-                if (line.InsensitiveCompare("COLORS"))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
-        public void FindColors()
-        {
-            ReadConfig();
-            for (int index = 0; index < ConfigFile.Count; index++)
-            {
-                if (ConfigFile[index].InsensitiveCompare("colors"))
-                {
-                    index = index + 2;
-                    while (ConfigFile[index].CompareTo("}") != 0)
-                    {
-                        string[] splitLine = ConfigFile[index].Split('=');
-                        if (splitLine[0].InsensitiveCompare("identifiercolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        else if (splitLine[0].InsensitiveCompare("linkcolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.LinkColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        else if (splitLine[0].InsensitiveCompare("friendcolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.FriendColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        else if (splitLine[0].InsensitiveCompare("selfcolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.SelfColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        else if (splitLine[0].InsensitiveCompare("mentioncolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.MentionColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        else if (splitLine[0].InsensitiveCompare("backgroundcolor") && ConfigFile[index].StartsWith("#") == false)
-                        {
-                            string[] colorSetting = splitLine[1].Split(',');
-                            short red = short.Parse(colorSetting[0]);
-                            short green = short.Parse(colorSetting[1]);
-                            short blue = short.Parse(colorSetting[2]);
-                            Color.BackgroundColor = SetScreenColor.CursifyColor(new Color(red, green, blue));
-                        }
-                        index++;
-                    }
-                }
-            }
-            SetUnsetColorsToDefaults();
-        }
-
-        /// <summary>
-        /// Sets the colors that weren't set to defaults
-        /// </summary>
-        public static void SetUnsetColorsToDefaults()
-        {
-            if (Color.IdentifierColor == null)
-            {
-                Color.IdentifierColor = SetScreenColor.CursifyColor(new Color(0, 126, 199));
-            }
-            if (Color.LinkColor == null)
-            {
-                Color.LinkColor = SetScreenColor.CursifyColor(new Color(66, 140, 187));
-            }
-            if (Color.FriendColor == null)
-            {
-                Color.FriendColor = SetScreenColor.CursifyColor(new Color(249, 129, 245));
-            }
-            if (Color.SelfColor == null)
-            {
-                Color.SelfColor = SetScreenColor.CursifyColor(new Color(7, 192, 96));
-            }
-            if (Color.MentionColor == null)
-            {
-                Color.MentionColor = SetScreenColor.CursifyColor(new Color(225, 165, 0));
-            }
-            if (Color.BackgroundColor == null)
-            {
-                Color.BackgroundColor = SetScreenColor.CursifyColor(new Color(25, 25, 25));
-            }
-        }
 
         /// <summary>
         /// Deactivates current active user and activates the selected user
@@ -304,11 +196,28 @@ namespace ClutterFeed
             TwitterService service = new TwitterService(appKey.Token, appKey.TokenSecret);
             OAuthRequestToken requestToken = service.GetRequestToken();
             Uri uri = service.GetAuthorizationUri(requestToken);
-            Process.Start(uri.ToString());
+
+            Process launchAuth = new Process();
+            ProcessStartInfo authInfo = new ProcessStartInfo();
+            authInfo.FileName = uri.ToString();
+            launchAuth.StartInfo = authInfo;
+            launchAuth.Start();
+            launchAuth.WaitForExit();
+
             service.AuthenticateWith(appKey.Token, appKey.TokenSecret);
 
             Window auth = new Window(1, ScreenInfo.WINDOWWIDTH, 0, 0);
             Curses.Echo = true;
+            Curses.Newlines = true;
+            auth.EnableScroll = true;
+
+            if (launchAuth.ExitCode != 0)
+            {
+                auth.AttrOn(Attrs.BOLD);
+                auth.Add("Your link is: " + uri.ToString() + "\n");
+                auth.AttrOff(Attrs.BOLD);
+            }
+
             auth.Add("Please input the authentication number: ");
             auth.Refresh();
             string verifier = auth.GetString(7);
