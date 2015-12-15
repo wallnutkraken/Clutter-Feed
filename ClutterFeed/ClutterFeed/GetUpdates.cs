@@ -20,7 +20,6 @@ using System.Threading;
 using CursesSharp;
 using TweetSharp;
 using System.Media;
-using System.Diagnostics;
 
 
 namespace ClutterFeed

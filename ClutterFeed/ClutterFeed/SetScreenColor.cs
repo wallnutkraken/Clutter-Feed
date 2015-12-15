@@ -19,9 +19,6 @@
  */
 
 using System;
-using System.Diagnostics;                // for Debug
-using System.Drawing;                    // for Color (add reference to  System.Drawing assembly)
-using System.Runtime.InteropServices;    // for StructLayout
 
 namespace ClutterFeed
 {
