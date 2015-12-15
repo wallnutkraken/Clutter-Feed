@@ -1093,26 +1093,20 @@ namespace ClutterFeed
             profileOpts.ScreenName = screenName;
             TwitterUser profile = User.Account.GetUserProfileFor(profileOpts);
             ScreenDraw showProfile = new ScreenDraw();
+            bool isFollowing = false;
+            bool isBlocked = false;
             if (GetUpdates.IsFollowing(screenName)) /* Because the profile object doesn't say this */
             {
-                ScreenDraw.IsFollowing = true;
-            }
-            else
-            {
-                ScreenDraw.IsFollowing = false;
+                isFollowing = true;
             }
             if (GetUpdates.IsBlocked(screenName))
             {
-                ScreenDraw.IsBlocked = true;
-            }
-            else
-            {
-                ScreenDraw.IsBlocked = false;
+                isBlocked = true;
             }
 
             if (User.Account.Response.Error == null)
             {
-                showProfile.ShowUserProfile(profile);
+                showProfile.ShowUserProfile(profile, isFollowing, isBlocked);
             }
             else
             {

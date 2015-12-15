@@ -27,9 +27,6 @@ namespace ClutterFeed
 
     class ScreenDraw
     {
-        public static bool IsFollowing { get; set; } = false; /* DON'T LOOK! */
-        public static bool IsBlocked { get; set; } = false;
-
         public const string Version = "1.7-devel";
         public const string VersionName = "Waste Gulags";
         public static Window HeadLine { get; set; }
@@ -258,7 +255,7 @@ namespace ClutterFeed
             Tweets.Refresh();
         }
 
-        public void ShowUserProfile(TweetSharp.TwitterUser profile)
+        public void ShowUserProfile(TweetSharp.TwitterUser profile, bool IsFollowing, bool IsBlocked)
         {
             TimerMan.Pause();
             if (profile == null)
