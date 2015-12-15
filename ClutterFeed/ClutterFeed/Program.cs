@@ -24,11 +24,6 @@ using CursesSharp;
 
 namespace ClutterFeed
 {
-    public static class ScreenInfo
-    {
-        public static int WindowHeight = 30;
-        public static int WindowWidth = 120;
-    }
     class Program
     {
         private static short[] color_table = {
@@ -39,7 +34,7 @@ namespace ClutterFeed
         {
             Curses.InitScr();
             Curses.Newlines = true;
-            Curses.ResizeTerm(ScreenInfo.WindowHeight, ScreenInfo.WindowWidth);
+            Curses.ResizeTerm(ScreenInfo.WINDOWHEIGHT, ScreenInfo.WINDOWWIDTH);
             if (User.ConfigExists() == false)
             {
                 User.SetUnsetColorsToDefaults();
@@ -80,7 +75,7 @@ namespace ClutterFeed
 
             Curses.InitPair(21, Colors.BLACK, 101);
 
-            ScreenDraw.HeadLine = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            ScreenDraw.HeadLine = new Window(1, ScreenInfo.WINDOWWIDTH, 0, 0);
 
             Actions twitterDo = new Actions();
             twitterDo.SetUpTwitter();

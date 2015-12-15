@@ -42,7 +42,7 @@ namespace ClutterFeed
             {
                 signOn = "(AFK) | " + signOn;
             }
-            HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
+            HeadLine.Add(0, (ScreenInfo.WINDOWWIDTH - signOn.Length - 1), signOn);
             HeadLine.Refresh();
             if (User.CounterConsoleWin != null)
             {
@@ -55,7 +55,7 @@ namespace ClutterFeed
             /* that happens if you don't have internet access when starting ClutterFeed */
             UpdateHeader();
 
-            Tweets = new Window(ScreenInfo.WindowHeight - 3, ScreenInfo.WindowWidth, 1, 0);
+            Tweets = new Window(ScreenInfo.WINDOWHEIGHT - 3, ScreenInfo.WINDOWWIDTH, 1, 0);
         }
         /// <summary>
         /// Removes mentions from the list
@@ -106,16 +106,16 @@ namespace ClutterFeed
             int line = 0;
             int notNessecary;
             menu.GetCursorYX(out line, out notNessecary);
-            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            menu.Add(line, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
         }
         private void MenuDrawInMiddle(string message, int line)
         {
-            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            menu.Add(line, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
         }
         public Profile SelectUser()
         {
             TimerMan.Pause();
-            menu = new Window(User.profiles.Count + 1, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - (User.profiles.Count + 1) / 2, 0);
+            menu = new Window(User.profiles.Count + 1, ScreenInfo.WINDOWWIDTH, (ScreenInfo.WINDOWHEIGHT / 2) - (User.profiles.Count + 1) / 2, 0);
             int selected = 0;
             menu.Keypad = true;
             int pressedKey = 0;
@@ -263,24 +263,24 @@ namespace ClutterFeed
                 ScreenDraw.ShowMessage("Such a user does not exist");
                 return;
             }
-            Window showProfile = new Window(16, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 6, 0);
+            Window showProfile = new Window(16, ScreenInfo.WINDOWWIDTH, (ScreenInfo.WINDOWHEIGHT / 2) - 6, 0);
             
             if (IsFollowing)
             {
                 string follow = "You are following";
                 showProfile.Color = Colors.GREEN;
-                showProfile.Add(1, (ScreenInfo.WindowWidth / 2) - (follow.Length / 2), follow);
+                showProfile.Add(1, (ScreenInfo.WINDOWWIDTH / 2) - (follow.Length / 2), follow);
                 showProfile.Color = Colors.WHITE;
             }
             else if (IsBlocked)
             {
                 string blocked = "User is blocked.";
                 showProfile.Color = Colors.RED;
-                showProfile.Add(0, (ScreenInfo.WindowWidth / 2) - (blocked.Length / 2), blocked);
+                showProfile.Add(0, (ScreenInfo.WINDOWWIDTH / 2) - (blocked.Length / 2), blocked);
                 showProfile.Color = Colors.WHITE;
             }
 
-            showProfile.Add(2, (ScreenInfo.WindowWidth / 2) - (profile.Name.Length / 2), profile.Name);
+            showProfile.Add(2, (ScreenInfo.WINDOWWIDTH / 2) - (profile.Name.Length / 2), profile.Name);
             if (Convert.ToBoolean(profile.IsVerified)) /* A verified symbol. Ish. */
             {
                 showProfile.Color = 102;
@@ -289,13 +289,13 @@ namespace ClutterFeed
             }
 
             string atName = "@" + profile.ScreenName;
-            showProfile.Add(3, (ScreenInfo.WindowWidth / 2) - (atName.Length / 2), atName);
+            showProfile.Add(3, (ScreenInfo.WINDOWWIDTH / 2) - (atName.Length / 2), atName);
 
             int bioStartLine = 5;
 
-            if (profile.Description.Length >= ScreenInfo.WindowWidth - 8)
+            if (profile.Description.Length >= ScreenInfo.WINDOWWIDTH - 8)
             {
-                int splitter = ScreenInfo.WindowWidth - 8; /* Dictates how many characters to wait until splitting the bio */
+                int splitter = ScreenInfo.WINDOWWIDTH - 8; /* Dictates how many characters to wait until splitting the bio */
                 List<string> splitBio = profile.Description.SplitWords(splitter).ToList();
                 for (int index = 0; index < splitBio.Count; index++) /* Writes the bio of the user */
                 {
@@ -312,7 +312,7 @@ namespace ClutterFeed
             if (profile.Url != null)
             {
                 showProfile.Color = 102;
-                showProfile.Add(urlLine, (ScreenInfo.WindowWidth / 2) - (profile.Url.Length / 2), profile.Url);
+                showProfile.Add(urlLine, (ScreenInfo.WINDOWWIDTH / 2) - (profile.Url.Length / 2), profile.Url);
                 showProfile.Color = Colors.WHITE;
             }
 
@@ -329,17 +329,17 @@ namespace ClutterFeed
 
             string following = "Following:";
             showProfile.Color = 11;
-            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth / 2) - (following.Length / 2), following);
+            showProfile.Add(infoBeltNameLine, (ScreenInfo.WINDOWWIDTH / 2) - (following.Length / 2), following);
             showProfile.Color = Colors.WHITE;
-            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth / 2) - (following.Length / 2), profile.FriendsCount + "");
+            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WINDOWWIDTH / 2) - (following.Length / 2), profile.FriendsCount + "");
 
             /* Followers */
 
             string followers = "Followers:";
             showProfile.Color = 11;
-            showProfile.Add(infoBeltNameLine, (ScreenInfo.WindowWidth - followers.Length - 2), followers);
+            showProfile.Add(infoBeltNameLine, (ScreenInfo.WINDOWWIDTH - followers.Length - 2), followers);
             showProfile.Color = Colors.WHITE;
-            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WindowWidth - followers.Length - 2), profile.FollowersCount + "");
+            showProfile.Add(infoBeltNameLine + 1, (ScreenInfo.WINDOWWIDTH - followers.Length - 2), profile.FollowersCount + "");
 
             showProfile.Box((int)'|', (int)'-');
 
@@ -369,7 +369,7 @@ namespace ClutterFeed
         {
             TimerMan.Pause();
             Curses.Echo = false;
-            Window tweetShow = new Window(8, ScreenInfo.WindowWidth, 11, 0);
+            Window tweetShow = new Window(8, ScreenInfo.WINDOWWIDTH, 11, 0);
             tweetShow.Box((int)'|', (int)'-');
             string longUpdate = tweet.Contents;
             int splitter = 120;
@@ -438,12 +438,12 @@ namespace ClutterFeed
 
         private void DrawAtEnd(Window where, int line, string message)
         {
-            where.Add(line, (ScreenInfo.WindowWidth - message.Length - 3), message);
+            where.Add(line, (ScreenInfo.WINDOWWIDTH - message.Length - 3), message);
         }
         public void ShowHelp()
         {
             TimerMan.Pause();
-            Window help = new Window(23, ScreenInfo.WindowWidth, 4, 0);
+            Window help = new Window(23, ScreenInfo.WINDOWWIDTH, 4, 0);
             help.Color = (int)Color.Pairs.Self;
 
             int num = 2;
@@ -517,7 +517,7 @@ namespace ClutterFeed
 
             help.Color = 11;
             string enter = "Press ENTER to close this dialog";
-            help.Add(num, (ScreenInfo.WindowWidth / 2) - (enter.Length / 2), enter);
+            help.Add(num, (ScreenInfo.WINDOWWIDTH / 2) - (enter.Length / 2), enter);
 
             help.Color = Colors.WHITE;
             help.Box((int)'|', (int)'-');
@@ -544,7 +544,7 @@ namespace ClutterFeed
             {
                 string longUpdate = mentions[index].AuthorScreenName + ": " + mentions[index].Contents;
 
-                int splitter = ScreenInfo.WindowWidth - 8;
+                int splitter = ScreenInfo.WINDOWWIDTH - 8;
 
                 List<string> shortenedUpdate = longUpdate.PartNewlineSplit(splitter).ToList();
 
@@ -605,11 +605,11 @@ namespace ClutterFeed
         public static void ShowMessage(string message)
         {
             TimerMan.Pause();
-            Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+            Window errorMessage = new Window(3, ScreenInfo.WINDOWWIDTH, (ScreenInfo.WINDOWHEIGHT / 2) - 1, 0);
             errorMessage.Box((int)'|', (int)'-');
             Curses.Echo = false;
             errorMessage.Color = 11;
-            errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            errorMessage.Add(1, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
             errorMessage.Color = Colors.WHITE;
             errorMessage.GetChar();
             Curses.DoUpdate();
@@ -626,11 +626,11 @@ namespace ClutterFeed
             if (noRefresh)
             {
                 TimerMan.Pause();
-                Window errorMessage = new Window(3, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 1, 0);
+                Window errorMessage = new Window(3, ScreenInfo.WINDOWWIDTH, (ScreenInfo.WINDOWHEIGHT / 2) - 1, 0);
                 errorMessage.Box((int)'|', (int)'-');
                 Curses.Echo = false;
                 errorMessage.Color = 11;
-                errorMessage.Add(1, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+                errorMessage.Add(1, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
                 errorMessage.Color = Colors.WHITE;
                 errorMessage.GetChar();
                 errorMessage.Dispose();

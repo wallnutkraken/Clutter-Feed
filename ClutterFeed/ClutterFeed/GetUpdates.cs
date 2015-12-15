@@ -285,7 +285,7 @@ namespace ClutterFeed
             {
                 signOn = "(AFK) | " + signOn;
             }
-            ScreenDraw.HeadLine.Add(0, (ScreenInfo.WindowWidth - signOn.Length - 1), signOn);
+            ScreenDraw.HeadLine.Add(0, (ScreenInfo.WINDOWWIDTH - signOn.Length - 1), signOn);
             ScreenDraw.HeadLine.Refresh();
         }
 
@@ -340,7 +340,7 @@ namespace ClutterFeed
                 {
                     foreach (var link in tweet.Entities.Urls)
                     {
-                        if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WindowWidth - 8)
+                        if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WINDOWWIDTH - 8)
                         {
                             formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
                             formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");
@@ -406,7 +406,7 @@ namespace ClutterFeed
                     {
                         foreach (var link in tweet.Entities.Urls)
                         {
-                            if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WindowWidth - 8)
+                            if (link.ExpandedValue.Replace("http://", "").Replace("https://", "").Length <= ScreenInfo.WINDOWWIDTH - 8)
                             {
                                 formedTweet.Contents = formedTweet.Contents.Replace(link.Value, link.ExpandedValue);
                                 formedTweet.Contents = formedTweet.Contents.Replace("http://", "").Replace("https://", "");

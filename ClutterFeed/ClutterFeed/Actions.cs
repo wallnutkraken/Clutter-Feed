@@ -284,7 +284,7 @@ namespace ClutterFeed
             int line = 0;
             int notNessecary;
             menu.GetCursorYX(out line, out notNessecary);
-            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            menu.Add(line, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
         }
 
         /// <summary>
@@ -292,7 +292,7 @@ namespace ClutterFeed
         /// </summary>
         private void MenuDrawInMiddle(string message, int line)
         {
-            menu.Add(line, (ScreenInfo.WindowWidth / 2) - (message.Length / 2), message);
+            menu.Add(line, (ScreenInfo.WINDOWWIDTH / 2) - (message.Length / 2), message);
         }
 
         /// <summary>
@@ -302,7 +302,7 @@ namespace ClutterFeed
         {
             int pressedKey;
             int selection = 0;
-            menu = new Window(User.profiles.Count + 10, ScreenInfo.WindowWidth, (ScreenInfo.WindowHeight / 2) - 2, 0);
+            menu = new Window(User.profiles.Count + 10, ScreenInfo.WINDOWWIDTH, (ScreenInfo.WINDOWHEIGHT / 2) - 2, 0);
             do
             {
                 menu.Clear();

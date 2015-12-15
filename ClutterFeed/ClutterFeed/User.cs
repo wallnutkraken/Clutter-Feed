@@ -307,7 +307,7 @@ namespace ClutterFeed
             Process.Start(uri.ToString());
             service.AuthenticateWith(appKey.Token, appKey.TokenSecret);
 
-            Window auth = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+            Window auth = new Window(1, ScreenInfo.WINDOWWIDTH, 0, 0);
             Curses.Echo = true;
             auth.Add("Please input the authentication number: ");
             auth.Refresh();
@@ -344,7 +344,7 @@ namespace ClutterFeed
 
             OAuthAccessToken userKey = new OAuthAccessToken();
             OAuthRequestToken requestToken = User.Account.GetRequestToken();
-            Window auth = new Window(1, ScreenInfo.WindowWidth, 3, 0);
+            Window auth = new Window(1, ScreenInfo.WINDOWWIDTH, 3, 0);
             Uri uri = User.Account.GetAuthorizationUri(requestToken);
             Process.Start(uri.ToString());
 
@@ -485,7 +485,7 @@ namespace ClutterFeed
             }
             catch (IndexOutOfRangeException)
             {
-                Window argsMiss = new Window(1, ScreenInfo.WindowWidth, 0, 0);
+                Window argsMiss = new Window(1, ScreenInfo.WINDOWWIDTH, 0, 0);
                 argsMiss.Add("      Error: input was not complete.\n");
                 argsMiss.Add("      You probaby didn't use enough args");
                 argsMiss.Refresh();
@@ -530,7 +530,7 @@ namespace ClutterFeed
 
         public static string CounterConsole()
         {
-            CounterConsoleWin = new Window(2, ScreenInfo.WindowWidth, ScreenInfo.WindowHeight - 2, 0);
+            CounterConsoleWin = new Window(2, ScreenInfo.WINDOWWIDTH, ScreenInfo.WINDOWHEIGHT - 2, 0);
             Actions act = new Actions();
             CounterConsoleWin.Keypad = true;
             Curses.Echo = false;
